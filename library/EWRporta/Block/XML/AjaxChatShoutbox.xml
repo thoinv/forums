@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<block block_id="AjaxChatShoutbox" title="AJAX-Chat Shoutbox" version_string="alpha1" version_id="1" url="http://kosminea.fr" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="" cache="now">
+  <admin_templates/>
+  <listeners/>
+  <options/>
+  <phrases/>
+  <route_prefixes/>
+  <templates>
+    <template title="EWRblock_AjaxChatShoutbox"><![CDATA[<xen:require css="EWRblock_AjaxChatShoutbox.css" />
+
+<div class="section">		
+	<div class="secondaryContent">
+	<h3><a href="{xen:link chat/login}" title="{xen:phrase modm_ajaxchat_tabname}">{xen:phrase modm_ajaxchat_shoutbox}</a></h3>
+        <div class="ajaxChatShoutbox">
+            {xen:raw $AjaxChatShoutbox}
+        </div>
+    </div>
+</div>]]></template>
+    <template title="EWRblock_AjaxChatShoutbox.css"><![CDATA[.ajaxChatShoutbox {
+	background-color: {xen:property contentBackground};
+	color: #000;
+}
+
+.ajaxChatShoutbox h1 {
+	color: #000;
+}
+
+.ajaxChatShoutbox a {
+	color: {xen:property primaryMedium};
+}
+
+.ajaxChatShoutbox input, #content select, #content textarea {
+	background-color: #FFF;
+	color: #000;
+}
+
+.ajaxChatShoutbox #chatList {
+	border-color: #ADADAD;
+	background-color: #FFF;
+}
+
+.ajaxChatShoutbox .rowEven {
+	padding: 5px 0 5px 0;
+	background-color: {xen:property contentBackground};
+}
+
+.ajaxChatShoutbox .rowOdd {
+	padding: 5px 0 5px 0;
+	background-color: {xen:property primaryLighterStill};
+}
+
+.ajaxChatShoutbox .rowEven img,
+.ajaxChatShoutbox .rowOdd img {
+	vertical-align: middle;
+}
+
+.ajaxChatShoutbox .dateTime {
+	font-style: italic;
+	color: {xen:property mutedTextColor};
+}
+
+.ajaxChatShoutbox .guest {
+	color: gray;
+}
+
+.ajaxChatShoutbox .user {
+	color: #000;
+}
+
+.ajaxChatShoutbox .moderator {
+	color: #0000FF;
+}
+
+.ajaxChatShoutbox .admin {
+	color: #FF0000;
+}
+
+.ajaxChatShoutbox .chatBot {
+	color: #476C8E;
+}
+
+.ajaxChatShoutbox #chatList .chatBotErrorMessage {
+	color: red;
+}
+
+.ajaxChatShoutbox #chatList a {
+	color: #476C8E;
+}
+
+.ajaxChatShoutbox #chatList .deleteSelected {
+	border-color: red;
+}
+
+.ajaxChatShoutbox #ajaxChatInputFieldContainer {
+	padding: 5px;
+}
+
+.ajaxChatShoutbox #ajaxChatInputField {
+	font-size: 1.1em;
+	font-family: Calibri, 'Trebuchet MS', Verdana, Geneva, Arial, Helvetica,
+			sans-serif;
+	color: #000000;
+	background-color: rgb(240, 247, 252);
+	border-width: 1px;
+	border-style: solid;
+	border-top-color: rgb(192, 192, 192);
+	border-right-color: rgb(233, 233, 233);
+	border-bottom-color: rgb(233, 233, 233);
+	border-left-color: rgb(192, 192, 192);
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	outline: 0;
+	height: 16px;
+	width: 100%;
+}
+
+.ajaxChatShoutbox #ajaxChatCopyright {
+	font-size: 0.8em;
+	text-align: center;
+}
+
+.ajaxChatShoutbox #ajaxChatCopyright,
+.ajaxChatShoutbox #ajaxChatCopyright a {
+	font-style: italic;
+	color:  {xen:property mutedTextColor};
+}
+
+.ajaxChatShoutbox #ajaxChatChatList {
+	height: 150px;
+	overflow: auto;
+}
+
+.ajaxChatShoutbox #ajaxChatChatList {
+	border-width: 1px;
+	border-style: solid;
+	border-color: {xen:property primaryLighter};
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	outline: 0;
+}
+
+#ajaxChatChatList .delete {
+    display:block;
+    float:right;
+    width:10px;
+    height:10px;
+    margin-top:2px;
+    padding-left:5px;
+    background:url('chat/img/delete.png') no-repeat right;
+}
+
+#ajaxChatChatList .report {
+    display:block;
+    float:right;
+    width:10px;
+    height:10px;
+    margin-top:2px;
+    margin-left:5px;
+    background:url('chat/img/report.gif') 0 0 no-repeat;
+}
+
+#ajaxChatChatList .report:hover {
+    background-position:0 -10px;;
+}]]></template>
+  </templates>
+</block>

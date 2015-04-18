@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>eipSoftware Configuration Manager</title>
+		<link rel="stylesheet" type="text/css" href="./themes/importer/styles/import.css" />
+		<script type="text/javascript" src="./themes/importer/js/import_support.js"></script>
+	</head>
+	<body>
+	<div class="main">
+		<div class="header">
+			<div class="logoimage">
+				<img src="./themes/importer/images/logo_gallery.png" />
+			</div>
+			<div class="headermessage">
+				<h2>Importing</h2>
+				Import your existing gallery into MyGallery
+			</div>
+		</div>
+		<div class="shell">
+			<div class="leftcol">
+				<h3>Import Steps</h3>
+				<ol class="leftmenu">
+					<li id="lmenu_1" class="active">Choose Import Method</li>
+					<li id="lmenu_2">Setup configuration file</li>
+					<li id="lmenu_3">Import Categories</li>
+					<li id="lmenu_4">Import Images</li>
+					<li id="lmenu_5">Import Comments</li>
+					<li id="lmenu_6">Import Votes</li>
+				</ol> 
+			</div>
+			<div class="rightcol">
+				<div class="userinput">
+					<h3>Start import process</h3>
+					<form method="post" action="JavaScript:UserSubmit()">
+						<input type="hidden" name="currentStep" value="1" />
+						<input type="hidden" name="nextStep" value="1" />
+						<table class="form_table">
+							<tr>
+								<td class="td_left">
+									Choose the software you want to import from? 
+								</td>
+								<td class="td_right">
+									<select id="sel_import" name="eipImportType" >
+										<option value="pp" selected="selected">PhotoPost</option>
+										<option value="zz">Option 2</option>
+										<option value="xx">Option 3</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td class="td_left">
+									&nbsp;
+								</td>
+								<td class="td_right">
+									<input class="button-primary" name="Submit" type="submit" value="Save Changes" />
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				<div id="feedback" class="feedback">
+					<a id="HtmlNextStep" href="#"></a>		
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="bottombreadcrumb">
+				<div class="step">Current Step >> </div><div id="stepid" class="stepid">1</div>
+			</div>
+			<div class="copyright">
+				Copy right notice goes here
+			</div>
+		</div>
+	</div>
+	</body>
+</html>

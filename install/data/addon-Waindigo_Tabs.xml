@@ -1,0 +1,1122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="Waindigo_Tabs" title="Tabs by Waindigo" version_string="1.1.0c" version_id="1417257786" url="https://waindigo.org/" install_callback_class="Waindigo_Install" install_callback_method="install" uninstall_callback_class="Waindigo_Install" uninstall_callback_method="uninstall">
+  <admin_navigation>
+    <navigation navigation_id="tabNames" parent_navigation_id="tabs" display_order="10" link="tab-names" admin_permission_id="tab" debug_only="0" hide_no_children="0"/>
+    <navigation navigation_id="tabRules" parent_navigation_id="tabs" display_order="20" link="tab-rules" admin_permission_id="tab" debug_only="0" hide_no_children="0"/>
+    <navigation navigation_id="tabs" parent_navigation_id="applications" display_order="2000" link="" admin_permission_id="tab" debug_only="0" hide_no_children="0"/>
+  </admin_navigation>
+  <admin_permissions>
+    <admin_permission admin_permission_id="tab" display_order="3000"/>
+  </admin_permissions>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="waindigo_tab_delete_tabs"><![CDATA[<xen:title>{xen:phrase waindigo_confirm_deletion_of_tab_tabs}: {$tab.title}</xen:title>
+
+<xen:h1>{xen:phrase waindigo_confirm_deletion_of_tab_tabs}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink 'tabs/edit', $tab}">{$tab.title}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="delete_confirmation.css" />
+
+<xen:form action="{xen:adminlink 'tabs/delete', $tab}" class="deleteConfirmForm formOverlay">
+
+	<p>{xen:phrase waindigo_please_confirm_want_to_delete_tab_tabs}:</p>
+	<strong><a href="{xen:adminlink 'tabs/edit', $tab}">{$tab.title}</a></strong>
+
+	<xen:submitunit save="{xen:phrase waindigo_delete_tab_tabs}" />
+
+	<input type="hidden" name="_xfConfirm" value="1" />
+</xen:form>]]></template>
+    <template title="waindigo_tab_edit_tabs"><![CDATA[<xen:title>{xen:if '{$tab.tab_id}', '{xen:phrase waindigo_edit_tab_tabs}: {$tab.title}', '{xen:phrase waindigo_create_new_tab_tabs}'}</xen:title>
+
+<xen:h1>{xen:if '{$tab.tab_id}', '{xen:phrase waindigo_edit_tab_tabs}: <em>{$tab.title}</em>', '{xen:phrase waindigo_create_new_tab_tabs}'}</xen:h1>
+
+<xen:if is="{$tab.tab_id}">
+	<xen:navigation>
+		<xen:breadcrumb href="{xen:adminlink 'tabs'}#{xen:helper listitemid, $tab.tab_id}">{$tab.title}</xen:breadcrumb>
+	</xen:navigation>
+</xen:if>
+
+<xen:form action="{xen:adminlink 'tabs/save', $tab}"
+	class="AutoValidator"
+	data-fieldValidatorUrl="{xen:adminlink '/validate-field', $tab}"
+	data-redirect="on">
+
+	<fieldset>
+	<xen:textboxunit label="{xen:phrase waindigo_tab_title_tabs}:" name="title" value="{$tab.title}" data-liveTitleTemplate="{xen:if {$tab.tab_id},
+		'{xen:phrase waindigo_edit_tab_tabs}: <em>%s</em>',
+		'{xen:phrase waindigo_create_new_tab_tabs}: <em>%s</em>'}" />
+	<xen:textboxunit label="{xen:phrase waindigo_tab_subtitle_tabs}:" name="subtitle" value="{$tab.subtitle}" />
+	</fieldset>
+
+	<xen:submitunit>
+		<input type="submit" name="saveexit" value="{xen:phrase save_and_exit}" accesskey="e" class="button primary" id="saveExitButton" />
+		<input type="submit" name="reload" value="{xen:phrase save_changes}" accesskey="s" class="button" id="saveReloadButton" data-ajaxvalue="{xen:phrase save_all_changes}" />
+		<xen:if is="{$tab.tab_id}">
+			<input type="button" value="{xen:phrase waindigo_delete_tab_tabs}..." accesskey="d" class="button OverlayTrigger"
+				data-href="{xen:adminlink tabs/delete, $tab}" />
+		</xen:if>
+	</xen:submitunit>
+</xen:form>]]></template>
+    <template title="waindigo_tab_list_tabs"><![CDATA[<xen:title>{xen:phrase waindigo_tabs_tabs}</xen:title>
+
+<xen:h1>{xen:phrase waindigo_tabs_tabs}</xen:h1>
+
+<xen:topctrl>
+	<a href="{xen:adminlink 'tabs/add'}" class="button">+ {xen:phrase waindigo_create_new_tab_tabs}</a>
+</xen:topctrl>
+
+<xen:require css="filter_list.css" />
+<xen:require js="js/xenforo/filter_list.js" />
+
+<xen:form action="{xen:adminlink 'tabs/toggle'}" class="section AutoValidator">
+
+	<xen:if is="{$tabs}">
+		<h2 class="subHeading">
+			<xen:include template="filter_list_controls" />
+			{xen:phrase waindigo_tabs_tabs}
+		</h2>
+
+		<ol class="FilterList">
+			<xen:foreach loop="$tabs" key="$tabId" value="$tab">
+				<xen:listitem id="{$tabId}"
+					label="{xen:raw $tab.title}"
+					snippet="{$tab.subtitle}"
+					href="{xen:adminlink 'tabs/edit', $tab}"
+					delete="{xen:adminlink 'tabs/delete', $tab}"
+					deletehint="{xen:phrase delete}">
+				</xen:listitem>
+			</xen:foreach>
+		</ol>
+
+		<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $tabs}</span>', 'total={xen:count $tabs}'}</p>
+
+	<xen:else />
+		<div class="noResults">{xen:phrase waindigo_there_are_no_tabs_tabs}</div>
+	</xen:if>
+
+</xen:form>]]></template>
+    <template title="waindigo_tab_name_delete_tabs"><![CDATA[<xen:title>{xen:phrase waindigo_confirm_deletion_of_tab_name_tabs}: {$tabName.title}</xen:title>
+
+<xen:h1>{xen:phrase waindigo_confirm_deletion_of_tab_name_tabs}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink 'tab-names/edit', $tabName}">{$tabName.title}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="delete_confirmation.css" />
+
+<xen:form action="{xen:adminlink 'tab-names/delete', $tabName}" class="deleteConfirmForm formOverlay">
+
+	<p>{xen:phrase waindigo_please_confirm_want_to_delete_tab_name_tabs}:</p>
+	<strong><a href="{xen:adminlink 'tab-names/edit', $tabName}">{$tabName.title}</a></strong>
+
+	<xen:submitunit save="{xen:phrase waindigo_delete_tab_name_tabs}" />
+
+	<input type="hidden" name="_xfConfirm" value="1" />
+</xen:form>]]></template>
+    <template title="waindigo_tab_name_edit_tabs"><![CDATA[<xen:title>{xen:if '{$tabName.tab_name_id}', '{xen:phrase waindigo_edit_tab_name_tabs}: {$tabName.title}', '{xen:phrase waindigo_create_new_tab_name_tabs}'}</xen:title>
+
+<xen:h1>{xen:if '{$tabName.tab_name_id}', '{xen:phrase waindigo_edit_tab_name_tabs}: <em>{$tabName.title}</em>', '{xen:phrase waindigo_create_new_tab_name_tabs}'}</xen:h1>
+
+<xen:if is="{$tabName.tab_name_id}">
+	<xen:navigation>
+		<xen:breadcrumb href="{xen:adminlink 'tab-names'}#{xen:helper listitemid, $tabName.tab_name_id}">{$tabName.title}</xen:breadcrumb>
+	</xen:navigation>
+</xen:if>
+
+<xen:form action="{xen:adminlink 'tab-names/save', $tabName}"
+	class="AutoValidator"
+	data-redirect="on">
+
+	<fieldset>
+	<xen:textboxunit label="{xen:phrase waindigo_tab_name_title_tabs}:" name="title" value="{$masterTitle}" data-liveTitleTemplate="{xen:if {$tabName.tab_name_id},
+		'{xen:phrase waindigo_edit_tab_name_tabs}: <em>%s</em>',
+		'{xen:phrase waindigo_create_new_tab_name_tabs}: <em>%s</em>'}" />
+	<xen:spinboxunit label="{xen:phrase display_order}:" name="display_order" value="{$tabName.display_order}" />
+	</fieldset>
+	
+	<xen:checkboxunit label="{xen:phrase waindigo_default_tab_name_for_tabs}:" name="defaults">
+		<xen:option value="thread" selected="{$xenOptions.waindigo_tabs_defaultTabNameThreads} == {$tabName.tab_name_id}">{xen:phrase threads}</xen:option>
+		<xen:option value="resource" selected="{$xenOptions.waindigo_tabs_defaultTabNameResources} == {$tabName.tab_name_id}">{xen:phrase waindigo_resources_tabs}</xen:option>
+		<xen:option value="conversation" selected="{$xenOptions.waindigo_tabs_defaultTabNameConversations} == {$tabName.tab_name_id}">{xen:phrase conversations}</xen:option>
+		<xen:option value="project" selected="{$xenOptions.waindigo_tabs_defaultTabNameProjects} == {$tabName.tab_name_id}">{xen:phrase waindigo_projects_tabs}</xen:option>
+		<xen:option value="media" selected="{$xenOptions.waindigo_tabs_defaultTabNameMedia} == {$tabName.tab_name_id}">{xen:phrase waindigo_media_tabs}</xen:option>
+		<xen:option value="product" selected="{$xenOptions.waindigo_tabs_defaultTabNameProducts} == {$tabName.tab_name_id}">{xen:phrase waindigo_product_tabs}</xen:option>
+	</xen:checkboxunit>
+
+	<xen:submitunit>
+		<input type="submit" name="saveexit" value="{xen:phrase save_and_exit}" accesskey="e" class="button primary" id="saveExitButton" />
+		<input type="submit" name="reload" value="{xen:phrase save_changes}" accesskey="s" class="button" id="saveReloadButton" data-ajaxvalue="{xen:phrase save_all_changes}" />
+		<xen:if is="{$tabName.tab_name_id}">
+			<input type="button" value="{xen:phrase waindigo_delete_tab_name_tabs}..." accesskey="d" class="button OverlayTrigger"
+				data-href="{xen:adminlink tab-names/delete, $tabName}" />
+		</xen:if>
+	</xen:submitunit>
+</xen:form>]]></template>
+    <template title="waindigo_tab_name_list_tabs"><![CDATA[<xen:title>{xen:phrase waindigo_tab_names_tabs}</xen:title>
+
+<xen:h1>{xen:phrase waindigo_tab_names_tabs}</xen:h1>
+
+<xen:topctrl>
+	<a href="{xen:adminlink 'tab-names/add'}" class="button">+ {xen:phrase waindigo_create_new_tab_name_tabs}</a>
+</xen:topctrl>
+
+<xen:require css="filter_list.css" />
+<xen:require js="js/xenforo/filter_list.js" />
+
+<xen:form action="{xen:adminlink 'tab-names/toggle'}" class="section AutoValidator">
+
+	<xen:if is="{$tabNames}">
+		<h2 class="subHeading">
+			<xen:include template="filter_list_controls" />
+			{xen:phrase waindigo_tab_names_tabs}
+		</h2>
+
+		<ol class="FilterList">
+			<xen:foreach loop="$tabNames" key="$tabNameId" value="$tabName">
+				<xen:listitem id="{$tabNameId}"
+					label="{xen:raw $tabName.title}"
+					href="{xen:adminlink 'tab-names/edit', $tabName}"
+					delete="{xen:adminlink 'tab-names/delete', $tabName}"
+					deletehint="{xen:phrase delete}">
+				</xen:listitem>
+			</xen:foreach>
+		</ol>
+
+		<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $tabNames}</span>', 'total={xen:count $tabNames}'}</p>
+
+	<xen:else />
+		<div class="noResults">{xen:phrase waindigo_there_are_no_tab_names_tabs}</div>
+	</xen:if>
+
+</xen:form>]]></template>
+    <template title="waindigo_tab_rule_create_panes_tabs"><![CDATA[<li>
+	<xen:controlunit label="">
+	<ul>
+		<li><label>
+			<input type="radio" name="create_criteria[thread][node_type_id]" value="Forum" class="Disabler" id="ccrit_thread_node_type_id" {xen:checked '!{$createCriteria.thread.node_type_id} OR {$createCriteria.thread.node_type_id} == "Forum"'} />
+			{xen:phrase waindigo_create_thread_in_forum_tabs}:</label>
+			<div class="criteriaQualifier" id="ccrit_thread_node_type_id_Disabler">
+				<xen:select name="create_criteria[thread][node_id]" value="{$createCriteria.thread.node_id}">
+					<xen:options source="{$createCriteriaData.thread.nodes}" />
+				</xen:select>
+			</div>
+		</li>
+	</ul>
+	</xen:controlunit>
+</li>
+<li>
+	<xen:controlunit label="">
+	<ul>
+		<xen:comment>
+		<li><label>
+			<input type="radio" name="create_criteria[conversation][participant]" value="from" class="Disabler" id="ccrit_conversation_participant_from" {xen:checked '!{$createCriteria.conversation.participant} OR {$createCriteria.conversation.participant} == "from"'} />
+			{xen:phrase waindigo_create_conversation_from_tabs}:</label>
+			<div class="criteriaQualifier" id="ccrit_conversation_participant_from_Disabler">
+				<xen:textbox name="create_criteria[conversation][username]" value="{$createCriteria.conversation.username}" inputclass="quickSearchText AutoComplete AcSingle" placeholder="{xen:phrase user_name}..." type="search" results="5" />
+			</div>
+		</li>
+		</xen:comment>
+		<li><label>
+			<input type="radio" name="create_criteria[conversation][participant]" value="to" class="Disabler" id="ccrit_conversation_participant_to" {xen:checked '{$createCriteria.conversation.participant} == "to"'} />
+			{xen:phrase waindigo_create_conversation_to_tabs}:</label>
+			<div class="criteriaQualifier" id="ccrit_conversation_participant_to_Disabler">
+				<xen:textbox name="create_criteria[conversation][username]" value="{$createCriteria.conversation.username}" inputclass="quickSearchText AutoComplete" placeholder="{xen:phrase user_name}..." type="search" results="5" />
+			</div>
+		</li>
+	</ul>
+	</xen:controlunit>
+</li>
+<xen:if is="{$createContentTypes.resource}">
+	<li>
+		<xen:selectunit name="create_criteria[resource][resource_category_id]" label="{xen:phrase waindigo_create_resource_in_category_tabs}:" value="{$createCriteria.resource.resource_category_id}">
+			<xen:foreach loop="$createCriteriaData.resource.categories" value="$resourceCategory">
+				<xen:option value="{$resourceCategory.resource_category_id}">{xen:string repeat, '&nbsp; ', $resourceCategory.depth}{$resourceCategory.category_title}</xen:option>
+			</xen:foreach>
+		</xen:selectunit>
+	</li>
+</xen:if>
+<xen:if is="{$createContentTypes.xengallery_media}">
+	<li>
+		{xen:phrase waindigo_there_are_no_options_for_this_content_type_tabs}
+	</li>
+</xen:if>]]></template>
+    <template title="waindigo_tab_rule_criteria_panes_tabs"><![CDATA[<li>
+	<xen:controlunit label="{xen:phrase nodes}:">
+	<ul>		
+		<li><label>
+			<input type="checkbox" name="match_criteria[thread][nodes][rule]" value="nodes" class="Disabler" id="mcrit_thread_nodes" {xen:checked $matchCriteria.thread.nodes} />
+			{xen:phrase waindigo_thread_is_within_nodes_tabs}:</label>
+			<div class="criteriaQualifier" id="mcrit_thread_nodes_Disabler">
+				<xen:select name="match_criteria[thread][nodes][data][node_ids]" size="12" multiple="true">
+					<xen:foreach loop="$matchCriteriaData.thread.nodes" value="$_criteriaNode">
+						<xen:option value="{$_criteriaNode.node_id}"
+							selected="{$matchCriteria.thread.nodes.node_ids} AND in_array({$_criteriaNode.node_id}, {$matchCriteria.thread.nodes.node_ids})">
+								{xen:string repeat, '&nbsp; &nbsp; ', $_criteriaNode.depth}{$_criteriaNode.title}</xen:option>
+					</xen:foreach>
+				</xen:select>
+			</div>
+		</li>
+	</ul>
+	</xen:controlunit>
+</li>
+<li>
+	<xen:controlunit label="{xen:phrase waindigo_conversation_participants_tabs}:">
+	<ul>		
+		<li><label>
+			<input type="checkbox" name="match_criteria[conversation][from][rule]" value="from" class="Disabler" id="mcrit_conversation_from" {xen:checked $matchCriteria.conversation.from} />
+			{xen:phrase waindigo_conversation_from_tabs}:</label>
+			<div class="criteriaQualifier" id="mcrit_conversation_from_Disabler">
+				<xen:textbox name="match_criteria[conversation][from][data][username]" value="{$matchCriteria.conversation.from.username}" inputclass="quickSearchText AutoComplete AcSingle" placeholder="{xen:phrase user_name}..." type="search" results="5" />
+			</div>
+		</li>
+		<xen:comment>
+		<li><label>
+			<input type="checkbox" name="match_criteria[conversation][to][rule]" value="to" class="Disabler" id="mcrit_conversation_to" {xen:checked $matchCriteria.conversation.to} />
+			{xen:phrase waindigo_conversation_to_tabs}:</label>
+			<div class="criteriaQualifier" id="mcrit_conversation_to_Disabler">
+				<xen:textbox name="match_criteria[conversation][to][data][username]" value="{$matchCriteria.conversation.to.username}" inputclass="quickSearchText AutoComplete AcSingle" placeholder="{xen:phrase user_name}..." type="search" results="5" />
+			</div>
+		</li>
+		</xen:comment>
+	</ul>
+	</xen:controlunit>
+</li>
+<xen:if is="{$matchContentTypes.resource}">
+	<li>
+		<xen:controlunit label="{xen:phrase resource_categories}:">
+		<ul>
+			<li><label>
+				<input type="checkbox" name="match_criteria[resource][categories][rule]" value="categories" class="Disabler" id="mcrit_resource_categories" {xen:checked $matchCriteria.resource.categories} />
+				{xen:phrase waindigo_resource_is_within_categories_tabs}:</label>
+				<div class="criteriaQualifier" id="mcrit_resource_categories_Disabler">
+					<xen:select name="match_criteria[resource][categories][data][category_ids]" size="12" multiple="true">
+						<xen:foreach loop="$matchCriteriaData.resource.categories" value="$_criteriaNode">
+							<xen:option value="{$_criteriaNode.resource_category_id}"
+								selected="{$matchCriteria.resource.categories.category_ids} AND in_array({$_criteriaNode.resource_category_id}, {$matchCriteria.resource.categories.category_ids})">
+									{xen:string repeat, '&nbsp; &nbsp; ', $_criteriaNode.depth}{$_criteriaNode.category_title}</xen:option>
+						</xen:foreach>
+					</xen:select>	
+				</div>
+			</li>
+		</ul>
+		</xen:controlunit>
+	</li>
+</xen:if>
+<xen:if is="{$matchContentTypes.xengallery_media}">
+	<li>
+		<xen:controlunit label="{xen:phrase xengallery_categories}:">
+		<ul>
+			<li><label>
+				<input type="checkbox" name="match_criteria[xengallery_media][categories][rule]" value="categories" class="Disabler" id="mcrit_xengallery_media_categories" {xen:checked $matchCriteria.xengallery_media.categories} />
+				{xen:phrase waindigo_media_is_within_categories_tabs}:</label>
+				<div class="criteriaQualifier" id="mcrit_xengallery_media_categories_Disabler">
+					<xen:select name="match_criteria[xengallery_media][categories][data][category_ids]" size="12" multiple="true">
+						<xen:foreach loop="$matchCriteriaData.xengallery_media.categories" value="$_criteriaNode">
+							<xen:option value="{$_criteriaNode.category_id}"
+								selected="{$matchCriteria.xengallery_media.categories.category_ids} AND in_array({$_criteriaNode.category_id}, {$matchCriteria.xengallery_media.categories.category_ids})">
+									{xen:string repeat, '&nbsp; &nbsp; ', $_criteriaNode.depth}{$_criteriaNode.category_title}</xen:option>
+						</xen:foreach>
+					</xen:select>	
+				</div>
+			</li>
+		</ul>
+		</xen:controlunit>
+	</li>
+</xen:if>]]></template>
+    <template title="waindigo_tab_rule_delete_tabs"><![CDATA[<xen:title>{xen:phrase waindigo_confirm_deletion_of_tab_rule_tabs}: {$tabRule.title}</xen:title>
+
+<xen:h1>{xen:phrase waindigo_confirm_deletion_of_tab_rule_tabs}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink 'tab-rules/edit', $tabRule}">{$tabRule.title}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="delete_confirmation.css" />
+
+<xen:form action="{xen:adminlink 'tab-rules/delete', $tabRule}" class="deleteConfirmForm formOverlay">
+
+	<p>{xen:phrase waindigo_please_confirm_want_to_delete_tab_rule_tabs}:</p>
+	<strong><a href="{xen:adminlink 'tab-rules/edit', $tabRule}">{$tabRule.title}</a></strong>
+
+	<xen:submitunit save="{xen:phrase waindigo_delete_tab_rule_tabs}" />
+
+	<input type="hidden" name="_xfConfirm" value="1" />
+</xen:form>]]></template>
+    <template title="waindigo_tab_rule_edit_tabs"><![CDATA[<xen:title>{xen:if '{$tabRule.tab_rule_id}', '{xen:phrase waindigo_edit_tab_rule_tabs}: {$tabRule.title}', '{xen:phrase waindigo_create_new_tab_rule_tabs}'}</xen:title>
+
+<xen:h1>{xen:if '{$tabRule.tab_rule_id}', '{xen:phrase waindigo_edit_tab_rule_tabs}: <em>{$tabRule.title}</em>', '{xen:phrase waindigo_create_new_tab_rule_tabs}'}</xen:h1>
+
+<xen:require js="js/waindigo/tabs/full/tab_rules.js" />
+
+<xen:if is="{$tabRule.tab_rule_id}">
+	<xen:navigation>
+		<xen:breadcrumb href="{xen:adminlink 'tab-rules'}#{xen:helper listitemid, $tabRule.tab_rule_id}">{$tabRule.title}</xen:breadcrumb>
+	</xen:navigation>
+</xen:if>
+
+<xen:form action="{xen:adminlink 'tab-rules/save', $tabRule}"
+	class="AutoValidator TabRulesForm"
+	data-redirect="on">
+
+	<ul class="tabs Tabs" data-panes="#tabRulePanes > li">
+		<li class="active"><a>{xen:phrase waindigo_tab_rule_options_tabs}</a></li>
+		<li class="TabRuleTabCriteria" data-contenttype="thread"><a>{xen:phrase waindigo_thread_criteria_tabs}</a></li>
+		<li class="TabRuleTabCriteria" data-contenttype="conversation"><a>{xen:phrase waindigo_conversation_criteria_tabs}</a></li>
+		<xen:if is="{$matchContentTypes.resource}">
+			<li class="TabRuleTabCriteria" data-contenttype="resource"><a>{xen:phrase waindigo_resource_criteria_tabs}</a></li>
+		</xen:if>
+		<xen:if is="{$matchContentTypes.xengallery_media}">
+			<li class="TabRuleTabCriteria" data-contenttype="xengallery_media"><a>{xen:phrase waindigo_media_criteria_tabs}</a></li>
+		</xen:if>
+		<li class="TabRuleTabCreate" data-contenttype="thread"><a>{xen:phrase waindigo_thread_create_tabs}</a></li>
+		<li class="TabRuleTabCreate" data-contenttype="conversation"><a>{xen:phrase waindigo_conversation_create_tabs}</a></li>
+		<xen:if is="{$createContentTypes.resource}">
+			<li class="TabRuleTabCreate" data-contenttype="resource"><a>{xen:phrase waindigo_resource_create_tabs}</a></li>
+		</xen:if>
+		<xen:if is="{$createContentTypes.xengallery_media}">
+			<li class="TabRuleTabCreate" data-contenttype="xengallery_media"><a>{xen:phrase waindigo_media_create_tabs}</a></li>
+		</xen:if>
+	</ul>
+
+	<ul id="tabRulePanes">
+		<li>
+			<xen:textboxunit label="{xen:phrase waindigo_tab_rule_title_tabs}:" name="title" value="{$tabRule.title}" data-liveTitleTemplate="{xen:if {$tabRule.tab_rule_id},
+				'{xen:phrase waindigo_edit_tab_rule_tabs}: <em>%s</em>',
+				'{xen:phrase waindigo_create_new_tab_rule_tabs}: <em>%s</em>'}" />
+			<fieldset>
+				<xen:selectunit label="{xen:phrase waindigo_match_content_type_tabs}:" name="match_content_type" value="{$tabRule.match_content_type}" inputclass="TabRuleContentType" data-tabsclass="TabRuleTabCriteria">
+					<xen:foreach loop="$matchContentTypes" key="$contentTypeId" value="$contentType">
+						<xen:option value="{$contentTypeId}">{$contentType}</xen:option>
+					</xen:foreach>
+				</xen:selectunit>
+				<xen:selectunit label="{xen:phrase waindigo_tab_name_tabs}:" name="match_tab_name_id" value="{$tabRule.match_tab_name_id}">
+					<xen:foreach loop="$tabNames" value="$tabName">
+						<xen:option value="{$tabName.tab_name_id}" selected="{$tabName.tab_name_id} == {$tabRule.match_tab_name_id}">{$tabName.title}</xen:option>
+					</xen:foreach>
+				</xen:selectunit>
+			</fieldset>
+			<fieldset>
+				<xen:selectunit label="{xen:phrase waindigo_create_content_type_tabs}:" name="create_content_type" value="{$tabRule.create_content_type}" inputclass="TabRuleContentType" data-tabsclass="TabRuleTabCreate">
+					<xen:foreach loop="$createContentTypes" key="$contentTypeId" value="$contentType">
+						<xen:option value="{$contentTypeId}">{$contentType}</xen:option>
+					</xen:foreach>
+				</xen:selectunit>
+				<xen:selectunit label="{xen:phrase waindigo_create_tab_name_tabs}:" name="tab_name_id" value="{$tabRule.tab_name_id}">
+					<xen:foreach loop="$tabNames" value="$tabName">
+						<xen:option value="{$tabName.tab_name_id}" selected="{$tabName.tab_name_id} == {$tabRule.tab_name_id}">{$tabName.title}</xen:option>
+					</xen:foreach>
+				</xen:selectunit>
+				<xen:controlunit label="{xen:phrase waindigo_create_message_tabs}:">
+				<ul>
+					<li><label>
+						<input type="radio" name="use_custom_message" value="0" id="ctrl_use_custom_message_0" {xen:checked '!{$customMessage}'} />
+						{xen:phrase waindigo_use_default_message_template_tabs}</label>
+					</li>
+					<li><label>
+						<input type="radio" name="use_custom_message" value="1" class="Disabler" id="ctrl_use_custom_message_1" {xen:checked $customMessage} />
+						{xen:phrase waindigo_use_custom_message_template_tabs}:</label>
+						<ul id="ctrl_use_custom_message_1_Disabler">
+							<li><xen:textbox name="custom_message" value="{$customMessage}" rows="2" inputclass="Elastic" /></li>
+						</ul>
+					</li>
+				</ul>
+				</xen:controlunit>
+			</fieldset>
+		</li>
+		<xen:include template="waindigo_tab_rule_criteria_panes_tabs" />
+		<xen:include template="waindigo_tab_rule_create_panes_tabs" />
+	</ul>
+
+	<xen:submitunit>
+		<input type="submit" name="saveexit" value="{xen:phrase save_and_exit}" accesskey="e" class="button primary" id="saveExitButton" />
+		<input type="submit" name="reload" value="{xen:phrase save_changes}" accesskey="s" class="button" id="saveReloadButton" data-ajaxvalue="{xen:phrase save_all_changes}" />
+		<xen:if is="{$tabRule.tab_rule_id}">
+			<input type="button" value="{xen:phrase waindigo_delete_tab_rule_tabs}..." accesskey="d" class="button OverlayTrigger"
+				data-href="{xen:adminlink tab-rules/delete, $tabRule}" />
+		</xen:if>
+	</xen:submitunit>
+</xen:form>]]></template>
+    <template title="waindigo_tab_rule_list_tabs"><![CDATA[<xen:title>{xen:phrase waindigo_tab_rules_tabs}</xen:title>
+
+<xen:h1>{xen:phrase waindigo_tab_rules_tabs}</xen:h1>
+
+<xen:topctrl>
+	<a href="{xen:adminlink 'tab-rules/add'}" class="button">+ {xen:phrase waindigo_create_new_tab_rule_tabs}</a>
+</xen:topctrl>
+
+<xen:require css="filter_list.css" />
+<xen:require js="js/xenforo/filter_list.js" />
+
+<xen:form action="{xen:adminlink 'tab-rules/toggle'}" class="section AutoValidator">
+
+	<xen:if is="{$tabRules}">
+		<h2 class="subHeading">
+			<xen:include template="filter_list_controls" />
+			{xen:phrase waindigo_tab_rules_tabs}
+		</h2>
+
+		<ol class="FilterList">
+			<xen:foreach loop="$tabRules" key="$tabRuleId" value="$tabRule">
+				<xen:listitem id="{$tabRuleId}"
+					label="{xen:raw $tabRule.title}"
+					snippet="{$tabRule.subtitle}"
+					href="{xen:adminlink 'tab-rules/edit', $tabRule}"
+					delete="{xen:adminlink 'tab-rules/delete', $tabRule}"
+					deletehint="{xen:phrase delete}">
+				</xen:listitem>
+			</xen:foreach>
+		</ol>
+
+		<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $tabRules}</span>', 'total={xen:count $tabRules}'}</p>
+
+	<xen:else />
+		<div class="noResults">{xen:phrase waindigo_there_are_no_tab_rules_tabs}</div>
+	</xen:if>
+
+</xen:form>]]></template>
+  </admin_templates>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="Waindigo_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="Waindigo_Tabs_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="Waindigo_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenProduct_ControllerPublic_Product" description="XenProduct_ControllerPublic_Product (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassDataWriter" active="0" hint="XenProduct_DataWriter_Product" description="XenProduct_DataWriter_Product (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassView" active="0" hint="XenProduct_ViewPublic_Product_View" description="XenProduct_ViewPublic_Product_View (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassController" active="0" hint="Waindigo_FreeAgent_ControllerPublic_Project" description="Waindigo_FreeAgent_ControllerPublic_Project (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerPublic_Conversation" description="XenForo_ControllerPublic_Conversation (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassDataWriter" active="0" hint="XenForo_DataWriter_ConversationMaster" description="XenForo_DataWriter_ConversationMaster (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassView" active="0" hint="XenForo_ViewPublic_Conversation_View" description="XenForo_ViewPublic_Conversation_View (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassView" active="0" hint="Waindigo_FreeAgent_ViewPublic_Project_View" description="Waindigo_FreeAgent_ViewPublic_Project_View (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassDataWriter" active="0" hint="XenForo_DataWriter_AddOn" description="XenForo_DataWriter_AddOn (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerPublic_Thread" description="XenForo_ControllerPublic_Thread (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenResource_ControllerPublic_Resource" description="XenResource_ControllerPublic_Resource (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassView" active="0" hint="XenResource_ViewPublic_Resource_View" description="XenResource_ViewPublic_Resource_View (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassView" active="0" hint="XenForo_ViewPublic_Thread_View" description="XenForo_ViewPublic_Thread_View (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassDataWriter" active="0" hint="XenForo_DataWriter_Discussion_Thread" description="XenForo_DataWriter_Discussion_Thread (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassDataWriter" active="0" hint="XenResource_DataWriter_Resource" description="XenResource_DataWriter_Resource (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenGallery_ControllerPublic_Media" description="XenGallery_ControllerPublic_Media (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassDataWriter" active="0" hint="XenGallery_DataWriter_Media" description="XenGallery_DataWriter_Media (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassView" active="0" hint="XenGallery_ViewPublic_Media_View" description="XenGallery_ViewPublic_Media_View (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerPublic_Forum" description="XenForo_ControllerPublic_Forum (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassView" active="0" hint="XenForo_ViewPublic_Thread_Create" description="XenForo_ViewPublic_Thread_Create (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassView" active="0" hint="XenForo_ViewPublic_Conversation_Add" description="XenForo_ViewPublic_Conversation_Add (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassView" active="0" hint="XenGallery_ViewPublic_Media_Add" description="XenGallery_ViewPublic_Media_Add (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassView" active="0" hint="XenResource_ViewPublic_Resource_Add" description="XenResource_ViewPublic_Resource_Add (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassController" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassDataWriter" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="load_class_view" execute_order="10" callback_class="Waindigo_Tabs_Listener_LoadClass" callback_method="loadClassView" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="template_hook" execute_order="10" callback_class="Waindigo_Tabs_Listener_TemplateHook" callback_method="templateHook" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="template_post_render" execute_order="10" callback_class="Waindigo_Tabs_Listener_TemplatePostRender" callback_method="templatePostRender" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="waindigo_tabs" display_order="2000" debug_only="0"/>
+    <option option_id="waindigo_tabs_defaultTabNameConversations" edit_format="callback" data_type="integer" can_backup="1">
+      <default_value>3</default_value>
+      <edit_format_params>Waindigo_Tabs_Option_TabNames::renderSelect</edit_format_params>
+      <sub_options/>
+      <relation group_id="waindigo_tabs" display_order="20"/>
+    </option>
+    <option option_id="waindigo_tabs_defaultTabNameMedia" edit_format="callback" data_type="integer" can_backup="1">
+      <default_value>5</default_value>
+      <edit_format_params>Waindigo_Tabs_Option_TabNames::renderSelect</edit_format_params>
+      <sub_options/>
+      <relation group_id="waindigo_tabs" display_order="95"/>
+    </option>
+    <option option_id="waindigo_tabs_defaultTabNameProducts" edit_format="callback" data_type="integer" can_backup="1">
+      <default_value>6</default_value>
+      <edit_format_params>Waindigo_Tabs_Option_TabNames::renderSelect</edit_format_params>
+      <sub_options/>
+      <relation group_id="waindigo_tabs" display_order="96"/>
+    </option>
+    <option option_id="waindigo_tabs_defaultTabNameProjects" edit_format="callback" data_type="integer" can_backup="1">
+      <default_value>4</default_value>
+      <edit_format_params>Waindigo_Tabs_Option_TabNames::renderSelect</edit_format_params>
+      <sub_options/>
+      <relation group_id="waindigo_tabs" display_order="90"/>
+    </option>
+    <option option_id="waindigo_tabs_defaultTabNameResources" edit_format="callback" data_type="integer" can_backup="1">
+      <default_value>2</default_value>
+      <edit_format_params>Waindigo_Tabs_Option_TabNames::renderSelect</edit_format_params>
+      <sub_options/>
+      <relation group_id="waindigo_tabs" display_order="10"/>
+    </option>
+    <option option_id="waindigo_tabs_defaultTabNameThreads" edit_format="callback" data_type="integer" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params>Waindigo_Tabs_Option_TabNames::renderSelect</edit_format_params>
+      <sub_options/>
+      <relation group_id="waindigo_tabs" display_order="1"/>
+    </option>
+    <option option_id="waindigo_tabs_selectExistingContentMethod" edit_format="select" data_type="string" can_backup="1">
+      <default_value>dropdown</default_value>
+      <edit_format_params>dropdown={xen:phrase waindigo_drop_down_menu_tabs}
+urlfield={xen:phrase waindigo_url_field_tabs}</edit_format_params>
+      <sub_options/>
+      <relation group_id="waindigo_tabs" display_order="100"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions>
+      <permission permission_group_id="general" permission_id="addExistingContentToTabs" permission_type="flag" default_value="unset" interface_group_id="generalPermissions" display_order="20000"/>
+    </permissions>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="admin_navigation_tabNames" version_id="1383861056" version_string="1.0.0"><![CDATA[Tab Names]]></phrase>
+    <phrase title="admin_navigation_tabRules" version_id="1383861056" version_string="1.0.0"><![CDATA[Tab Rules]]></phrase>
+    <phrase title="admin_navigation_tabs" version_id="0" version_string="1.0.0"><![CDATA[Tabs]]></phrase>
+    <phrase title="admin_permission_tab" version_id="0" version_string="1.0.0"><![CDATA[Manage tabs]]></phrase>
+    <phrase title="option_group_waindigo_tabs" version_id="1384879919" version_string="1.0.1"><![CDATA[Tabs by Waindigo]]></phrase>
+    <phrase title="option_group_waindigo_tabs_description" version_id="1384879919" version_string="1.0.1"><![CDATA[Options for the Tabs by Waindigo add-on.]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameConversations" version_id="1410884462" version_string="1.0.2"><![CDATA[Default Tab Name for Conversations]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameConversations_explain" version_id="1413463490" version_string="1.0.8"><![CDATA[Tab names can be created and edited <a href="admin.php?tab-names">here</a>.]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameMedia" version_id="1412168795" version_string="1.0.3"><![CDATA[Default Tab Name for Media]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameMedia_explain" version_id="1413463490" version_string="1.0.8"><![CDATA[Tab names can be created and edited <a href="admin.php?tab-names">here</a>.]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameProducts" version_id="1416048044" version_string="1.0.9"><![CDATA[Default Tab Name for Products]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameProducts_explain" version_id="1416048044" version_string="1.0.9"><![CDATA[Tab names can be created and edited <a href="admin.php?tab-names">here</a>.]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameProjects" version_id="1410884462" version_string="1.0.2"><![CDATA[Default Tab Name for Projects]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameProjects_explain" version_id="1413463490" version_string="1.0.8"><![CDATA[Tab names can be created and edited <a href="admin.php?tab-names">here</a>.]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameResources" version_id="1384879919" version_string="1.0.1"><![CDATA[Default Tab Name for Resources]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameResources_explain" version_id="1413463490" version_string="1.0.8"><![CDATA[Tab names can be created and edited <a href="admin.php?tab-names">here</a>.]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameThreads" version_id="1384879919" version_string="1.0.1"><![CDATA[Default Tab Name for Threads]]></phrase>
+    <phrase title="option_waindigo_tabs_defaultTabNameThreads_explain" version_id="1413463490" version_string="1.0.8"><![CDATA[Tab names can be created and edited <a href="admin.php?tab-names">here</a>.]]></phrase>
+    <phrase title="option_waindigo_tabs_selectExistingContentMethod" version_id="1410884462" version_string="1.0.2"><![CDATA[Select Existing Content Using]]></phrase>
+    <phrase title="option_waindigo_tabs_selectExistingContentMethod_explain" version_id="1410884462" version_string="1.0.2"><![CDATA[For larger sites, it is better to allow users to just enter the URL of the content they want to add rather than giving them large drop-down boxes to choose form.]]></phrase>
+    <phrase title="permission_general_addExistingContentToTabs" version_id="1384879919" version_string="1.0.1"><![CDATA[Add existing content to tabs]]></phrase>
+    <phrase title="waindigo_add_tab_tabs" version_id="1384879919" version_string="1.0.1"><![CDATA[Add Tab]]></phrase>
+    <phrase title="waindigo_add_tab_to_x_tabs" version_id="1384879919" version_string="1.0.1"><![CDATA[Add Tab to {title}]]></phrase>
+    <phrase title="waindigo_cannot_tab_content_to_itself_tabs" version_id="1384879919" version_string="1.0.1"><![CDATA[You may not add a tab from a content item to itself.]]></phrase>
+    <phrase title="waindigo_confirm_deletion_of_tab_name_tabs" version_id="0" version_string="1.0.0"><![CDATA[Confirm Deletion of Tab Name]]></phrase>
+    <phrase title="waindigo_confirm_deletion_of_tab_rule_tabs" version_id="1383838214" version_string="1.0.0"><![CDATA[Confirm Deletion of Tab Rule]]></phrase>
+    <phrase title="waindigo_confirm_deletion_of_tab_tabs" version_id="0" version_string="1.0.0"><![CDATA[Confirm Deletion of Tab]]></phrase>
+    <phrase title="waindigo_content_type_tabs" version_id="1384879919" version_string="1.0.1"><![CDATA[Content Type]]></phrase>
+    <phrase title="waindigo_conversation_create_tabs" version_id="1410884462" version_string="1.0.2"><![CDATA[Conversation Create]]></phrase>
+    <phrase title="waindigo_conversation_criteria_tabs" version_id="1410884462" version_string="1.0.2"><![CDATA[Conversation Criteria]]></phrase>
+    <phrase title="waindigo_conversation_from_tabs" version_id="1410884462" version_string="1.0.2"><![CDATA[Conversation is From]]></phrase>
+    <phrase title="waindigo_conversation_message_create_tabs" version_id="1410884462" version_string="1.0.2"><![CDATA[{username} started a conversation:
+
+[url={contentLink}]{title}[/url]
+
+[quote]{snippet}[/quote]
+
+[url={contentLink}]Read more of this conversation...[/url]]]></phrase>
+    <phrase title="waindigo_conversation_participants_tabs" version_id="1410884462" version_string="1.0.2"><![CDATA[Conversation Participants]]></phrase>
+    <phrase title="waindigo_conversation_to_tabs" version_id="1410884462" version_string="1.0.2"><![CDATA[Conversation is To]]></phrase>
+    <phrase title="waindigo_create_content_type_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Create Content Type]]></phrase>
+    <phrase title="waindigo_create_conversation_from_tabs" version_id="1410884462" version_string="1.0.2"><![CDATA[Create Conversation From]]></phrase>
+    <phrase title="waindigo_create_conversation_to_tabs" version_id="1410884462" version_string="1.0.2"><![CDATA[Create Conversation To]]></phrase>
+    <phrase title="waindigo_create_media_in_category_tabs" version_id="1415964050" version_string="1.0.8"><![CDATA[Create Media in Category]]></phrase>
+    <phrase title="waindigo_create_message_tabs" version_id="1383957634" version_string="1.0.0"><![CDATA[Create Message]]></phrase>
+    <phrase title="waindigo_create_new_tab_name_tabs" version_id="0" version_string="1.0.0"><![CDATA[Create New Tab Name]]></phrase>
+    <phrase title="waindigo_create_new_tab_rule_tabs" version_id="1383838214" version_string="1.0.0"><![CDATA[Create New Tab Rule]]></phrase>
+    <phrase title="waindigo_create_new_tab_tabs" version_id="0" version_string="1.0.0"><![CDATA[Create New Tab]]></phrase>
+    <phrase title="waindigo_create_resource_in_category_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Create Resource in Category]]></phrase>
+    <phrase title="waindigo_create_tab_name_tabs" version_id="1383957634" version_string="1.0.0"><![CDATA[Create Tab Name]]></phrase>
+    <phrase title="waindigo_create_thread_in_forum_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Create Thread in Forum]]></phrase>
+    <phrase title="waindigo_default_tab_name_for_tabs" version_id="1413463490" version_string="1.0.8"><![CDATA[Default Tab Name for]]></phrase>
+    <phrase title="waindigo_delete_tab_name_tabs" version_id="0" version_string="1.0.0"><![CDATA[Delete Tab Name]]></phrase>
+    <phrase title="waindigo_delete_tab_rule_tabs" version_id="1383838214" version_string="1.0.0"><![CDATA[Delete Tab Rule]]></phrase>
+    <phrase title="waindigo_delete_tab_tabs" version_id="0" version_string="1.0.0"><![CDATA[Delete Tab]]></phrase>
+    <phrase title="waindigo_drop_down_menu_tabs" version_id="1413463490" version_string="1.0.8"><![CDATA[Drop-down menu/gallery]]></phrase>
+    <phrase title="waindigo_edit_tab_name_tabs" version_id="0" version_string="1.0.0"><![CDATA[Edit Tab Name]]></phrase>
+    <phrase title="waindigo_edit_tab_rule_tabs" version_id="1383838214" version_string="1.0.0"><![CDATA[Edit Tab Rule]]></phrase>
+    <phrase title="waindigo_edit_tab_tabs" version_id="0" version_string="1.0.0"><![CDATA[Edit Tab]]></phrase>
+    <phrase title="waindigo_existing_url_tabs" version_id="1410884462" version_string="1.0.2"><![CDATA[Existing URL]]></phrase>
+    <phrase title="waindigo_match_content_type_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Match Content Type]]></phrase>
+    <phrase title="waindigo_media_create_tabs" version_id="1415964050" version_string="1.0.8"><![CDATA[Media Create]]></phrase>
+    <phrase title="waindigo_media_criteria_tabs" version_id="1412168795" version_string="1.0.3"><![CDATA[Media Criteria]]></phrase>
+    <phrase title="waindigo_media_is_within_categories_tabs" version_id="1412168795" version_string="1.0.3"><![CDATA[Media is Within Categories]]></phrase>
+    <phrase title="waindigo_media_message_create_tabs" version_id="1412168795" version_string="1.0.3"><![CDATA[{username} uploaded media:
+
+[url={contentLink}]{title}[/url]
+
+[quote]{snippet}[/quote]
+
+[url={contentLink}]View this media...[/url]]]></phrase>
+    <phrase title="waindigo_media_tabs" version_id="1413463490" version_string="1.0.8"><![CDATA[Media]]></phrase>
+    <phrase title="waindigo_please_confirm_want_to_delete_tab_name_tabs" version_id="0" version_string="1.0.0"><![CDATA[Please confirm that you want to delete the following tab name]]></phrase>
+    <phrase title="waindigo_please_confirm_want_to_delete_tab_rule_tabs" version_id="1383838214" version_string="1.0.0"><![CDATA[Please confirm that you want to delete the following tab rule]]></phrase>
+    <phrase title="waindigo_please_confirm_want_to_delete_tab_tabs" version_id="0" version_string="1.0.0"><![CDATA[Please confirm that you want to delete the following tab]]></phrase>
+    <phrase title="waindigo_product_tabs" version_id="1416048044" version_string="1.0.9"><![CDATA[Product]]></phrase>
+    <phrase title="waindigo_projects_tabs" version_id="1413463490" version_string="1.0.8"><![CDATA[Projects]]></phrase>
+    <phrase title="waindigo_requested_tab_name_not_found_tabs" version_id="0" version_string="1.0.0"><![CDATA[The requested tab name could not be found.]]></phrase>
+    <phrase title="waindigo_requested_tab_not_found_tabs" version_id="0" version_string="1.0.0"><![CDATA[The requested tab could not be found.]]></phrase>
+    <phrase title="waindigo_requested_tab_rule_not_found_tabs" version_id="1383838214" version_string="1.0.0"><![CDATA[The requested tab rule could not be found.]]></phrase>
+    <phrase title="waindigo_resources_tabs" version_id="1413463490" version_string="1.0.8"><![CDATA[Resources]]></phrase>
+    <phrase title="waindigo_resource_create_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Resource Create]]></phrase>
+    <phrase title="waindigo_resource_criteria_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Resource Criteria]]></phrase>
+    <phrase title="waindigo_resource_is_within_categories_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Resource is Within Categories]]></phrase>
+    <phrase title="waindigo_tabs_tabs" version_id="0" version_string="1.0.0"><![CDATA[Tabs]]></phrase>
+    <phrase title="waindigo_tab_names_tabs" version_id="0" version_string="1.0.0"><![CDATA[Tab Names]]></phrase>
+    <phrase title="waindigo_tab_name_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Tab Name]]></phrase>
+    <phrase title="waindigo_tab_name_title_tabs" version_id="0" version_string="1.0.0"><![CDATA[Title]]></phrase>
+    <phrase title="waindigo_tab_rules_tabs" version_id="1383838214" version_string="1.0.0"><![CDATA[Tab Rules]]></phrase>
+    <phrase title="waindigo_tab_rule_options_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Tab Rule Options]]></phrase>
+    <phrase title="waindigo_tab_rule_subtitle_tabs" version_id="1383838214" version_string="1.0.0"><![CDATA[Subtitle]]></phrase>
+    <phrase title="waindigo_tab_rule_title_tabs" version_id="1383838214" version_string="1.0.0"><![CDATA[Title]]></phrase>
+    <phrase title="waindigo_tab_title_tabs" version_id="0" version_string="1.0.0"><![CDATA[Title]]></phrase>
+    <phrase title="waindigo_there_are_no_options_for_this_content_type_tabs" version_id="1415964050" version_string="1.0.8"><![CDATA[There are no options for this content type.]]></phrase>
+    <phrase title="waindigo_there_are_no_tabs_tabs" version_id="0" version_string="1.0.0"><![CDATA[There are no tabs.]]></phrase>
+    <phrase title="waindigo_there_are_no_tab_names_tabs" version_id="0" version_string="1.0.0"><![CDATA[There are no tab names.]]></phrase>
+    <phrase title="waindigo_there_are_no_tab_rules_tabs" version_id="1383838214" version_string="1.0.0"><![CDATA[There are no tab rules.]]></phrase>
+    <phrase title="waindigo_thread_create_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Thread Create]]></phrase>
+    <phrase title="waindigo_thread_criteria_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Thread Criteria]]></phrase>
+    <phrase title="waindigo_thread_is_within_nodes_tabs" version_id="1383861056" version_string="1.0.0"><![CDATA[Thread is Within Nodes]]></phrase>
+    <phrase title="waindigo_thread_message_create_tabs" version_id="1383957634" version_string="1.0.0"><![CDATA[{username} posted a new thread:
+
+[url={contentLink}]{title}[/url]
+
+[quote]{snippet}[/quote]
+
+[url={contentLink}]Read more of this thread...[/url]]]></phrase>
+    <phrase title="waindigo_url_field_tabs" version_id="1410884462" version_string="1.0.2"><![CDATA[URL field]]></phrase>
+    <phrase title="waindigo_use_custom_message_template_tabs" version_id="1383957634" version_string="1.0.0"><![CDATA[Use custom message template]]></phrase>
+    <phrase title="waindigo_use_default_message_template_tabs" version_id="1383957634" version_string="1.0.0"><![CDATA[Use default message template]]></phrase>
+    <phrase title="waindigo_you_may_only_select_content_with_tabs_tabs" version_id="1384879919" version_string="1.0.1"><![CDATA[You may only select a content item that already has tabs.]]></phrase>
+  </phrases>
+  <route_prefixes>
+    <route_type type="admin">
+      <prefix original_prefix="tab-names" class="Waindigo_Tabs_Route_PrefixAdmin_TabNames" build_link="data_only"/>
+      <prefix original_prefix="tab-rules" class="Waindigo_Tabs_Route_PrefixAdmin_TabRules" build_link="data_only"/>
+    </route_type>
+    <route_type type="public">
+      <prefix original_prefix="tabs" class="Waindigo_Tabs_Route_Prefix_Tabs" build_link="data_only"/>
+    </route_type>
+  </route_prefixes>
+  <style_properties/>
+  <templates>
+    <template title="waindigo_add_tabs_link_tabs" version_id="1412259390" version_string="1.0.5"><![CDATA[<xen:if is="{$canAddExistingContentToTab}">
+	<a href="{$addTabsLink}" class="OverlayTrigger addLink">{xen:phrase waindigo_add_tab_tabs}</a>
+</xen:if>]]></template>
+    <template title="waindigo_add_tab_tabs" version_id="1415982021" version_string="1.0.8"><![CDATA[<xen:title>{xen:phrase waindigo_add_tab_to_x_tabs, 'title={$title}'}</xen:title>
+
+<xen:if is="{$xenOptions.waindigo_tabs_selectExistingContentMethod} == 'urlfield'">
+	<form action="{xen:link tabs/add}" method="post" class="xenForm formOverlay overlayScroll AutoValidator" data-redirect="on">
+
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_existing_url">{xen:phrase waindigo_existing_url_tabs}:</label></dt>
+		<dd><input name="existing_url" class="textCtrl" id="ctrl_existing_url" /></dd>
+	</dl>
+<xen:else />
+	<xen:require js="js/waindigo/tabs/existing_tab.js" />
+	
+	<xen:require css="waindigo_select_existing_tabs.css" />
+	
+	<form action="{xen:link tabs/add}" method="post" class="xenForm formOverlay overlayScroll ExistingTabForm AutoValidator"
+	data-select=".ExistingTabContentType" data-redirect="on">
+
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_content_type2">{xen:phrase waindigo_content_type_tabs}:</label></dt>
+		<dd><select name="content_type2" class="textCtrl ExistingTabContentType" id="ctrl_content_type2"
+			data-href="{xen:link tabs/select-existing-tab}" data-target="#TabsContentIdSelect">
+			<xen:foreach loop="$contentTypes" key="$_contentTypeId" value="$_contentType">
+				<option value="{$_contentTypeId}">{$_contentType}</option>
+			</xen:foreach>
+		</select></dd>
+	</dl>
+	
+	<div id="TabsContentIdSelect"></div>
+</xen:if>
+
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd><input type="submit" value="{xen:phrase waindigo_add_tab_tabs}" accesskey="s" class="button primary" /></dd>
+	</dl>
+
+	<input type="hidden" name="content_type1" value="{$contentType}" />
+	<input type="hidden" name="content_id1" value="{$contentId}" />
+
+	<input type="hidden" name="redirect" value="{$redirect}" />
+
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+</form>]]></template>
+    <template title="waindigo_edit_tab_name_tabs" version_id="1410884462" version_string="1.0.2"><![CDATA[<xen:if is="{$tabNames}">
+	<fieldset>
+		<dl class="ctrlUnit">
+			<dt><label for="ctrl_tab_name_id">{xen:phrase waindigo_tab_name_tabs}:</label></dt>
+			<dd>
+				<select name="tab_name_id" class="textCtrl" id="ctrl_tab_name_id">
+					<xen:foreach loop="$tabNames" key="$tabNameId" value="$_tabName">
+						<option value="{$tabNameId}"
+							{xen:selected '{$tabNameId} == {$content.tab_name_id}'}>{$_tabName.title}</option>
+					</xen:foreach>
+				</select>
+			</dd>
+		</dl>
+	</fieldset>
+</xen:if>]]></template>
+    <template title="waindigo_resource_view_tabs_tabs" version_id="1383740039" version_string="1.0.0"><![CDATA[<xen:if is="{$tabContents}">
+	<xen:foreach loop="{$tabContents}" value="$tabContent">
+		<li class="resourceTabExtra">
+			<a href="{$tabContent.link}">{$tabContent.title}</a>
+		</li>
+	</xen:foreach>
+</xen:if>]]></template>
+    <template title="waindigo_select_existing_conversation_tabs" version_id="1415982021" version_string="1.0.8"><![CDATA[<xen:require js="js/waindigo/tabs/existing_tab.js" />
+
+<xen:require css="waindigo_select_existing_tabs.css" />
+
+<div id="TabsContentIdSelect">
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_content_id2">{xen:phrase conversation}:</label></dt>
+		<dd><select name="content_id2" class="textCtrl" id="ctrl_content_id2">
+			<xen:foreach loop="$conversations" key="$conversationId" value="$conversation">
+				<option value="{$conversationId}">{$conversation.title}</option>
+			</xen:foreach>
+		</select></dd>
+	</dl>
+</div>]]></template>
+    <template title="waindigo_select_existing_forum_tabs" version_id="1415982021" version_string="1.0.8"><![CDATA[<xen:require js="js/waindigo/tabs/existing_tab.js" />
+
+<xen:require css="waindigo_select_existing_tabs.css" />
+
+<div id="TabsContentIdSelect">
+	<dl class="ctrlUnit ExistingTabForm" data-select=".ForumSelector">
+		<dt><label for="ctrl_node_id">{xen:phrase forum}:</label></dt>
+		<dd><select name="node_id" class="textCtrl ForumSelector" id="ctrl_node_id"
+			data-href="{xen:link threads/select-existing-tab}" data-target="#TabsThreadIdSelect">
+			<xen:foreach loop="$forums" key="$nodeId" value="$forum">
+				<option value="{$nodeId}">{$forum.title}</option>
+			</xen:foreach>
+		</select></dd>
+	</dl>
+	
+	<div id="TabsThreadIdSelect"></div>
+</div>]]></template>
+    <template title="waindigo_select_existing_media_category_tabs" version_id="1416045727" version_string="1.0.8"><![CDATA[<xen:require js="js/waindigo/tabs/existing_tab.js" />
+
+<xen:require css="waindigo_select_existing_tabs.css" />
+
+<div id="TabsContentIdSelect">
+	<dl class="ctrlUnit ExistingTabForm" data-select=".MediaCategorySelector">
+		<dt><label for="ctrl_category_id">{xen:phrase category}:</label></dt>
+		<dd><select name="category_id" class="textCtrl MediaCategorySelector" id="ctrl_category_id"
+			data-href="{xen:link xengallery/select-existing-tab}" data-target="#TabsMediaIdSelect" data-tabruleid="{$tabRuleId}">
+			<xen:foreach loop="$categories" key="$categoryId" value="$category">
+				<option value="{$categoryId}">{$category.category_title}</option>
+			</xen:foreach>
+		</select></dd>
+	</dl>
+	
+	<div id="TabsMediaIdSelect"></div>
+</div>]]></template>
+    <template title="waindigo_select_existing_media_tabs" version_id="1415982021" version_string="1.0.8"><![CDATA[<xen:require js="js/waindigo/tabs/existing_tab.js" />
+
+<xen:require css="waindigo_select_existing_tabs.css" />
+
+<div id="TabsMediaIdSelect">
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_content_id2">{xen:phrase xengallery_media}:</label></dt>
+		<dd>
+			<div class="browserSection">
+				<div class="gridSection gridGroup">
+					<xen:foreach loop="$media" value="$item">
+						<div class="gridCol gridSpan">
+							<label>
+								<xen:if is="{$tabRuleId}">
+									<input type="radio" name="extra_tab_data[{$tabRuleId}][existing_content_id]" value="{$item.media_id}" id="ctrl_extra_tab_data{$tabRuleId}existing_content_id_{$item.media_id}" />
+								<xen:else />
+									<input type="radio" name="content_id2" value="{$item.media_id}" id="ctrl_content_id2_{$item.media_id}" />
+								</xen:if>
+								<img src="{$item.thumbnailUrl}?{$item.last_edit_date}" class="thumbImage Thumb" />
+							</label>
+						</div>
+					</xen:foreach>
+				</div>
+			</div>
+		</dd>
+	</dl>
+</div>]]></template>
+    <template title="waindigo_select_existing_product_tabs" version_id="1416048044" version_string="1.0.9"><![CDATA[<xen:require js="js/waindigo/tabs/existing_tab.js" />
+
+<xen:require css="waindigo_select_existing_tabs.css" />
+
+<div id="TabsContentIdSelect">
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_content_id2">{xen:phrase xenproduct_product}:</label></dt>
+		<dd><select name="content_id2" class="textCtrl" id="ctrl_content_id2">
+			<xen:foreach loop="$products" key="$productId" value="$product">
+				<option value="{$productId}">{$product.product_title}</option>
+			</xen:foreach>
+		</select></dd>
+	</dl>
+</div>]]></template>
+    <template title="waindigo_select_existing_project_tabs" version_id="1415982021" version_string="1.0.8"><![CDATA[<xen:require js="js/waindigo/tabs/existing_tab.js" />
+
+<xen:require css="waindigo_select_existing_tabs.css" />
+
+<div id="TabsContentIdSelect">
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_content_id2">{xen:phrase waindigo_project_freeagent}:</label></dt>
+		<dd><select name="content_id2" class="textCtrl" id="ctrl_content_id2">
+			<xen:foreach loop="$projects" key="$projectId" value="$project">
+				<option value="{$projectId}">{$project.name}</option>
+			</xen:foreach>
+		</select></dd>
+	</dl>
+</div>]]></template>
+    <template title="waindigo_select_existing_resource_category_tabs" version_id="1416045727" version_string="1.0.8"><![CDATA[<xen:require js="js/waindigo/tabs/existing_tab.js" />
+
+<xen:require css="waindigo_select_existing_tabs.css" />
+
+<div id="TabsContentIdSelect">
+	<dl class="ctrlUnit ExistingTabForm" data-select=".ResourceCategorySelector">
+		<dt><label for="ctrl_resource_category_id">{xen:phrase category}:</label></dt>
+		<dd><select name="resource_category_id" class="textCtrl ResourceCategorySelector" id="ctrl_resource_category_id"
+			data-href="{xen:link resources/select-existing-tab}" data-target="#TabsResourceIdSelect">
+			<xen:foreach loop="$categories" key="$categoryId" value="$category">
+				<option value="{$categoryId}">{$category.category_title}</option>
+			</xen:foreach>
+		</select></dd>
+	</dl>
+	
+	<div id="TabsResourceIdSelect"></div>
+</div>]]></template>
+    <template title="waindigo_select_existing_resource_tabs" version_id="1415982021" version_string="1.0.8"><![CDATA[<xen:require js="js/waindigo/tabs/existing_tab.js" />
+
+<xen:require css="waindigo_select_existing_tabs.css" />
+
+<div id="TabsResourceIdSelect">
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_content_id2">{xen:phrase resource}:</label></dt>
+		<dd><select name="content_id2" class="textCtrl" id="ctrl_content_id2">
+			<xen:foreach loop="$resources" key="$resourceId" value="$resource">
+				<option value="{$resourceId}">{$resource.title}</option>
+			</xen:foreach>
+		</select></dd>
+	</dl>
+</div>]]></template>
+    <template title="waindigo_select_existing_tabs.css" version_id="1412259390" version_string="1.0.5"><![CDATA[.browserSection
+{
+	max-height: 200px;
+	overflow: auto;
+}
+
+.browserSection .gridSection
+{
+	padding: 0px;
+}
+
+.browserSection .gridCol
+{
+	margin: 2px;
+	display: block;
+	float: left;
+	width: 16%;
+}
+
+.browserSection input[type=radio]
+{
+	display: none;
+}
+
+.browserSection .thumbImage
+{
+	width: 100%;
+	padding: 1px;
+	cursor: pointer;
+}
+
+.browserSection input[type=radio]:checked + .thumbImage {
+	border: 1px solid {xen:property primaryLight};
+	padding: 0;
+}]]></template>
+    <template title="waindigo_select_existing_thread_tabs" version_id="1415982021" version_string="1.0.8"><![CDATA[<xen:require js="js/waindigo/tabs/existing_tab.js" />
+
+<xen:require css="waindigo_select_existing_tabs.css" />
+
+<div id="TabsThreadIdSelect">
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_content_id2">{xen:phrase thread}:</label></dt>
+		<dd><select name="content_id2" class="textCtrl" id="ctrl_content_id2">
+			<xen:foreach loop="$threads" key="$threadId" value="$thread">
+				<option value="{$threadId}">{$thread.title}</option>
+			</xen:foreach>
+		</select></dd>
+	</dl>
+</div>]]></template>
+    <template title="waindigo_tabs_after_tabs" version_id="1413463490" version_string="1.0.8"><![CDATA[<xen:require css="waindigo_tabs_tabs.css" />]]></template>
+    <template title="waindigo_tabs_tabs" version_id="1416048044" version_string="1.0.9"><![CDATA[<xen:require css="waindigo_tabs_tabs.css" />
+
+<xen:if hascontent="true">
+	<div class="allTabs">
+		<xen:contentcheck>
+			<xen:include template="waindigo_add_tabs_link_tabs" />
+			<xen:if is="{$canAddExistingContentToTab} or {$tabContents}">
+				<ul class="tabs">
+					<xen:if is="{$tabContents}">
+						<xen:foreach loop="{$tabContents}" value="{$tab}">
+							{xen:raw $tab.template}
+						</xen:foreach>
+					</xen:if>
+				</ul>
+			</xen:if>
+		</xen:contentcheck>
+	</div>
+</xen:if>
+
+<xen:include template="waindigo_tabs_after_tabs" />]]></template>
+    <template title="waindigo_tabs_tabs.css" version_id="1412610231" version_string="1.0.7"><![CDATA[.allTabs
+{
+	position: relative;
+	padding-bottom: 10px;
+	clear: both;
+}
+
+	.allTabs .tabs
+	{
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+
+	.allTabs .addLink
+	{
+		position: absolute;
+		right: 10px;
+		top: 2px;
+		font-size: 11px;
+	}
+	
+.resourceTabs .addLink
+{
+	margin-left: 5px;
+}]]></template>
+    <template title="waindigo_tab_tabs" version_id="1383838214" version_string="1.0.0"><![CDATA[<li class="{xen:if "{$selected}", active}"><a href="{$link}">{$title}</a></li>]]></template>
+  </templates>
+  <public_template_modifications>
+    <modification template="conversation_add" modification_key="waindigo_conversationAdd_tabs" description="Adds tab create templates to new conversation page." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<dl class="ctrlUnit submitUnit">#]]></find>
+      <replace><![CDATA[<xen:if is="{$tabCreateTemplates}">
+	<xen:require js="js/waindigo/tabs/existing_tab.js" />
+	<xen:require css="waindigo_select_existing_tabs.css" />
+	<xen:foreach loop="$tabCreateTemplates" value="$tabCreateTemplate">
+		{xen:raw $tabCreateTemplate}
+	</xen:foreach>
+</xen:if>
+${0}]]></replace>
+    </modification>
+    <modification template="conversation_edit" modification_key="waindigo_conversationEdit_tabs" description="Adds tab name editor to conversation editor." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<dl class="ctrlUnit submitUnit">#]]></find>
+      <replace><![CDATA[<xen:include template="waindigo_edit_tab_name_tabs">
+<xen:map from="$conversation" to="$content" />
+</xen:include>
+
+${0}]]></replace>
+    </modification>
+    <modification template="conversation_view" modification_key="waindigo_conversationView_tabs" description="Adds tabs to conversation view." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<xen:h1>(.*)</xen:h1>#sU]]></find>
+      <replace><![CDATA[${0}
+<xen:include template="waindigo_tabs_tabs" />]]></replace>
+    </modification>
+    <modification template="footer" modification_key="waindigo_copyrightNotice_tabs" description="Copyright notice for Tabs by Waindigo" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase (?:xenforo|extra)_copyright}/]]></find>
+      <replace><![CDATA[Waindigo_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+    <modification template="waindigo_project_view_freeagent" modification_key="waindigo_projectView_tabs" description="Adds tabs to project view." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<xen:title>.*</xen:title>#sU]]></find>
+      <replace><![CDATA[${0}
+<xen:include template="waindigo_tabs_tabs" />]]></replace>
+    </modification>
+    <modification template="resource_add" modification_key="waindigo_resourceAdd_tabs" description="Adds tab name editor to resource editor." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<dl class="ctrlUnit submitUnit">#]]></find>
+      <replace><![CDATA[<xen:if is="{$tabCreateTemplates}">
+	<xen:require js="js/waindigo/tabs/existing_tab.js" />
+	<xen:require css="waindigo_select_existing_tabs.css" />
+	<xen:foreach loop="$tabCreateTemplates" value="$tabCreateTemplate">
+		{xen:raw $tabCreateTemplate}
+	</xen:foreach>
+</xen:if>
+
+<xen:include template="waindigo_edit_tab_name_tabs">
+<xen:map from="$resource" to="$content" />
+</xen:include>
+
+${0}]]></replace>
+    </modification>
+    <modification template="resource_view_tabs" modification_key="waindigo_resourceViewTabs_tabs" description="Add additional tabs to resources." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen:if is="{\$resource\.canWatch}">\s*<div class="extraLinks">.*)(</div>\s*)(</xen:if>\s*)(<ul class="tabs">\s*<xen:hook name="resource_view_tabs">\s*)(<li class="resourceTabDescription[^>]*>\s*<a[^>]*>)(.*)(</a>\s*</li>.*)(</xen:hook>\s*</ul>\s*</div>)#Us]]></find>
+      <replace><![CDATA[${1}
+<xen:include template="waindigo_add_tabs_link_tabs" />
+${2}
+<xen:else />
+<div class="extraLinks"><xen:include template="waindigo_add_tabs_link_tabs" /></div>
+${3}
+${4}
+<xen:if is="{$tabContents}">
+	<xen:foreach loop="$tabContents" value="$tab">
+		<xen:if is="{$tab.selected}">
+${5}
+{$tab.title}
+${7}
+		<xen:else />
+			{xen:raw {$tab.template}}
+		</xen:if>
+	</xen:foreach>
+<xen:else />
+${5}
+${6}
+${7}
+</xen:if>
+${8}
+<xen:include template="waindigo_tabs_after_tabs" />]]></replace>
+    </modification>
+    <modification template="thread_create" modification_key="waindigo_threadCreate_tabs" description="Adds tab create templates to thread create page." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<!-- slot: after_options -->#Us]]></find>
+      <replace><![CDATA[${0}
+<xen:if is="{$tabCreateTemplates}">
+	<xen:require js="js/waindigo/tabs/existing_tab.js" />
+	<xen:require css="waindigo_select_existing_tabs.css" />
+	<xen:foreach loop="$tabCreateTemplates" value="$tabCreateTemplate">
+		{xen:raw $tabCreateTemplate}
+	</xen:foreach>
+</xen:if>]]></replace>
+    </modification>
+    <modification template="thread_edit" modification_key="waindigo_threadEdit_tabs" description="Adds tab name editor to thread editor." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<dl class="ctrlUnit submitUnit">#]]></find>
+      <replace><![CDATA[<xen:include template="waindigo_edit_tab_name_tabs">
+<xen:map from="$thread" to="$content" />
+</xen:include>
+
+${0}]]></replace>
+    </modification>
+    <modification template="thread_view" modification_key="waindigo_threadView_tabs" description="Adds tabs to thread view." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<xen:h1>(.*)</xen:h1>#sU]]></find>
+      <replace><![CDATA[${0}
+<xen:if is="!{$resource}">
+	<xen:include template="waindigo_tabs_tabs" />
+</xen:if>]]></replace>
+    </modification>
+    <modification template="xengallery_media_add_form" modification_key="waindigo_xenGalleryMediaAddForm_tabs" description="Adds tab create templates to add media page." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#</div>$#]]></find>
+      <replace><![CDATA[<xen:if is="{$tabCreateTemplates}">
+	<xen:require js="js/waindigo/tabs/existing_tab.js" />
+	<xen:require css="waindigo_select_existing_tabs.css" />
+	<xen:foreach loop="$tabCreateTemplates" value="$tabCreateTemplate">
+		{xen:raw $tabCreateTemplate}
+	</xen:foreach>
+</xen:if>
+${0}]]></replace>
+    </modification>
+    <modification template="xengallery_media_view" modification_key="waindigo_xengalleryMediaView_tabs" description="Adds tabs to media view." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<h1>{\$media.media_title}</h1>\s*<xen:if is="{\$media.media_description}">.*</xen:if>#sU]]></find>
+      <replace><![CDATA[${0}
+<xen:include template="waindigo_tabs_tabs" />]]></replace>
+    </modification>
+    <modification template="xenproduct_product_view" modification_key="waindigo_xenproductProductView_tabs" description="Adds tabs to product view." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<xen:title>.*</xen:title>#sU]]></find>
+      <replace><![CDATA[${0}
+<xen:include template="waindigo_tabs_tabs" />]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>

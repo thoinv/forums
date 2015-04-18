@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="Waindigo_FontAweAcp" title="Font Awesome in Admin Control Panel by Waindigo" version_string="1.0.0" version_id="1376088616" url="http://waindigo.com/" install_callback_class="Waindigo_Install" install_callback_method="install" uninstall_callback_class="Waindigo_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="waindigo_option_list_option_textboxes_fontaweacp"><![CDATA[<xen:foreach loop="{$preparedOption.icons}" key="{$icon}" value="{$iconPhrase}">
+	<xen:textboxunit label="{$iconPhrase}" name="{$fieldPrefix}[{$preparedOption.option_id}][{$icon}]" value="{$preparedOption.option_value.{$icon}}" inputclass="Elastic">
+		<xen:explain>{xen:phrase waindigo_icon_option_hint_fontaweacp, 'title={$iconPhrase}'}</xen:explain>
+		<xen:html>
+			<xen:if is="!{$editShown}">
+				<xen:set var="$editShown">1</xen:set>
+				<xen:include template="option_list_option_editlink" />
+				<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+				{xen:raw $editLink}
+			</xen:if>
+		</xen:html>
+	</xen:textboxunit>
+</xen:foreach>]]></template>
+  </admin_templates>
+  <admin_template_modifications>
+    <modification template="appearance_splash" modification_key="waindigo_appearanceSplash_fontAweAcp" description="Replaces icons on the Appearance tab with Font Awesome icons." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(class="([a-z_]*)\s*[a-z]*">\s*<span class="icon">)<span></span>(</span>)#s]]></find>
+      <replace><![CDATA[${1}
+<i class="{$xenOptions.waindigo_fontAweAcp_icons.${2}}"></i>
+${3}]]></replace>
+    </modification>
+    <modification template="application_splash" modification_key="waindigo_applicationSplash_fontAweAcp" description="Replaces icons on the Applications tab with Font Awesome icons." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(class="([a-z_]*)\s*[a-z]*">\s*<span class="icon">)<span></span>(</span>)#s]]></find>
+      <replace><![CDATA[${1}
+<i class="{$xenOptions.waindigo_fontAweAcp_icons.${2}}"></i>
+${3}]]></replace>
+    </modification>
+    <modification template="development_splash" modification_key="waindigo_developmentSplash_fontAweAcp" description="Replaces icons on the Development tab with Font Awesome icons." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(class="([a-z_]*)\s*[a-z]*">\s*<span class="icon">)<span></span>(</span>)#s]]></find>
+      <replace><![CDATA[${1}
+<i class="{$xenOptions.waindigo_fontAweAcp_devIcons.${2}}"></i>
+${3}]]></replace>
+    </modification>
+    <modification template="home" modification_key="waindigo_home_fontAweAcp" description="Replaces icons on home tab with Font Awesome icons." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(class="([a-z_]*)\s*[a-z]*">\s*<span class="icon">)<span></span>(</span>)#s]]></find>
+      <replace><![CDATA[${1}
+<i class="{$xenOptions.waindigo_fontAweAcp_icons.${2}}"></i>
+${3}]]></replace>
+    </modification>
+    <modification template="PAGE_CONTAINER" modification_key="waindigo_pageContainer_fontAweAcp" description="Adds the Font Awesome CSS to the page container." execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[</head>]]></find>
+      <replace><![CDATA[<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+</head>]]></replace>
+    </modification>
+    <modification template="splash.css" modification_key="waindigo_splashCss_fontAweAcp" description="Adds some CSS relating to Admin Control Panel icons." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#$#]]></find>
+      <replace><![CDATA[.icon i {
+font-size: 100px;
+color: {xen:property primaryLighter};
+line-height: 120px;
+}]]></replace>
+    </modification>
+    <modification template="tools_splash" modification_key="waindigo_toolsSplash_fontAweAcp" description="Replaces icons on the Tools tab with Font Awesome icons." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(class="([a-z_]*)\s*[a-z]*">\s*<span class="icon">)<span></span>(</span>)#s]]></find>
+      <replace><![CDATA[${1}
+<i class="{$xenOptions.waindigo_fontAweAcp_icons.${2}}"></i>
+${3}]]></replace>
+    </modification>
+    <modification template="user_splash" modification_key="waindigo_userSplash_fontAweAcp" description="Replaces icons on the Users tab with Font Awesome icons." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(class="([a-z_]*)\s*[a-z]*">\s*<span class="icon">)<span></span>(</span>)#s]]></find>
+      <replace><![CDATA[${1}
+<i class="{$xenOptions.waindigo_fontAweAcp_icons.${2}}"></i>
+${3}]]></replace>
+    </modification>
+  </admin_template_modifications>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="Waindigo_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="Waindigo_FontAweAcp_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="Waindigo_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="waindigo_fontAweAcp" display_order="2000" debug_only="0"/>
+    <option option_id="waindigo_fontAweAcp_devIcons" edit_format="callback" data_type="array" can_backup="1">
+      <default_value>a:8:{s:11:"add_ons_add";s:8:"icon-cog";s:11:"code_events";s:9:"icon-cogs";s:20:"code_event_listeners";s:15:"icon-microphone";s:15:"admin_templates";s:9:"icon-code";s:22:"admin_style_properties";s:12:"icon-list-ul";s:16:"admin_navigation";s:7:"icon-th";s:14:"route_prefixes";s:17:"icon-indent-right";s:15:"email_templates";s:13:"icon-envelope";}</default_value>
+      <edit_format_params>Waindigo_FontAweAcp_Option::renderDevIconsOption</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="waindigo_fontAweAcp" display_order="100"/>
+    </option>
+    <option option_id="waindigo_fontAweAcp_icons" edit_format="callback" data_type="array" can_backup="1">
+      <default_value>a:28:{s:7:"options";s:17:"icon-puzzle-piece";s:7:"add_ons";s:9:"icon-cogs";s:7:"smilies";s:10:"icon-smile";s:5:"nodes";s:12:"icon-th-list";s:9:"nodes_add";s:12:"icon-sitemap";s:16:"node_permissions";s:8:"icon-key";s:6:"feeder";s:13:"icon-rss-sign";s:12:"spam_cleaner";s:10:"icon-trash";s:10:"users_list";s:9:"icon-user";s:15:"users_moderated";s:15:"icon-check-sign";s:13:"banning_users";s:15:"icon-ban-circle";s:11:"user_groups";s:10:"icon-group";s:22:"user_group_permissions";s:8:"icon-key";s:8:"trophies";s:11:"icon-trophy";s:18:"trophy_user_titles";s:11:"icon-shield";s:13:"user_upgrades";s:8:"icon-usd";s:6:"styles";s:12:"icon-picture";s:16:"styles_templates";s:9:"icon-code";s:16:"style_properties";s:12:"icon-list-ul";s:7:"palette";s:14:"icon-dashboard";s:9:"languages";s:17:"icon-comments-alt";s:7:"phrases";s:13:"icon-comments";s:4:"cron";s:10:"icon-tasks";s:13:"tools_rebuild";s:13:"icon-building";s:6:"import";s:15:"icon-upload-alt";s:9:"qacaptcha";s:13:"icon-question";s:16:"server_error_log";s:17:"icon-warning-sign";s:13:"facebook_test";s:13:"icon-facebook";}</default_value>
+      <edit_format_params>Waindigo_FontAweAcp_Option::renderIconsOption</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="waindigo_fontAweAcp" display_order="1"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="option_group_waindigo_fontAweAcp" version_id="0" version_string="1.0.0"><![CDATA[Font Awesome in Admin Control Panel by Waindigo]]></phrase>
+    <phrase title="option_group_waindigo_fontAweAcp_description" version_id="0" version_string="1.0.0"><![CDATA[Options for the Font Awesome in Admin Control Panel by Waindigo add-on.]]></phrase>
+    <phrase title="option_waindigo_fontAweAcp_devIcons" version_id="0" version_string="1.0.0"><![CDATA[Development Icons]]></phrase>
+    <phrase title="option_waindigo_fontAweAcp_devIcons_explain" version_id="0" version_string="1.0.0"><![CDATA[]]></phrase>
+    <phrase title="option_waindigo_fontAweAcp_icons" version_id="0" version_string="1.0.0"><![CDATA[Icons]]></phrase>
+    <phrase title="option_waindigo_fontAweAcp_icons_explain" version_id="0" version_string="1.0.0"><![CDATA[]]></phrase>
+    <phrase title="waindigo_icon_option_hint_fontaweacp" version_id="0" version_string="1.0.0"><![CDATA[This is the name of the <a href="http://fortawesome.github.io/Font-Awesome/icons/">Font Awesome icon</a> to be used for {title}.]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates/>
+  <public_template_modifications>
+    <modification template="footer" modification_key="waindigo_copyrightNotice_fontAweAcp" description="Copyright notice for Font Awesome in Admin Control Panel by Waindigo" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase xenforo_copyright}/]]></find>
+      <replace><![CDATA[Waindigo_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+</addon>

@@ -1,0 +1,107 @@
+WordPress Article displayed as XenForo Page.
+
+
+Hello All
+
+Here is a XenForo add on that can take a standard WordPress article and display it as a page in a XenForo page node.
+
+FEATURES
+------------------------
+Super Easy to install and use. You can be up and running in under 5 minutes.  It is that easy. 
+A (1) click configuration helper tool web page that will help with the configuration in the admin control panel. 
+I use a standard page node template, with a couple of small adjustments that will insert the content of the WordPress page.
+I have included the template that I am using, so that it doesn't interfere with any other page nodes you may have.
+
+Please review the installation section for details on how to install and use the addon.
+
+if you have any suggestions for improvements, let me know. Thanks.
+--EasyTarget
+
+
+------------------------------------------------------------------------------
+DONATE :: Suggested Donation = $5.00
+------------------------------------------------------------------------------
+If you like the widget and would like to support more great widgets, please 
+consider donating a few $$$; so I will be motivated to release some more 
+add-ons. Thanks. 
+http://www.eipsoftware.com/donations.html
+
+------------------------------------------------------------------------------
+REQUIREMENTS
+------------------------------------------------------------------------------
+WordPress version >= 3.5
+MySQL >= 5.1
+PHP >= 5.2; if you want to use the PDO option you need PHP 5.3 or greater. 
+And PDO needs to be enabled on your web server.
+
+------------------------------------------------------------------------------
+INSTALLATION
+------------------------------------------------------------------------------
+1. Copy the eipSoftware directory to your XenForo library's directory.
+	Normally this directory is located  at /www/forums/library/
+2. Follow the standard procedures for installing an XenForo addon.
+3. In the admin control panel set the following options. 
+	WordPress Articles as Page Nodes
+		a. Database Connection Type
+		b. WordPress Config File Name
+
+----->>>  IMPORTANT NOTE  <<<-----
+If you don't know how to enter in the WordPress Configuration file name
+and you are not sure about the database connection type, use the 
+(1) click configuration helper tool, see below on how to use it.
+
+4. Get the title of one of your WordPress articles, that you have previously
+saved and is currently published on your WordPress site.
+
+5. Set up a new page node in XenForo.  Applications > Node Tree  > Create New Node
+	a.  In the description field enter in the tile of your WordPress article
+	b.  On the page options tab, leave the Template HTML field blank
+	c.  On the php callback tab, enter in the following
+		PHP Callback eipSoftware_wppages_wppagecallback  ::  respond
+	d.  save the page.
+	
+That's it you are done.
+
+------------------------------------------------------------------------------
+(1) CLICK CONFIGURATION HELPER TOOL
+------------------------------------------------------------------------------
+In the directory where you uploaded the addon, normally /www/forums/library/
+in the directory /eipSoftware/wppages/configtool/ is the file config.php.  
+It is the 1 click configuration helper tool.
+
+In your web browser, I suggest Google Chrome or Firefox, Open the configuration 
+helper tool it should be in the following directory.
+http://www.YourWebsiteName.com/forum/library/eipSoftware/wppages/configtool/config.php
+
+After the page opens click the button labeled. Find Files
+The page will let you know type of database connection you can use
+and will search for the WordPress Configuration file.  The replies in BOLD
+are what you need to copy into the admin control panel.
+
+------------------------------------------------------------------------------
+COPYRIGHT AND REDISTRIBUTION 
+------------------------------------------------------------------------------
+Copyright is held by eipSoftware. http://www.eipsoftware.com  
+You may not sell, license or redistribute the code in any form.  
+Of course you can adjust the XenForo template to however you see fit for 
+your own website.  And if you have any suggestions for improvements,
+let me know.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

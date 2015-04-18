@@ -1,0 +1,76 @@
+		</style>
+	</head>
+	<body>
+		<div class="main">
+			<div class="header">
+				<div class="logoimage">
+					<img src="./img/logo_gallery.png" />
+				</div>
+				<div class="headermessage">
+					<h2>eipSoftware add on configuration</h2>
+					Settings to configure the WordPress Pages as XenForo Pages
+				</div>
+			</div>
+			<div class="shell">
+				<div class="leftcol">
+					<h3>Config Steps</h3>
+					<ol class="leftmenu">
+						<li id="lmenu_1" class="active">Database Connection Type</li>
+						<li id="lmenu_2" class="active">Find Config Files</li>
+					</ol> 
+				</div>
+				<div class="rightcol">
+					<div class="userinput">
+						<h3>Start config process</h3>
+						<form id="frmUserInput" method="post" action="JavaScript:AssignImport()">
+							<input id="currentStep" type="hidden" name="currentStep" value="1" />
+							<input id="nextStep"	type="hidden" name="nextStep" 	value="2" />
+							<input id="runStep"	type="hidden" name="runStep" 	value="config.php" />
+							<table class="form_table">
+								<tr>
+									<td class="td_left">
+										Locate Files:  
+									</td>
+									<td class="td_right">
+										&nbsp;	
+									</td>
+								</tr>
+								<tr>
+									<td>
+										 WordPress config file:
+									</td>
+									<td>
+										<input type="text" name="wpconfig" value="wp-config.php" />
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="td_left">
+										&nbsp;	
+									</td>
+									<td class="td_right">
+										<input class="button-primary" name="Submit" type="submit" value="Find Files" />
+									</td>
+								</tr>
+							</table>
+						</form>
+						<p>
+							If the configuration file name has changed from the standard file name, 
+							enter the new name above.
+						</p>
+					</div>
+					<div id="feedback" class="feedback">
+						<a id="HtmlNextStep" href="#"></a>		
+					</div>
+				</div>
+			</div>
+			<div class="footer">
+				<div class="bottombreadcrumb">
+					<div class="step">Current Step >> </div><div id="stepid" class="stepid">1</div>
+				</div>
+				<div class="copyright">
+					&copy; <a href="http://www.eipsoftware.com">eipSoftware</a>
+				</div>
+			</div>
+		</div>
+		<script>

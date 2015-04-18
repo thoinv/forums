@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="WfTopUsers" title="[splendidpoint.com] Top Users Widget" version_string="1.1.0" version_id="1" url="" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="wf_widget_options_top_users"><![CDATA[<xen:selectunit label="{xen:phrase wf_top_criterion}:" name="{$namePrefix}criterion" value="{$options.criterion}">
+	<xen:option value="posts">{xen:phrase posts}</xen:option>
+	<xen:option value="likes">{xen:phrase likes}</xen:option>
+	<xen:option value="trophy">{xen:phrase trophies}</xen:option>
+</xen:selectunit>
+
+<xen:textboxunit label="{xen:phrase wf_range}:" name="{$namePrefix}range" value="{$options.range}">
+	<xen:explain>{xen:phrase wf_range_explain, "items={xen:phrase wf_range}"}</xen:explain>
+</xen:textboxunit>
+
+<xen:textboxunit label="{xen:phrase wf_excluded_usergroups}:" name="{$namePrefix}excluded_usergroups" value="{$options.excluded_usergroups}">
+	<xen:explain>{xen:phrase wf_excluded_usergroups_explain, "items={xen:phrase excluded_usergroups}"}</xen:explain>
+</xen:textboxunit>
+
+<xen:textboxunit label="{xen:phrase wf_excluded_users}:" name="{$namePrefix}excluded_users" value="{$options.excluded_users}">
+	<xen:explain>{xen:phrase wf_excluded_users_explain, "items={xen:phrase excluded_users}"}</xen:explain>
+</xen:textboxunit>
+
+<xen:textboxunit label="{xen:phrase wf_limit}:" name="{$namePrefix}limit" value="{$options.limit}">
+	<xen:explain>{xen:phrase wf_limit_explain, "items={xen:phrase users}"}</xen:explain>
+</xen:textboxunit>]]></template>
+  </admin_templates>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="load_class_model" execute_order="10" callback_class="WfTopUsers_Listener_LoadClassModel" callback_method="loadClassListener" active="1" description=""/>
+    <listener event_id="widget_framework_ready" execute_order="10" callback_class="WfTopUsers_Listener_Renderer" callback_method="widget_framework_ready" active="1" description="Adds Top Users to Widget Framework Renderers"/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <optiongroups/>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="wf_excluded_usergroups" version_id="0" version_string="1.0.0"><![CDATA[Excluded Usergroups]]></phrase>
+    <phrase title="wf_excluded_usergroups_explain" version_id="0" version_string="1.0.0"><![CDATA[Enter COMMA separated IDs of the usergroups you would like to exclude. This is OPTIONAL.]]></phrase>
+    <phrase title="wf_excluded_users" version_id="0" version_string="1.0.0"><![CDATA[Excluded Users]]></phrase>
+    <phrase title="wf_excluded_users_explain" version_id="0" version_string="1.0.0"><![CDATA[Enter COMMA separated list of user IDs you would like to exclude. This is OPTIONAL.]]></phrase>
+    <phrase title="wf_range" version_id="0" version_string="1.0.0"><![CDATA[Range (in days)]]></phrase>
+    <phrase title="wf_range_explain" version_id="0" version_string="1.0.0"><![CDATA[Enter the past number of days range to search users for. Enter 0 to disable range. <b>Note that if you select criterion as "Trophies", then range is not considered.</b>]]></phrase>
+    <phrase title="wf_top_criterion" version_id="0" version_string="1.0.0"><![CDATA[Criterion for Search]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates/>
+  <bb_code_media_sites/>
+</addon>

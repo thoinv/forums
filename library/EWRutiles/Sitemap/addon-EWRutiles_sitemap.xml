@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="EWRutiles_sitemap" title="[8wayRun.Com] XenUtiles (Sitemap)" version_string="1.0.2" version_id="2" url="" install_callback_class="EWRutiles_Sitemap_Install" install_callback_method="installCode" uninstall_callback_class="EWRutiles_Sitemap_Install" uninstall_callback_method="uninstallCode">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="option_template_sitemaps_EWRutiles"><![CDATA[<xen:checkboxunit label="{$preparedOption.title}">
+	<xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][forums]" selected="{$preparedOption.option_value.forums}" label="{xen:phrase sitemap_build_forums}" />
+	<xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][threads]" selected="{$preparedOption.option_value.threads}" label="{xen:phrase sitemap_build_threads}" />
+	<xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][members]" selected="{$preparedOption.option_value.members}" label="{xen:phrase sitemap_build_members}" />
+
+	<xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][media]" selected="{$preparedOption.option_value.media}" label="{xen:phrase sitemap_build_media}">
+		<xen:hint>{xen:phrase sitemap_build_media_hint}</xen:hint>
+	</xen:option>
+
+	<xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][wiki]" selected="{$preparedOption.option_value.wiki}" label="{xen:phrase sitemap_build_wiki}">
+		<xen:hint>{xen:phrase sitemap_build_wiki_hint}</xen:hint>
+	</xen:option>
+
+	<xen:html>
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+</xen:checkboxunit>]]></template>
+  </admin_templates>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="container_public_params" execute_order="10" callback_class="EWRutiles_Sitemap_Listener_Params" callback_method="params" active="1" hint="" description="params"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="EWRutiles_Sitemap_Listener_Controller" callback_method="controller" active="1" hint="" description="Controller"/>
+    <listener event_id="load_class_route_prefix" execute_order="10" callback_class="EWRutiles_Sitemap_Listener_Route" callback_method="route" active="1" hint="" description="Route"/>
+  </code_event_listeners>
+  <cron>
+    <entry entry_id="EWRutiles_Sitemap_rebuild" cron_class="EWRutiles_Sitemap_CronEntry_Sitemap" cron_method="build" active="1"><![CDATA[{"day_type":"dow","dow":["0"],"hours":["4"],"minutes":["0"]}]]></entry>
+  </cron>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="EWRutiles_Sitemap" display_order="20000" debug_only="0"/>
+    <option option_id="EWRutiles_Sitemap_gzip" edit_format="onoff" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="EWRutiles_Sitemap" display_order="2"/>
+    </option>
+    <option option_id="EWRutiles_Sitemap_limit" edit_format="spinbox" data_type="unsigned_numeric" can_backup="1">
+      <default_value>10000</default_value>
+      <edit_format_params>max=50000
+min=5000
+step=5000</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="EWRutiles_Sitemap" display_order="1"/>
+    </option>
+    <option option_id="EWRutiles_Sitemap_memberlist" edit_format="onoff" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="EWRutiles_Sitemap" display_order="101"/>
+    </option>
+    <option option_id="EWRutiles_Sitemap_pings" edit_format="checkbox" data_type="array" can_backup="1">
+      <default_value>a:2:{s:4:"bing";b:0;s:6:"google";b:0;}</default_value>
+      <edit_format_params>bing = Bing
+google = Google</edit_format_params>
+      <sub_options>bing
+google</sub_options>
+      <relation group_id="EWRutiles_Sitemap" display_order="4"/>
+    </option>
+    <option option_id="EWRutiles_Sitemap_sources" edit_format="template" data_type="array" can_backup="1" validation_class="EWRutiles_Sitemap_Option_Sitemaps" validation_method="verifyOption">
+      <default_value>a:5:{s:6:"forums";s:1:"1";s:7:"threads";s:1:"1";s:7:"members";s:1:"1";s:5:"media";b:0;s:4:"wiki";b:0;}</default_value>
+      <edit_format_params>option_template_sitemaps_EWRutiles</edit_format_params>
+      <sub_options>forums
+threads
+members
+media
+wiki</sub_options>
+      <relation group_id="EWRutiles_Sitemap" display_order="3"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="cron_entry_EWRutiles_Sitemap_rebuild" version_id="1" version_string="1.0.1"><![CDATA[XenUtiles: Rebuild Sitemap]]></phrase>
+    <phrase title="option_EWRutiles_Sitemap_gzip" version_id="1" version_string="1.0.1"><![CDATA[Compress Sitemap Files Using GZip]]></phrase>
+    <phrase title="option_EWRutiles_Sitemap_gzip_explain" version_id="1" version_string="1.0.1"><![CDATA[]]></phrase>
+    <phrase title="option_EWRutiles_Sitemap_limit" version_id="1" version_string="1.0.1"><![CDATA[Sitemap URLs per Split]]></phrase>
+    <phrase title="option_EWRutiles_Sitemap_limit_explain" version_id="1" version_string="1.0.1"><![CDATA[Sitemap indexes will be split into separate files based on this limit.]]></phrase>
+    <phrase title="option_EWRutiles_Sitemap_memberlist" version_id="1" version_string="1.0.1"><![CDATA[Disable Member List]]></phrase>
+    <phrase title="option_EWRutiles_Sitemap_memberlist_explain" version_id="1" version_string="1.0.1"><![CDATA[Selecting this option will completely remove the members tab and functions from your forum. Member lists are often a target for spammers. If you enable this option, you may also wish to disable building a members sitemap.]]></phrase>
+    <phrase title="option_EWRutiles_Sitemap_pings" version_id="1" version_string="1.0.1"><![CDATA[Sitemap Search Engines]]></phrase>
+    <phrase title="option_EWRutiles_Sitemap_pings_explain" version_id="1" version_string="1.0.1"><![CDATA[When a sitemap is generated, it will ping the selected search engines.]]></phrase>
+    <phrase title="option_EWRutiles_Sitemap_sources" version_id="1" version_string="1.0.1"><![CDATA[Sitemap Build Sources]]></phrase>
+    <phrase title="option_EWRutiles_Sitemap_sources_explain" version_id="1" version_string="1.0.1"><![CDATA[]]></phrase>
+    <phrase title="option_group_EWRutiles_Sitemap" version_id="1" version_string="1.0.1"><![CDATA[[8wayRun.Com] XenUtiles (Sitemap)]]></phrase>
+    <phrase title="option_group_EWRutiles_Sitemap_description" version_id="1" version_string="1.0.1"><![CDATA[[8wayRun.Com] XenUtiles (Sitemap)]]></phrase>
+    <phrase title="sitemap_build_forums" version_id="1" version_string="1.0.1"><![CDATA[Build Forums]]></phrase>
+    <phrase title="sitemap_build_media" version_id="1" version_string="1.0.1"><![CDATA[Build Media]]></phrase>
+    <phrase title="sitemap_build_media_hint" version_id="2" version_string="1.0.2"><![CDATA[Requires existing installation of <a href="http://xenforo.com/community/resources/1716/">[8wayRun.Com] XenMedio (Media) PRO</a>]]></phrase>
+    <phrase title="sitemap_build_members" version_id="1" version_string="1.0.1"><![CDATA[Build Members]]></phrase>
+    <phrase title="sitemap_build_threads" version_id="1" version_string="1.0.1"><![CDATA[Build Threads]]></phrase>
+    <phrase title="sitemap_build_wiki" version_id="1" version_string="1.0.1"><![CDATA[Build Wiki]]></phrase>
+    <phrase title="sitemap_build_wiki_hint" version_id="2" version_string="1.0.2"><![CDATA[Requires existing installation of <a href="http://xenforo.com/community/resources/1690/">[8wayRun.Com] XenCarta (Wiki) PRO</a>]]></phrase>
+  </phrases>
+  <route_prefixes>
+    <route_type type="public">
+      <prefix original_prefix="sitemap" class="EWRutiles_Sitemap_Route_Sitemap" build_link="none"/>
+    </route_type>
+  </route_prefixes>
+  <style_properties/>
+  <templates/>
+  <public_template_modifications/>
+  <bb_code_media_sites/>
+</addon>

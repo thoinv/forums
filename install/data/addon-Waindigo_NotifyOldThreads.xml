@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="Waindigo_NotifyOldThreads" title="Notifications for Old Threads by Waindigo" version_string="1.0.1a" version_id="1412796163" url="https://waindigo.org" install_callback_class="Waindigo_Install" install_callback_method="install" uninstall_callback_class="Waindigo_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="waindigo_option_select_notifyoldthreads"><![CDATA[<xen:selectunit label="{$preparedOption.title}" name="{$fieldPrefix}[{$preparedOption.option_id}]"
+hint="{$preparedOption.hint}" inputclass="{$preparedOption.inputClass}" multiple="multiple">
+	<xen:options source="$formatParams" />
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:selectunit>]]></template>
+    <template title="waindigo_option_template_notifyoldthreads"><![CDATA[<xen:require js="js/waindigo/notifyoldthreads/option.js" />
+<xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		<ul>
+			<xen:foreach loop="$threads" key="$counter" value="$thread">
+			<li>
+				<xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][{$counter}]" value="{$thread.thread_id}" placeholder="{xen:phrase waindigo_thread_id_notifyoldthreads}" size="15" inputclass="NotifyOldThreadsThreadId" id="NotifyOldThreadsThread{$counter}" />
+				<span id="NotifyOldThreadsThread{$counter}Info"><a href="{xen:link 'threads', $thread}" target="_blank">{xen:helper wordtrim, $thread.title, 25}</a></span>
+			</li>
+			</xen:foreach>
+		
+			<li class="NotifyOldThreadsOptionListener">
+				<xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][{$nextCounter}]" value="" placeholder="{xen:phrase waindigo_thread_id_notifyoldthreads}" size="15"/>
+			</li>
+		</ul>
+		
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:controlunit>]]></template>
+  </admin_templates>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="Waindigo_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="Waindigo_NotifyOldThreads_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="Waindigo_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_NotifyOldThreads_Listener_LoadClass" callback_method="loadClassModel" active="0" hint="XenForo_Model_Thread" description="XenForo_Model_Thread (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="Waindigo_NotifyOldThreads_Listener_LoadClass" callback_method="loadClassModel" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="notices_prepare" execute_order="10" callback_class="Waindigo_NotifyOldThreads_Listener_NoticesPrepare" callback_method="noticesPrepare" active="1" hint="" description=""/>
+  </code_event_listeners>
+  <cron>
+    <entry entry_id="waindigo_notifyOldThreads" cron_class="Waindigo_NotifyOldThreads_CronEntry_NotifyOldThreads" cron_method="checkForOldThreads" active="1"><![CDATA[{"day_type":"dom","dom":["-1"],"hours":["3"],"minutes":["15"]}]]></entry>
+  </cron>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="waindigo_notifyOldThreads" display_order="2000" debug_only="0"/>
+    <option option_id="waindigo_notifyOldThreads_forumIds" edit_format="callback" data_type="array" can_backup="1">
+      <default_value>a:0:{}</default_value>
+      <edit_format_params>Waindigo_NotifyOldThreads_Option_NodeChooser::renderMultipleSelect</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="waindigo_notifyOldThreads" display_order="50"/>
+    </option>
+    <option option_id="waindigo_notifyOldThreads_oldThreadMaxDays" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>60</default_value>
+      <edit_format_params>step=5
+min=2</edit_format_params>
+      <sub_options/>
+      <relation group_id="waindigo_notifyOldThreads" display_order="20"/>
+    </option>
+    <option option_id="waindigo_notifyOldThreads_oldThreadMinDays" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value/>
+      <edit_format_params>min=1
+step=1</edit_format_params>
+      <sub_options/>
+      <relation group_id="waindigo_notifyOldThreads" display_order="10"/>
+    </option>
+    <option option_id="waindigo_notifyOldThreads_threadIds" edit_format="callback" data_type="array" can_backup="1" validation_class="Waindigo_NotifyOldThreads_Option_NotifyOldThreads" validation_method="verifyOption">
+      <default_value/>
+      <edit_format_params>Waindigo_NotifyOldThreads_Option_NotifyOldThreads::renderOption</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="waindigo_notifyOldThreads" display_order="110"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="cron_entry_waindigo_notifyOldThreads" version_id="1398704523" version_string="1.0.0"><![CDATA[Check Old Threads for Notifications]]></phrase>
+    <phrase title="option_group_waindigo_notifyOldThreads" version_id="1398704523" version_string="1.0.0"><![CDATA[Notifications for Old Threads by Waindigo]]></phrase>
+    <phrase title="option_group_waindigo_notifyOldThreads_description" version_id="1398704523" version_string="1.0.0"><![CDATA[Options for the Notifications for Old Threads add-on by Waindigo.]]></phrase>
+    <phrase title="option_waindigo_notifyOldThreads_forumIds" version_id="1398801011" version_string="1.0.0"><![CDATA[Excluded Forums]]></phrase>
+    <phrase title="option_waindigo_notifyOldThreads_forumIds_explain" version_id="1398801011" version_string="1.0.0"><![CDATA[Threads from these forums won't be included in the 'old threads' list.]]></phrase>
+    <phrase title="option_waindigo_notifyOldThreads_oldThreadMaxDays" version_id="1398704523" version_string="1.0.0"><![CDATA[Ignore threads older than X days]]></phrase>
+    <phrase title="option_waindigo_notifyOldThreads_oldThreadMaxDays_explain" version_id="1398704523" version_string="1.0.0"><![CDATA[]]></phrase>
+    <phrase title="option_waindigo_notifyOldThreads_oldThreadMinDays" version_id="1398704523" version_string="1.0.0"><![CDATA[Mark threads as old after X days]]></phrase>
+    <phrase title="option_waindigo_notifyOldThreads_oldThreadMinDays_explain" version_id="1398704523" version_string="1.0.0"><![CDATA[]]></phrase>
+    <phrase title="option_waindigo_notifyOldThreads_threadIds" version_id="1398704523" version_string="1.0.0"><![CDATA[Threads currently marked as old]]></phrase>
+    <phrase title="option_waindigo_notifyOldThreads_threadIds_explain" version_id="1398704523" version_string="1.0.0"><![CDATA[These are the threads that are available for your notifications.]]></phrase>
+    <phrase title="waindigo_thread_id_notifyoldthreads" version_id="1398704523" version_string="1.0.0"><![CDATA[Thread ID]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates/>
+  <public_template_modifications>
+    <modification template="footer" modification_key="waindigo_copyrightNotice_notifyOldThreads" description="Copyright notice for Notifications for Old Threads by Waindigo" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase (?:xenforo|extra)_copyright}/]]></find>
+      <replace><![CDATA[Waindigo_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>

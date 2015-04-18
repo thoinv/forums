@@ -1,0 +1,1805 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="modm_ajaxchat" title="[MODM] AJAX-Chat Integration for XenForo" version_string="beta 2" version_id="11" url="http://kosminea.fr" install_callback_class="MODM_AJAXChat_Install" install_callback_method="install" uninstall_callback_class="MODM_AJAXChat_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="option_list_option_multi_MODM_AJAXChat"><![CDATA[<xen:selectunit label="{$preparedOption.title}" name="{$fieldPrefix}[{$preparedOption.option_id}]" value="{xen:raw $preparedOption.option_value}"
+hint="{$preparedOption.hint}" multiple="{xen:if '{$multiple} == true', 'true'}" size="{xen:if '{$multiple} == true', '10'}">
+	<xen:options source="$formatParams" />
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:selectunit>]]></template>
+  </admin_templates>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="load_class_model" execute_order="10" callback_class="MODM_AJAXChat_Listeners" callback_method="loadClassModel" active="1" hint="" description="Listens for model class"/>
+    <listener event_id="navigation_tabs" execute_order="10" callback_class="MODM_AJAXChat_Listeners" callback_method="navTabsListener" active="1" hint="" description="Listens for navtabs to add Chat links"/>
+    <listener event_id="widget_framework_ready" execute_order="10" callback_class="MODM_AJAXChat_Listeners" callback_method="widgetFrameworkReady" active="1" hint="" description="Listens for widget framework classes"/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="modm_ajaxchat_options" display_order="1" debug_only="0"/>
+    <option option_id="modm_ajaxchat_options_allow_pchannels" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="340"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_allow_pmessages" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="350"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_allowdelete" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="280"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_allowguests" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="210"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_allowguestusername" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="211"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_allowguestwrites" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="220"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_allownickchange" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="230"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_channels" edit_format="callback" data_type="array" can_backup="1">
+      <default_value>a:1:{i:0;s:1:"0";}</default_value>
+      <edit_format_params>MODM_AJAXChat_Option_NodeChooser::renderMultiple</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="310"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_chatbotname" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value>ChatBot</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="400"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_chatclosed" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="110"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_closinghour" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>24</default_value>
+      <edit_format_params>min=1
+step=1
+max=24</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="421"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_dbhost" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value>localhost</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="10"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_dbname" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value>ajax_chat</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="40"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_dbpass" edit_format="textbox" data_type="string" can_backup="0">
+      <default_value>root</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="30"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_dbuser" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value>root</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="20"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_defaultbantime" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>5</default_value>
+      <edit_format_params>min=1
+step=5</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="270"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_defaultchannel" edit_format="callback" data_type="unsigned_integer" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params>MODM_AJAXChat_Option_NodeChooser::renderOption</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="320"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_disableacui" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="120"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_guestusernameprefix" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value>[guest]</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="212"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_guestusernamesuffix" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="213"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_limit_channels" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="330"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_logscutoff" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>min=1
+step=5</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="1010"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_logsuseraccess" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="1020"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_maxmessagelen" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>1040</default_value>
+      <edit_format_params>min=1
+step=100</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="250"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_maxmessagerate" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>20</default_value>
+      <edit_format_params>min=1
+step=5</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="260"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_maxusers" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>100</default_value>
+      <edit_format_params>min=5
+step=5</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="240"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_moderatorgroup" edit_format="callback" data_type="integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params>XenForo_Option_UserGroupChooser::renderSelect</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="430"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_nickprefix" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="231"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_nicksuffix" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="232"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_openinghour" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params>min=0
+step=1
+max=23</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="420"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_openingweekdays" edit_format="callback" data_type="array" can_backup="1">
+      <default_value>a:7:{i:0;s:1:"1";i:1;s:1:"2";i:2;s:1:"3";i:3;s:1:"4";i:4;s:1:"5";i:5;s:1:"6";i:6;s:1:"0";}</default_value>
+      <edit_format_params>MODM_AJAXChat_Option_WeekDayChooser::renderSelect</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="422"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_pchanprefix" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="341"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_pchansuffix" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="342"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_priormessage" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="290"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_purgelogs" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="1000"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_querymessagecutoff" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>min=1
+step=1</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="60"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_querymessagelimit" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>min=1
+step=5</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="50"/>
+    </option>
+    <option option_id="modm_ajaxchat_options_show_infomessages" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="modm_ajaxchat_options" display_order="410"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups>
+      <permission_group permission_group_id="modm_ajaxchat"/>
+    </permission_groups>
+    <permissions>
+      <permission permission_group_id="modm_ajaxchat" permission_id="ajax_chat_guest_access" permission_type="flag" default_value="unset" interface_group_id="modm_ajaxchat" display_order="1"/>
+      <permission permission_group_id="modm_ajaxchat" permission_id="ajax_chat_mod_access" permission_type="flag" default_value="unset" interface_group_id="modm_ajaxchat" display_order="3"/>
+      <permission permission_group_id="modm_ajaxchat" permission_id="ajax_chat_user_access" permission_type="flag" default_value="unset" interface_group_id="modm_ajaxchat" display_order="2"/>
+      <permission permission_group_id="modm_ajaxchat" permission_id="ajax_chat_view" permission_type="flag" default_value="unset" interface_group_id="modm_ajaxchat" display_order="0"/>
+    </permissions>
+    <interface_groups>
+      <interface_group interface_group_id="modm_ajaxchat" display_order="1"/>
+    </interface_groups>
+  </permissions>
+  <phrases>
+    <phrase title="modm_ajaxchat_and" version_id="1" version_string="alpha 1"><![CDATA[and...]]></phrase>
+    <phrase title="modm_ajaxchat_browsing" global_cache="1" version_id="1" version_string="alpha 1"><![CDATA[Browsing on ]]></phrase>
+    <phrase title="modm_ajaxchat_channel" version_id="1" version_string="alpha 1"><![CDATA[Channel]]></phrase>
+    <phrase title="modm_ajaxchat_chat_empty" version_id="1" version_string="alpha 1"><![CDATA[Chatroom is empty.]]></phrase>
+    <phrase title="modm_ajaxchat_chat_logs" version_id="1" version_string="alpha 1"><![CDATA[Chat logs]]></phrase>
+    <phrase title="modm_ajaxchat_come_in" version_id="1" version_string="alpha 1"><![CDATA[Come in!]]></phrase>
+    <phrase title="modm_ajaxchat_erf_nothing_found" version_id="1" version_string="alpha 1"><![CDATA[Erf. :( Nothing found!]]></phrase>
+    <phrase title="modm_ajaxchat_input_several_names" version_id="1" version_string="alpha 1"><![CDATA[You can fill in several comma-separated usernames. Leave emptu in order to skip the username filter.]]></phrase>
+    <phrase title="modm_ajaxchat_in_channel" version_id="1" version_string="alpha 1"><![CDATA[In channel:]]></phrase>
+    <phrase title="modm_ajaxchat_load_logs" version_id="1" version_string="alpha 1"><![CDATA[Load logs]]></phrase>
+    <phrase title="modm_ajaxchat_load_next_entries" version_id="1" version_string="alpha 1"><![CDATA[Load next log entries]]></phrase>
+    <phrase title="modm_ajaxchat_logged_out_of_chat" version_id="1" version_string="alpha 1"><![CDATA[Logged out of chat]]></phrase>
+    <phrase title="modm_ajaxchat_login" version_id="1" version_string="alpha 1"><![CDATA[Log into chat]]></phrase>
+    <phrase title="modm_ajaxchat_login_disclaimer" version_id="1" version_string="alpha 1"><![CDATA[Disclaimer]]></phrase>
+    <phrase title="modm_ajaxchat_login_disclaimer_text" version_id="1" version_string="alpha 1"><![CDATA[<ol><li><a href="help/terms">Terms and rules</a> also apply to chat.</li>
+<li>Never give out your password or credit card number in an instant message conversation. To help prevent infection by a computer virus or worm, never accept or open any file or link in an instant message until you verify its authenticity with the sender.</li>
+<li>Chat content are saved in user database for later reference if necessary</li>
+</ol>]]></phrase>
+    <phrase title="modm_ajaxchat_members_online_on_chat" version_id="1" version_string="alpha 1"><![CDATA[Members currently online in chatroom]]></phrase>
+    <phrase title="modm_ajaxchat_messages_sent_between" version_id="1" version_string="alpha 1"><![CDATA[Messages sent between...]]></phrase>
+    <phrase title="modm_ajaxchat_message_from_x" global_cache="1" version_id="1" version_string="alpha 1"><![CDATA[Chat message from {username}]]></phrase>
+    <phrase title="modm_ajaxchat_online_now_x_users" version_id="4" version_string="alpha 4"><![CDATA[Online now: {total} member(s).]]></phrase>
+    <phrase title="modm_ajaxchat_report_chat_message" version_id="5" version_string="alpha 5"><![CDATA[Report chat message]]></phrase>
+    <phrase title="modm_ajaxchat_report_message" version_id="5" version_string="alpha 5"><![CDATA[Report message]]></phrase>
+    <phrase title="modm_ajaxchat_search_chat_history_with_criteria" version_id="1" version_string="alpha 1"><![CDATA[Search within chat history according to the following criteria:]]></phrase>
+    <phrase title="modm_ajaxchat_shoutbox" version_id="1" version_string="alpha 1"><![CDATA[Shoutbox]]></phrase>
+    <phrase title="modm_ajaxchat_shoutbox_controls" version_id="5" version_string="alpha 5"><![CDATA[Shoutbox controls]]></phrase>
+    <phrase title="modm_ajaxchat_tabname" global_cache="1" version_id="1" version_string="alpha 1"><![CDATA[Chat]]></phrase>
+    <phrase title="modm_ajaxchat_toggle_audio" version_id="5" version_string="alpha 5"><![CDATA[Toggle sounds]]></phrase>
+    <phrase title="modm_ajaxchat_toggle_autoscroll" version_id="5" version_string="alpha 5"><![CDATA[Toggle auto-scroll]]></phrase>
+    <phrase title="modm_ajaxchat_users_on_chat_now" version_id="1" version_string="alpha 1"><![CDATA[Members on chat now]]></phrase>
+    <phrase title="modm_ajaxchat_viewing_online_list" global_cache="1" version_id="1" version_string="alpha 1"><![CDATA[Viewing list of members on ]]></phrase>
+    <phrase title="modm_ajaxchat_whos_online" version_id="1" version_string="alpha 1"><![CDATA[Who's chatting now?]]></phrase>
+    <phrase title="modm_ajaxchat_you_were_logged_out_of_chat" version_id="1" version_string="alpha 1"><![CDATA[You were logged out of the chatroom.]]></phrase>
+    <phrase title="option_group_modm_ajaxchat_options" version_id="1" version_string="alpha 1"><![CDATA[AJAX-Chat options]]></phrase>
+    <phrase title="option_group_modm_ajaxchat_options_description" version_id="3" version_string="alpha 3"><![CDATA[These options will override those you enter in the config.php file in AJAX-Chat directory.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allowdelete" version_id="5" version_string="alpha 5"><![CDATA[Messages deletion ability]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allowdelete_explain" version_id="5" version_string="alpha 5"><![CDATA[Allow/Disallow registered users to delete their own messages]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allowguests" version_id="1" version_string="alpha 1"><![CDATA[Allow guest logins]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allowguests_explain" version_id="1" version_string="alpha 1"><![CDATA[Allow guest users to connect to AJAX-Chat. This option gives read-only access to unregistered users: write permissions are in a separate option below.<br/>Note that disabling this option will result in all connected guests to be kicked out unceremoniously.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allowguestusername" version_id="5" version_string="alpha 5"><![CDATA[Allow guest usernames]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allowguestusername_explain" version_id="5" version_string="alpha 5"><![CDATA[Allow/Disallow guest users to choose their own userName]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allowguestwrites" version_id="1" version_string="alpha 1"><![CDATA[Allow guest writes]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allowguestwrites_explain" version_id="1" version_string="alpha 1"><![CDATA[This options gives unregistered users the permission to send message within chatrooms.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allownickchange" version_id="5" version_string="alpha 5"><![CDATA[Allow nick change]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allownickchange_explain" version_id="5" version_string="alpha 5"><![CDATA[Allow/Disallow users to change their username (nickname)]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allow_pchannels" version_id="2" version_string="alpha 2"><![CDATA[Allow private channels]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allow_pchannels_explain" version_id="2" version_string="alpha 2"><![CDATA[Will be ignored if "Strictly limit channels" is checked.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allow_pmessages" version_id="2" version_string="alpha 2"><![CDATA[Allow private messages]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_allow_pmessages_explain" version_id="2" version_string="alpha 2"><![CDATA[Will be ignored if "Strictly limit channels" is checked.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_channels" version_id="2" version_string="alpha 2"><![CDATA[Rendered channels]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_channels_explain" version_id="8" version_string="alpha 8"><![CDATA[Select the nodes you want to generate channels from. Leaving this setting blank will generate a "wrong channel name" error.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_chatbotname" version_id="1" version_string="alpha 1"><![CDATA[ChatBot name]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_chatbotname_explain" version_id="1" version_string="alpha 1"><![CDATA[Name given to the AJAX-Chat bot]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_chatclosed" version_id="1" version_string="alpha 1"><![CDATA[Close chat]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_chatclosed_explain" version_id="1" version_string="alpha 1"><![CDATA[If selected, the AJAX-Chat will be closed to regular users & moderators.<br />Only admin will be able to connect.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_closinghour" version_id="5" version_string="alpha 5"><![CDATA[Closing hour]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_closinghour_explain" version_id="5" version_string="alpha 5"><![CDATA[]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_dbhost" version_id="1" version_string="alpha 1"><![CDATA[Database Host]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_dbhost_explain" version_id="1" version_string="alpha 1"><![CDATA[Hostname for the database that will store AJAX-Chat data (logs, online users, etc.)]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_dbname" version_id="1" version_string="alpha 1"><![CDATA[Database name]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_dbname_explain" version_id="1" version_string="alpha 1"><![CDATA[]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_dbpass" version_id="1" version_string="alpha 1"><![CDATA[Database Password]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_dbpass_explain" version_id="1" version_string="alpha 1"><![CDATA[Password is not included into options backup.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_dbuser" version_id="1" version_string="alpha 1"><![CDATA[Database User]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_dbuser_explain" version_id="1" version_string="alpha 1"><![CDATA[]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_defaultbantime" version_id="5" version_string="alpha 5"><![CDATA[Default ban time]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_defaultbantime_explain" version_id="5" version_string="alpha 5"><![CDATA[Defines the default time in minutes a user gets banned if kicked by a moderator without ban minutes parameter]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_defaultchannel" version_id="1" version_string="alpha 1"><![CDATA[Default channel]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_defaultchannel_explain" version_id="8" version_string="alpha 8"><![CDATA[Leaving this setting blank will generate a "wrong channel name" error.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_disableacui" version_id="8" version_string="alpha 8"><![CDATA[Disable AJAX-Chat native UI]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_disableacui_explain" version_id="8" version_string="alpha 8"><![CDATA[Totally disable access to the native AJAX-Chat user interface.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_guestusernameprefix" version_id="5" version_string="alpha 5"><![CDATA[Guest username prefix]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_guestusernameprefix_explain" version_id="5" version_string="alpha 5"><![CDATA[Guest users should be distinguished by either a prefix or a suffix or both (no whitespace)]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_guestusernamesuffix" version_id="5" version_string="alpha 5"><![CDATA[Guest username suffix]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_guestusernamesuffix_explain" version_id="5" version_string="alpha 5"><![CDATA[]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_limit_channels" version_id="2" version_string="alpha 2"><![CDATA[Strictly limit channels]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_limit_channels_explain" version_id="2" version_string="alpha 2"><![CDATA[Striclty limit discussion channels to those selected? If enabled, this means neither private channels nor private messages will be allowed. There exists another option for disabling private messages or private channels separately.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_logscutoff" version_id="5" version_string="alpha 5"><![CDATA[Logs cutoff]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_logscutoff_explain" version_id="5" version_string="alpha 5"><![CDATA[Max time difference in days for old messages before they are purged from the database]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_logsuseraccess" version_id="5" version_string="alpha 5"><![CDATA[Registered users logs accessibility]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_logsuseraccess_explain" version_id="5" version_string="alpha 5"><![CDATA[Defines if registered users (including moderators) have access to the logs (admins are always granted access). This concerns only <a href="chat/?view=logs">native AJAX-Chat logs</a>, not XF integrated logs.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_maxmessagelen" version_id="5" version_string="alpha 5"><![CDATA[Maximum message length]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_maxmessagelen_explain" version_id="5" version_string="alpha 5"><![CDATA[]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_maxmessagerate" version_id="5" version_string="alpha 5"><![CDATA[Maximum message rate]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_maxmessagerate_explain" version_id="5" version_string="alpha 5"><![CDATA[Defines the max number of messages a user may send per minute]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_maxusers" version_id="5" version_string="alpha 5"><![CDATA[Max logged-in users]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_maxusers_explain" version_id="5" version_string="alpha 5"><![CDATA[Does not affect admins nor moderators.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_moderatorgroup" version_id="8" version_string="alpha 8"><![CDATA[Chat moderators group]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_moderatorgroup_explain" version_id="8" version_string="alpha 8"><![CDATA[Assigns chat moderator permissions to selected group]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_nickprefix" version_id="5" version_string="alpha 5"><![CDATA[Changed nick prefix]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_nickprefix_explain" version_id="5" version_string="alpha 5"><![CDATA[Changed usernames should be distinguished by either a prefix or a suffix or both (no whitespace)]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_nicksuffix" version_id="5" version_string="alpha 5"><![CDATA[Changed nick suffix]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_nicksuffix_explain" version_id="5" version_string="alpha 5"><![CDATA[]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_openinghour" version_id="5" version_string="alpha 5"><![CDATA[Opening hour]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_openinghour_explain" version_id="5" version_string="alpha 5"><![CDATA[]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_openingweekdays" version_id="5" version_string="alpha 5"><![CDATA[Opening weekdays]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_openingweekdays_explain" version_id="5" version_string="alpha 5"><![CDATA[]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_pchanprefix" version_id="5" version_string="alpha 5"><![CDATA[Private channel prefix]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_pchanprefix_explain" version_id="5" version_string="alpha 5"><![CDATA[Private channels should be distinguished by either a prefix or a suffix or both (no whitespace)]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_pchansuffix" version_id="5" version_string="alpha 5"><![CDATA[Private channel suffix]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_pchansuffix_explain" version_id="5" version_string="alpha 5"><![CDATA[]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_priormessage" version_id="5" version_string="alpha 5"><![CDATA[Request messages prior channel enter]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_priormessage_explain" version_id="8" version_string="alpha 8"><![CDATA[<span style="color: red;">WARNING This option is ineffective while some issues are being investigated.</span> Defines if messages which have been sent before the user entered the channel are shown]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_purgelogs" version_id="5" version_string="alpha 5"><![CDATA[Purge logs]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_purgelogs_explain" version_id="5" version_string="alpha 5"><![CDATA[Defines if old messages are purged from the database]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_querymessagecutoff" version_id="8" version_string="alpha 8"><![CDATA[Query cutoff]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_querymessagecutoff_explain" version_id="8" version_string="alpha 8"><![CDATA[Max time difference in hours for messages fetched on each DB request. Messages older will not be fetched. This does not affect logs.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_querymessagelimit" version_id="8" version_string="alpha 8"><![CDATA[Request messages limit]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_querymessagelimit_explain" version_id="10" version_string="beta 1"><![CDATA[Max number of messages to fetch on each database request.]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_show_infomessages" version_id="2" version_string="alpha 2"><![CDATA[Show info messages]]></phrase>
+    <phrase title="option_modm_ajaxchat_options_show_infomessages_explain" version_id="2" version_string="alpha 2"><![CDATA[Show/Hide info messages such as "UserA logged into chat".]]></phrase>
+    <phrase title="permission_group_modm_ajaxchat" version_id="1" version_string="alpha 1"><![CDATA[AJAX-Chat permissions]]></phrase>
+    <phrase title="permission_interface_modm_ajaxchat" version_id="1" version_string="alpha 1"><![CDATA[AJAX-Chat]]></phrase>
+    <phrase title="permission_modm_ajaxchat_ajax_chat_guest_access" version_id="1" version_string="alpha 1"><![CDATA[Can access AJAX-Chat as guest user]]></phrase>
+    <phrase title="permission_modm_ajaxchat_ajax_chat_mod_access" version_id="1" version_string="alpha 1"><![CDATA[Can access AJAX-Chat moderation actions]]></phrase>
+    <phrase title="permission_modm_ajaxchat_ajax_chat_user_access" version_id="1" version_string="alpha 1"><![CDATA[Can access AJAX-Chat as full user]]></phrase>
+    <phrase title="permission_modm_ajaxchat_ajax_chat_view" version_id="1" version_string="alpha 1"><![CDATA[Can view AJAX Chat informations]]></phrase>
+  </phrases>
+  <route_prefixes>
+    <route_type type="public">
+      <prefix original_prefix="chat" class="MODM_AJAXChat_Route_Prefix_Chat" build_link="data_only"/>
+    </route_type>
+  </route_prefixes>
+  <style_properties/>
+  <templates>
+    <template title="modm_ajaxchat_fonts.css" version_id="8" version_string="alpha 8"><![CDATA[/*
+ * @package AJAX_Chat
+ * @author Sebastian Tschan
+ * @copyright (c) Sebastian Tschan
+ * @license GNU Affero General Public License
+ * {xen:property link} https://blueimp.net/ajax/
+ */
+
+/* Fonts */
+#loginContent {
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:0.8em;
+}
+#loginContent h1 {
+	font-size:1.3em;
+	font-family:"Trebuchet MS", Verdana, Arial, sans-serif;
+	font-weight:bold;
+}
+#loginContent a {
+	text-decoration:none;
+}
+#loginContent a:hover {
+	text-decoration:underline;
+}
+#loginContent #loginRegisteredUsers {
+    font-size:0.8em;
+}
+#loginContent #copyright {
+	font-size:0.8em;
+}
+#ajaxChatContent {
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:0.8em;
+}
+#ajaxChatContent h1 {
+	font-size:1.3em;
+	font-family:"Trebuchet MS", Verdana, Arial, sans-serif;
+	font-weight:bold;
+}
+#ajaxChatContent h3 {
+	font-size:1.0em;
+}
+#ajaxChatContent a {
+	text-decoration:none;
+}
+#ajaxChatContent a:hover {
+	text-decoration:underline;
+}
+#ajaxChatContent #copyright {
+	font-size:0.8em;
+}
+#ajaxChatContent #chatList span.dateTime {
+	font-size:0.7em;
+}
+#ajaxChatContent #chatList span.guest {
+	font-weight:bold;
+}
+#ajaxChatContent #chatList span.user {
+	font-weight:bold;
+}
+#ajaxChatContent #chatList span.moderator {
+	font-weight:bold;
+}
+#ajaxChatContent #chatList span.admin {
+	font-weight:bold;
+}
+#ajaxChatContent #chatList span.chatBot {
+	font-weight:bold;
+	font-style:italic;
+}
+#ajaxChatContent #chatList .chatBotMessage {
+	font-style:italic;
+}
+#ajaxChatContent #chatList .chatBotErrorMessage {
+	font-style:italic;
+}
+#ajaxChatContent #chatList .privmsg {
+	font-style:italic;
+}
+#ajaxChatContent #chatList .action {
+	font-style:italic;
+}
+#ajaxChatContent #chatList q {
+	font-variant:small-caps;
+}
+#ajaxChatContent #chatList code {
+    font-size:1.2em;
+}
+#ajaxChatContent #onlineListContainer #onlineList div {
+	font-size:0.9em;
+}
+#ajaxChatContent #helpContainer #helpList td {
+	font-size:0.9em;
+}
+#ajaxChatContent #helpContainer #helpList td.code {
+	font-style:italic;
+}
+#ajaxChatContent #settingsContainer #settingsList td {
+	font-size:0.9em;
+}
+
+#ajaxChatContent #reportContainer #reportList div {
+	font-size: 0.9em;
+}
+]]></template>
+    <template title="modm_ajaxchat_global.css" version_id="8" version_string="alpha 8"><![CDATA[/* Positioning */
+#loginContent {
+	position:absolute;
+	width:100%;
+	height:100%;
+}
+#loginContent #loginHeadlineContainer {
+	margin: 100px 100px 0 100px;
+}
+#loginContent #loginFormContainer, #loginContent #errorContainer {
+	margin: 0 100px;
+}
+#loginContent #loginFormContainer div {
+	margin-bottom:7px;
+}
+#loginContent #loginRegisteredUsers {
+    padding-top:5px;
+}
+#loginContent #copyright {
+	margin: 20px 100px 0 100px;
+}
+#ajaxChatContent {
+	width:800px;
+	height:600px;
+}
+#ajaxChatContent #copyright {
+	position:absolute;
+	right:20px;
+}
+#ajaxChatContent #headlineContainer {
+	position:absolute;
+	left:20px;
+	top:5px;
+}
+#ajaxChatContent #logoutChannelContainer {
+	position:absolute;
+	left:20px;
+}
+#ajaxChatContent #logoutChannelContainer select{
+	width: 105px;
+	height: 22px;
+}
+#ajaxChatContent #statusIconContainer {
+	position:absolute;
+	right:20px;
+	width: 22px;
+	height: 22px;
+}
+#ajaxChatContent #chatList {
+	position:absolute;
+	left:20px;
+	right:230px;
+	top:85px;
+	bottom:150px;
+	overflow:auto;
+}
+#ajaxChatContent #inputFieldContainer {
+	position:absolute;
+	left:20px;
+	right:20px;
+	bottom:95px;
+	padding-right:4px;
+}
+#ajaxChatContent #submitButtonContainer {
+	position:absolute;
+	right:20px;
+	bottom:60px;
+}
+#ajaxChatContent #onlineListContainer {
+	position:absolute;
+	right:20px;
+	top:85px;
+	width:200px;
+	bottom:150px;
+}
+#ajaxChatContent #helpContainer {
+	position:absolute;
+	right:20px;
+	top:85px;
+	width:360px;
+	bottom:150px;
+}
+#ajaxChatContent #reportContainer {
+	position:absolute;
+	right:20px;
+	top:85px;
+	width:200px;
+	bottom:150px;
+}
+#ajaxChatContent #settingsContainer {
+	position:absolute;
+	right:20px;
+	top:85px;
+	width:360px;
+	bottom:150px;
+}
+#ajaxChatContent #bbCodeContainer {
+	position:absolute;
+	left:20px;
+	bottom:20px;
+	padding:3px;
+}
+#ajaxChatContent #colorCodesContainer {
+	position:absolute;
+	left:20px;
+	bottom:55px;
+	padding:3px;
+	z-index:1;
+}
+#ajaxChatContent #emoticonsContainer {
+	position:absolute;
+	left:20px;
+	bottom:57px;
+	padding:3px;
+}
+#ajaxChatContent #optionsContainer {
+	position:absolute;
+	right:20px;
+	bottom:20px;
+	padding:3px;
+	padding-right:0px;
+}
+#ajaxChatContent #bbCodeContainer input, #ajaxChatContent #logoutButton, #ajaxChatContent #submitButton, #loginContent #loginButton {
+	padding: 4px 10px;
+}
+#ajaxChatContent #colorCodesContainer a {
+	display:block;
+	float:left;
+	width:20px;
+	height:20px;
+}
+#ajaxChatContent #optionsContainer input {
+    vertical-align:middle;
+}
+#ajaxChatContent #optionsContainer input.button {
+    width:25px;
+	height:25px;
+}
+#ajaxChatContent #emoticonsContainer a {
+	margin-left:1px;
+	margin-right:1px;
+}
+#ajaxChatContent #emoticonsContainer img {
+	vertical-align:middle;
+	margin-bottom:2px;
+}
+#ajaxChatContent #headlineContainer h1 {
+	margin-left:auto;
+	margin-top:12px;
+}
+#ajaxChatContent #chatList div {
+	padding: 2px 10px;
+}
+#ajaxChatContent #chatList img {
+	vertical-align:middle;
+	margin-bottom:2px;
+}
+#ajaxChatContent #chatList cite {
+	margin-right:5px;
+}
+#ajaxChatContent #chatList .bbCodeImage {
+	vertical-align:top;
+	overflow:auto;
+	margin:5px;
+}
+#ajaxChatContent #chatList .delete {
+	display:block;
+	float:right;
+	width:10px;
+	height:10px;
+	margin-top:2px;
+	padding-left:5px;
+	background:url('{xen:property imagePath}/modm/ajaxchat/delete.png') no-repeat right;
+}
+#ajaxChatContent #inputFieldContainer #inputField {
+	width:100%;
+	height:40px;
+}
+#ajaxChatContent #onlineListContainer h3, #ajaxChatContent #helpContainer h3, #ajaxChatContent #settingsContainer h3, #ajaxChatContent #reportContainer h3 {
+	height:30px;
+	padding: 4px 10px;
+	margin:0px;
+	text-align:center;
+}
+#ajaxChatContent #onlineListContainer #onlineList, #ajaxChatContent #helpContainer #helpList, #ajaxChatContent #settingsContainer #settingsList, #ajaxChatContent #reportContainer #reportList {
+	position:absolute;
+	left:0px;
+	right:0px;
+	top:25px;
+	bottom:0px;
+	overflow:auto;
+}
+#ajaxChatContent #onlineListContainer #onlineList div {
+	padding: 2px 10px;
+}
+#ajaxChatContent #onlineListContainer #onlineList a {
+	display:block;
+}
+#ajaxChatContent #onlineListContainer #onlineList ul {
+	margin: 5px 0;
+	padding-left:20px;
+}
+#ajaxChatContent #helpContainer #helpList td, #ajaxChatContent #settingsContainer #settingsList td {
+	padding: 4px 10px;
+	vertical-align:top;
+}
+#ajaxChatContent #reportContainer #reportList div {
+	padding: 2px 10px;
+}
+#ajaxChatContent #settingsContainer #settingsList td {
+	vertical-align:middle;
+}
+#ajaxChatContent #settingsContainer #settingsList td.setting {
+	width:115px;
+}
+#ajaxChatContent #settingsContainer #settingsList input.text {
+	width:100px;
+}
+#ajaxChatContent #settingsContainer #settingsList select.left {
+	text-align:right;
+}
+#ajaxChatContent #settingsContainer #settingsList input.button {
+    width:25px;
+	height:25px;
+	vertical-align:middle;
+	margin-bottom:2px;
+}
+
+/* Buttons */
+#ajaxChatContent #optionsContainer #helpButton {
+	background:url('{xen:property imagePath}/modm/ajaxchat/help.png') no-repeat;
+}
+#ajaxChatContent #optionsContainer #settingsButton {
+	background:url('{xen:property imagePath}/modm/ajaxchat/settings.png') no-repeat;
+}
+#ajaxChatContent #optionsContainer #onlineListButton {
+	background:url('{xen:property imagePath}/modm/ajaxchat/users.png') no-repeat;
+}
+#ajaxChatContent #optionsContainer #audioButton {
+	background:url('{xen:property imagePath}/modm/ajaxchat/audio.png') no-repeat 0px 0px;
+}
+#ajaxChatContent #optionsContainer #audioButton.off {
+	background-position: 0px 100%;
+}
+#ajaxChatContent #optionsContainer #autoScrollButton {
+	background:url('{xen:property imagePath}/modm/ajaxchat/autoscroll.png') no-repeat 0px 0px;
+}
+#ajaxChatContent #optionsContainer #autoScrollButton.off {
+	background-position: 0px 100%;
+}
+#ajaxChatContent #settingsContainer #settingsList input.playback {
+	background:url('{xen:property imagePath}/modm/ajaxchat/playback.png') no-repeat;
+}
+
+/* Borders */
+#ajaxChatContent img {
+	border:none;
+}
+#ajaxChatContent #chatList, #ajaxChatContent #onlineListContainer, #ajaxChatContent #helpContainer, #ajaxChatContent #reportContainer,#ajaxChatContent #settingsContainer, #ajaxChatContent #colorCodesContainer, 
+#ajaxChatContent #colorCodesContainer a, #ajaxChatContent textarea {
+	border-width:1px;
+	border-style:solid;
+}
+#ajaxChatContent #chatList .deleteSelected {
+	border-width:1px;
+	border-style:dotted;
+}
+#ajaxChatContent #helpContainer #helpList table, #ajaxChatContent #settingsContainer #settingsList table {
+	border-collapse:collapse;
+}
+
+/* Misc */
+#ajaxChatContent #bbCodeContainer input, #ajaxChatContent #optionsContainer input.button, #ajaxChatContent #settingsContainer #settingsList input.button, #ajaxChatContent #logoutButton, #ajaxChatContent #submitButton, #loginContent #loginButton, #ajaxChatContent #reportContainer #reportList div input.button {
+	cursor:pointer;
+}
+]]></template>
+    <template title="modm_ajaxchat_log.css" version_id="1" version_string="alpha 1"><![CDATA[.modm_ajaxchat_username { font-weight: bold;}
+
+.modm_ajaxchat_timestamp { color: {xen:property mutedTextColor}; font-style: italic; padding: 0 7px 0 3px;}
+
+.modm_ajaxchat_message {}]]></template>
+    <template title="modm_ajaxchat_logentries" version_id="1" version_string="alpha 1"><![CDATA[<xen:require css="modm_ajaxchat_log.css" />
+
+<div id="LogsEntries">
+<xen:if hascontent="true">
+<ul class="notes">
+<xen:contentcheck>
+    <xen:foreach loop="$logEntries" value="$entry">
+        <li class="secondaryContent" id="log-entry-{$entry.message_id}">
+            <div>
+                <span class="modm_ajaxchat_timestamp"><xen:datetime time="$entry.message_date" />
+                </span>
+                <span class="modm_ajaxchat_username">
+                    <xen:if is="{$entry.user_id} != {$chatBotId}">
+                    <a href="{xen:link members, $entry}" class="modm_ajaxchat_username username">{$entry.username}</a>
+                    <xen:else />
+                    {$entry.username}
+                    </xen:if> : </span>
+                <span class="modm_ajaxchat_message">{xen:helper bodytext, $entry.text}</span>
+            </div>
+        </li>
+    </xen:foreach>
+</xen:contentcheck>
+</ul>
+<xen:else />
+<div id="LogsListEmpty" class="secondaryContent">{xen:phrase modm_ajaxchat_erf_nothing_found}</div>
+</xen:if>
+</div>]]></template>
+    <template title="modm_ajaxchat_login" version_id="8" version_string="alpha 8"><![CDATA[<xen:title>{xen:phrase modm_ajaxchat_login}</xen:title>
+
+<xen:container var="$head.noindex">
+	<meta name="robots" content="noindex" />
+</xen:container>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:link chat/login}">{xen:phrase modm_ajaxchat_login}</xen:breadcrumb>
+</xen:navigation>
+
+<div class="section">       
+    <div class="sectionMain">
+            <div class="heading">{xen:phrase modm_ajaxchat_login_disclaimer}</div>
+            <div class="primaryContent baseHtml">{xen:phrase modm_ajaxchat_login_disclaimer_text}</div>
+    </div>
+
+	<form action="{xen:link chat/shoutbox}" method="post" style="text-align: center;">
+        <xen:if is="{$promptForUsername}">
+		<dl class="ctrlUnit">
+			<dt><label for="ctrl_userName">{xen:phrase user_name}</label></dt>
+			<dd><input type="text" name="userName" value="" id="ctrl_userName" class="textCtrl" />
+			</dd>
+		</dl>
+        </xen:if>
+		<dl class="ctrlUnit submitUnit">
+			<dt></dt>
+			<dd><input type="submit" value="{xen:phrase modm_ajaxchat_login}" class="button primary" accesskey="s" /></dd>
+		</dl>
+
+		<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+	</form>
+</div>]]></template>
+    <template title="modm_ajaxchat_logout" version_id="8" version_string="alpha 8"><![CDATA[<xen:title>{xen:phrase modm_ajaxchat_logged_out_of_chat}</xen:title>
+
+<xen:h1>{xen:phrase modm_ajaxchat_logged_out_of_chat}</xen:h1>
+
+{xen:phrase modm_ajaxchat_you_were_logged_out_of_chat}]]></template>
+    <template title="modm_ajaxchat_logs" version_id="1" version_string="alpha 1"><![CDATA[<xen:title>{xen:phrase modm_ajaxchat_chat_logs}</xen:title>
+
+<xen:require js="js/modm/ajaxchat/logs.js" />
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:link chat/chat-logs}">{xen:phrase modm_ajaxchat_chat_logs}</xen:breadcrumb>
+</xen:navigation>
+
+<div class="main">
+{xen:phrase modm_ajaxchat_search_chat_history_with_criteria}
+<form action="{xen:link chat/logs}" method="post" class="xenForm AutoValidator AjaxChatLogs">
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_usernames">{xen:phrase members}</label></dt>
+		<dd><input type="text" name="usernames" value="" id="ctrl_usernames" class="textCtrl AutoComplete" />
+		<p class="explain">{xen:phrase modm_ajaxchat_input_several_names}</p>
+		</dd>
+	</dl>
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase modm_ajaxchat_messages_sent_between}</dt>
+		<dd>
+			<input type="date" size="10" name="dateAfter_date" class="textCtrl autoSize" value="{$dateTime}" /> à 
+
+			<select name="dateAfter_hour" class="textCtrl autoSize">
+				<option value="00" selected>00</option>
+				<option value="01">01</option>
+				<option value="02">02</option>
+				<option value="03">03</option>
+				<option value="04">04</option>
+				<option value="05">05</option>
+				<option value="06">06</option>
+				<option value="07">07</option>
+				<option value="08">08</option>
+				<option value="09">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+				<option value="23">23</option>
+			</select> h <input type="text" size="1" name="dateAfter_mins" value="00" class="textCtrl autoSize SpinBox" step="15" max="59" min="00" /> min
+		</dd>
+	</dl>
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase modm_ajaxchat_and}</dt>
+		<dd>
+			<input type="date" size="10" name="dateBefore_date" class="textCtrl autoSize" value="{$dateTime}" /> à 
+
+			<select name="dateBefore_hour" class="textCtrl autoSize">
+				<option value="00">00</option>
+				<option value="01">01</option>
+				<option value="02">02</option>
+				<option value="03">03</option>
+				<option value="04">04</option>
+				<option value="05">05</option>
+				<option value="06">06</option>
+				<option value="07">07</option>
+				<option value="08">08</option>
+				<option value="09">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
+				<option value="16">16</option>
+				<option value="17">17</option>
+				<option value="18">18</option>
+				<option value="19">19</option>
+				<option value="20">20</option>
+				<option value="21">21</option>
+				<option value="22">22</option>
+				<option value="23" selected>23</option>
+			</select> h <input type="text" size="1" name="dateBefore_mins" value="59" class="textCtrl autoSize SpinBox" step="15" max="59" min="00" /> min
+		</dd>
+	</dl>
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase modm_ajaxchat_in_channel}</dt>
+		<dd>
+			<select name="channels" class="textCtrl autoSize">
+				<option value="" selected></option>
+				<xen:foreach key="$channelName" value="$channelId" loop="$channels">
+					<option value="{$channelId}">{$channelName}</option>
+				</xen:foreach>
+				<option value="01">01</option>
+			</select>
+		</dd>
+	</dl>
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd><input type="submit" value="{xen:phrase modm_ajaxchat_load_logs}" class="button primary" accesskey="s" /></dd>
+	</dl>
+
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+</form>
+
+<div class="section">
+    <h2 class="subHeading">{xen:phrase modm_ajaxchat_chat_logs}</h2>
+    <div id="LogsEntries"></div>
+    <xen:if is="{$logEntries}">
+        <xen:include template="modm_ajaxchat_logentries" />
+    <xen:else />
+        <div id="LogsListEmpty" class="secondaryContent"></div>
+    </xen:if>
+    <div class="sectionFooter"><a id="FooterLink" style="display: none;" href="{xen:link 'chat/logs'}" class="AjaxChatLogs"
+                    data-target="#LogEntries" data-last-item-id="{$lastItemId}">{xen:phrase modm_ajaxchat_load_next_entries}</a></div>
+</div>
+</div>]]></template>
+    <template title="modm_ajaxchat_message_report" version_id="6" version_string="alpha 6"><![CDATA[<xen:title>{xen:phrase modm_ajaxchat_tabname} - {xen:phrase modm_ajaxchat_report_chat_message}</xen:title>
+<xen:h1>{xen:phrase modm_ajaxchat_report_chat_message}</xen:h1>
+
+<form action="{xen:link 'chat/report', $chatMessage}" method="post" class="xenForm formOverlay AutoValidator">
+
+	<dl class="ctrlUnit">
+		<dt><label for="ctrl_message">{xen:phrase report_reason}:</label></dt>
+		<dd><textarea name="message" id="ctrl_message" rows="2" class="textCtrl Elastic"></textarea></dd>
+	</dl>
+
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd><input type="submit" value="{xen:phrase modm_ajaxchat_report_message}" accesskey="s" class="button primary" /></dd>
+	</dl>
+
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+</form>]]></template>
+    <template title="modm_ajaxchat_nav_links" version_id="8" version_string="alpha 8"><![CDATA[<ul class="secondaryContent blockLinksList">
+<xen:if is="{$perms.canAccessChat}">
+	<li><a href="{xen:link 'chat/login'}">{xen:phrase modm_ajaxchat_shoutbox}</a></li>
+</xen:if>
+	<li><a href="{xen:link 'chat/online'}">{xen:phrase modm_ajaxchat_whos_online}</a></li>
+<xen:if is="{$perms.canModerateChat}">
+	<li><a href="{xen:link 'chat/chat-logs'}">{xen:phrase modm_ajaxchat_chat_logs}</a></li>
+</xen:if>
+</ul>]]></template>
+    <template title="modm_ajaxchat_nextlogentries" version_id="1" version_string="alpha 1"><![CDATA[<xen:require css="modm_ajaxchat_log.css" />
+
+<xen:foreach loop="$logEntries" value="$entry"><li class="secondaryContent" id="log-entry-{$entry.message_id}">
+        <div>
+            <span class="modm_ajaxchat_timestamp"><xen:datetime time="$entry.message_date" />
+       		</span>
+	        <span class="modm_ajaxchat_username">
+	            <xen:if is="{$entry.user_id} != {$chatBotId}">
+                <a href="{xen:link members, $entry}" class="modm_ajaxchat_username username">{$entry.username}</a>
+	            <xen:else />
+                {$entry.username}
+	            </xen:if> : </span>
+    	    <span class="modm_ajaxchat_message">{xen:helper bodytext, $entry.text}</span>
+        </div>
+    </li></xen:foreach>]]></template>
+    <template title="modm_ajaxchat_online" version_id="1" version_string="alpha 1"><![CDATA[<xen:title>{xen:phrase modm_ajaxchat_users_on_chat_now}</xen:title>
+
+<xen:container var="$head.noindex">
+	<meta name="robots" content="noindex" /></xen:container>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:link chat/online}">{xen:phrase modm_ajaxchat_members_online_on_chat}</xen:breadcrumb>
+</xen:navigation>
+
+<div class="sectionMain">
+	<h3 class="subHeading">{xen:phrase modm_ajaxchat_members_online_on_chat}</h3>
+<xen:if is="{$ajaxchat_online}">
+	<ol class="overlayScroll">
+	<xen:foreach loop="$ajaxchat_online" value="$user">
+		<xen:include template="member_list_item" />
+	</xen:foreach>
+	</ol>
+<xen:else />
+	<div class="secondaryContent">{xen:phrase modm_ajaxchat_chat_empty} <a href="{xen:link 'chat/login'}">{xen:phrase modm_ajaxchat_come_in}</a></div>
+</xen:if>
+	<div class="sectionFooter overlayOnly"><a class="button primary OverlayCloser">{xen:phrase close}</a></div>
+</div>]]></template>
+    <template title="modm_ajaxchat_print.css" version_id="8" version_string="alpha 8"><![CDATA[/*
+ * @package AJAX_Chat
+ * @author Sebastian Tschan
+ * @copyright (c) Sebastian Tschan
+ * @license GNU Affero General Public License
+ * {xen:property link} https://blueimp.net/ajax/
+ */
+
+
+/*
+ * Print layout
+ */
+
+@media print {
+
+	#ajaxChatContent {
+		position:static;
+	}
+	#ajaxChatContent #copyright {
+		display:none;
+	}
+	#ajaxChatContent #headlineContainer {
+		display:none;
+	}
+	#ajaxChatContent #logoutChannelContainer {
+		display:none;
+	}
+	#ajaxChatContent #statusIconContainer {
+		display:none;
+	}
+	#ajaxChatContent #chatList {
+		position:static;
+		overflow:visible;
+	}
+	#ajaxChatContent #inputFieldContainer {
+		display:none;
+	}
+	#ajaxChatContent #submitButtonContainer {
+		display:none;
+	}
+	#ajaxChatContent #onlineListContainer {
+		display:none;
+	}
+	#ajaxChatContent #helpContainer {
+		display:none;
+	}
+	#ajaxChatContent #settingsContainer {
+		display:none;
+	}
+	#ajaxChatContent #bbCodeContainer {
+		display:none;
+	}
+	#ajaxChatContent #colorCodesContainer {
+		display:none;
+	}
+	#ajaxChatContent #emoticonsContainer {
+		display:none;
+	}
+	#ajaxChatContent #optionsContainer {
+		display:none;
+	}
+	#ajaxChatContent #chatList div {
+		padding-bottom:5px;
+	}
+	#ajaxChatContent #chatList img {
+		vertical-align:middle;
+		margin-bottom:2px;
+	}
+	#ajaxChatContent #chatList cite {
+		margin-right:5px;
+	}
+	#ajaxChatContent #chatList .delete {
+	    display:none;
+	}
+	
+	#ajaxChatContent #chatList {
+		border:none;
+	}
+	
+	#ajaxChatContent {
+		font-family:'times new roman', times, serif;
+		font-size:1.0em;
+		text-align:justify;
+	}
+	#ajaxChatContent #chatList code {
+		font-size:0.8em;
+	}
+	
+	#ajaxChatContent {
+		color:#000;
+	}
+	#ajaxChatContent .guest {
+		color:gray;
+	}
+	#ajaxChatContent .user {
+		color:#000;
+	}
+	#ajaxChatContent .moderator {
+		color:#00AA00;
+	}
+	#ajaxChatContent .admin {
+		color:red;
+	}
+	#ajaxChatContent .chatBot {
+		color:#FF6600;
+	}
+	#ajaxChatContent #chatList .chatBotErrorMessage {
+		color:red;
+	}
+	#ajaxChatContent #chatList a {
+		color:#1E90FF;
+	}
+
+}
+]]></template>
+    <template title="modm_ajaxchat_report_content" version_id="5" version_string="alpha 5"><![CDATA[<div class="primaryContent">{xen:helper bodyText, $content.message}</div>
+<xen:if is="{$content.channel}">
+<dl class="secondaryContent pairsInline">
+    <dt>{xen:phrase modm_ajaxchat_channel}</dt>
+    <dd>{$content.channel}</dd>
+</dl>
+</xen:if>]]></template>
+    <template title="modm_ajaxchat_shoutbox" version_id="8" version_string="alpha 8"><![CDATA[<xen:require css="modm_ajaxchat_shoutbox.css" />
+
+<xen:title>{xen:phrase modm_ajaxchat_shoutbox}</xen:title>
+
+<xen:container var="$head.noindex">
+	<meta name="robots" content="noindex" /></xen:container>
+
+<xen:set var="$logoutButton"><a class="callToAction" onclick="javascript:ajaxChat.logout();" href="javascript:void(0)"><span>{xen:phrase log_out}</span></a></xen:set>
+<xen:topctrl>{xen:raw $logoutButton}</xen:topctrl>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:link chat/shoutbox}">{xen:phrase modm_ajaxchat_shoutbox}</xen:breadcrumb>
+</xen:navigation>
+
+<div class="ajaxChatBlock">
+	<div id="ajaxChatContent">
+		{xen:raw $ajaxchat_shoutbox}
+	</div>
+</div>
+
+<form id="ajaxchat_logout_form" action="{xen:link chat/logout}" method="post">
+<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+</form>]]></template>
+    <template title="modm_ajaxchat_shoutbox.css" version_id="11" version_string="beta 2"><![CDATA[.ajaxChatBlock { position: relative; zoom: 1; }
+
+#ajaxChatContent {
+	width: auto;
+	height: auto;
+}
+
+#ajaxChatContent #logoutChannelContainer {
+	height: 22px;
+	margin: 5px 5px 0 5px;
+}
+
+#ajaxChatContent #logoutChannelContainer label {
+	padding: 0 0 0 10px;
+	color: {xen:property primaryMedium};
+}
+
+#ajaxChatContent #logoutChannelContainer form {
+	display: inline-block;
+}
+
+#ajaxChatContent #logoutChannelContainer select {
+    background: url("{xen:property imagePath}/xenforo/gradients/form-element-focus-25.png") repeat-x scroll 0% 0% rgb(255, 255, 240);
+    border-top-color: rgb(150, 150, 150);
+    border-bottom-color: rgb(230, 230, 230);
+    font-size: 0.9em;
+    font-family: Calibri,'Trebuchet MS',Verdana,Geneva,Arial,Helvetica,sans-serif;
+    color: rgb(0, 0, 0);
+    background-color: rgb(240, 247, 252);
+    padding: 1px 3px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(192, 192, 192) rgb(233, 233, 233) rgb(233, 233, 233) rgb(192, 192, 192);
+    border-radius: 4px 4px 4px 4px;
+    outline: 0px none;
+}
+
+#ajaxChatContent #statusIconContainer {
+	float: right;
+	height: 22px;
+	width: 22px;
+	background-image: url('{xen:property imagePath}/modm/ajaxchat/loading-sprite.png');
+	margin: 0 5px 0 0;
+}
+
+#ajaxChatContent .statusContainerOn {
+	background-position: 0px -22px;
+}
+
+#ajaxChatContent .statusContainerOff {
+	background-position: 0px 0px;
+}
+
+#ajaxChatContent .statusContainerAlert {
+	background-position: 0px -44px;
+}
+
+#ajaxChatContent #onlineListContainer, #ajaxChatContent #helpContainer, #ajaxChatContent #settingsContainer, #ajaxChatContent #chatList {
+	border: 1px solid {xen:property primaryLighter};
+	border-radius: 8px;
+	margin: 5px;
+}
+
+#ajaxChatContent #onlineListContainer {
+	float: right;
+	width: 170px;
+	height: 450px;
+	overflow: auto;
+}
+
+#ajaxChatContent #onlineListContainer .userMenu {
+	padding-left: 10px;
+	font-size: 0.85em;
+}
+
+#ajaxChatContent #onlineListContainer h3, #ajaxChatContent #helpContainer h3, #ajaxChatContent #settingsContainer h3 {
+	font-weight: bold;
+	color: {xen:property secondaryDarker};
+	padding: 5px;
+	text-align: center;
+	background: #f9d9b0 url('{xen:property imagePath}/xenforo/gradients/category-23px-light.png') repeat-x top;
+}
+
+#ajaxChatContent #helpContainer {
+	float: right;
+	width: 360px;
+	height: 450px;
+	overflow: auto;
+}
+
+#ajaxChatContent #settingsContainer {
+	float: right;
+	width: 360px;
+	height: 450px;
+	overflow: auto;
+}
+
+#ajaxChatContent #chatList {
+	width: auto;
+	height: 450px;
+	overflow: auto;
+}
+
+#ajaxChatContent .rowEven, #ajaxChatContent .rowOdd, #ajaxChatContent #settingsContainer td, #ajaxChatContent #helpContainer td  {
+	padding: 4px;
+}
+
+#ajaxChatContent .rowEven {
+	background: {xen:property primaryLighterStill}
+		url('{xen:property imagePath}/xenforo/gradients/category-23px-light.png')
+		repeat-x top;
+}
+
+#ajaxChatContent .rowOdd {
+	background-color: {xen:property contentBackground};
+}
+
+#ajaxChatContent .guest, #ajaxChatContent .user, #ajaxChatContent .moderator, #ajaxChatContent .admin, #ajaxChatContent .chatBot {
+	cursor: pointer;
+	font-weight: bold;
+}
+
+#ajaxChatContent .guest {
+	color: gray;
+}
+
+#ajaxChatContent .user {
+	color: {xen:property primaryMedium};
+}
+
+#ajaxChatContent .moderator {
+	color: #00AA00;
+}
+
+#ajaxChatContent .admin {
+	color: red;
+}
+
+#ajaxChatContent .chatBot {
+	color: {xen:property primaryLight};
+}
+
+#ajaxChatContent #chatList .chatBotErrorMessage {
+	color: red;
+}
+
+#ajaxChatContent #chatList .deleteSelected {
+	border: 2px dashed red;
+}
+
+#ajaxChatContent #chatList .dateTime {
+	color: {xen:property mutedTextColor};
+	font-style: italic;
+}
+
+#ajaxChatContent #chatList .report {
+    display:block;
+    float:right;
+    width:10px;
+    height:10px;
+    margin-top:2px;
+    margin-left:5px;
+    background:url('{xen:property imagePath}/modm/ajaxchat/report.gif') 0 0 no-repeat;
+}
+
+#ajaxChatContent #chatList .report:hover {
+    background-position:0 -10px;;
+}
+
+#ajaxChatContent  #chatList .delete {
+    display:block;
+    float:right;
+    width:10px;
+    height:10px;
+    margin-top:2px;
+    padding-left:5px;
+    background:url('chat/img/delete.png') no-repeat right;
+}
+
+#ajaxChatContent #inputFieldContainer {
+	display: block;
+	width: auto;
+	height: auto;
+	margin: 10px 5px;
+}
+
+#ajaxChatContent #inputFieldContainer textarea {
+	width: 100%;
+	height: 50px;
+	border-width: 1px;
+	border-style: solid;
+	border-top-color: rgb(192, 192, 192);
+	border-right-color: rgb(233, 233, 233);
+	border-bottom-color: rgb(233, 233, 233);
+	border-left-color: rgb(192, 192, 192);
+	border-radius: 4px;
+	border-radius: 4px;
+	outline: 0;
+	font-size: 13px;
+	font-family: Calibri, 'Trebuchet MS', Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: {xen:property contentText};
+	background-color: {xen:property textCtrlBackground};
+	word-wrap: break-word;
+}
+
+#ajaxChatContent #inputFieldContainer textarea:focus {
+	background: rgb(255, 255, 240);
+	background-image: url('{xen:property imagePath}/xenforo/gradients/form-element-focus-100.png') reapeat-x;
+	border-top-color: rgb(150, 150, 150);
+	border-bottom-color: rgb(230, 230, 230);
+}
+
+#ajaxChatContent #submitButtonContainer {
+	float: right;
+}
+
+#ajaxChatContent #emoticonsContainer {
+	margin: 5px;
+	padding: 5px;
+	height: 20px;
+	width: auto;
+}
+
+#ajaxChatContent #emoticonsContainer img {
+	margin: 0 2px 0 2px;
+}
+
+#ajaxChatContent #bbCodeContainer {
+	padding: 5px;
+	height: 23px;
+	width: auto;
+}
+
+#ajaxChatContent #bbCodeContainer input {
+	font-style: normal;
+	font-size: 12px;
+	font-family: Calibri, 'Trebuchet MS', Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: {xen:property textCtrlText};
+	background: rgb(220, 220, 235) url('{xen:property imagePath}/xenforo/gradients/form-button-white-25px.png') repeat-x top;
+	padding: 0px 6px;
+	border: 1px solid rgb(221, 221, 235);
+	border-top-color: rgb(255, 255, 255);
+	border-bottom-color: rgb(179, 179, 189);
+	border-radius: 7px;
+	text-align: center;
+	line-height: 23px;
+	display: inline-block;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+#ajaxChatContent #bbCodeContainer input:hover {
+	color: black;
+	text-decoration: none;
+	background-color: rgb(255, 255, 200);
+	border-color: rgb(255, 255, 200);
+	border-top-color: white;
+	border-bottom-color: rgb(190, 190, 170);
+}
+
+
+#ajaxChatContent #optionsContainer {
+	float: right;
+	background-color: transparent;
+	padding: 5px;
+}
+
+/* Buttons */
+#content #optionsContainer #helpButton {
+	background:url('{xen:property imagePath}/modm/ajaxchat/help.png') no-repeat;
+}
+#content #optionsContainer #settingsButton {
+	background:url('{xen:property imagePath}/modm/ajaxchat/settings.png') no-repeat;
+}
+#content #optionsContainer #onlineListButton {
+	background:url('{xen:property imagePath}/modm/ajaxchat/users.png') no-repeat;
+}
+#content #optionsContainer #audioButton {
+	background:url('{xen:property imagePath}/modm/ajaxchat/audio.png') no-repeat 0px 0px;
+}
+#content #optionsContainer #audioButton.off {
+	background-position: 0px 100%;
+}
+#content #optionsContainer #autoScrollButton {
+	background:url('{xen:property imagePath}/modm/ajaxchat/autoscroll.png') no-repeat 0px 0px;
+}
+#content #optionsContainer #autoScrollButton.off {
+	background-position: 0px 100%;
+}
+#content #settingsContainer #settingsList input.playback {
+	background:url('{xen:property imagePath}/modm/ajaxchat/playback.png') no-repeat;
+}
+
+#ajaxChatContent #bbCodeContainer #colorCodesContainer {
+	position: absolute;
+	left: 130px;
+	bottom: 30px;
+	padding: 3px;
+	z-index: 1;
+	border: 1px solid {xen:property primaryLighter};
+	border-radius: 4px;
+	background: {xen:property contentBackground};
+}
+
+#ajaxChatContent #bbCodeContainer #colorCodesContainer a {
+	border: 1px solid {xen:property primaryDarker};
+	display: block;
+	float: left;
+	width: 20px;
+	height: 20px;
+}
+
+#ajaxChatContent #copyright {
+	color: {xen:property mutedTextColor};
+	float: right;
+	font-style: italic;
+	font-size: 0.8em;
+	margin: 5px;
+}
+
+#ajaxChatContent #messageLengthCounter {
+	font-style: italic;
+	color: {xen:property primaryMedium};
+	padding: 0 5px 0 0;
+}
+
+#ajaxChatContent .button {
+	border: none;
+	box-shadow: none;
+	padding: 0;
+	vertical-align: middle;
+}
+
+#ajaxChatContent #submitButton {
+	font: 12pt Calibri, 'Trebuchet MS', Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: White;
+	font-weight: bold;
+	background: #e68c17 url('{xen:property imagePath}/xenforo/gradients/form-button-white-25px.png') repeat-x center -7px;
+	border: 3px solid White;
+	border-radius: 8px;
+	text-align: center;
+	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+	display: inline-block;
+	cursor: pointer;
+	height: 33px;
+	background-color: #e68c17;
+	padding: 0 10px 0 10px;
+}
+
+#ajaxChatContent #submitButton:hover {
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+	-khtml-box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+	position: relative;
+	top: 2px;
+}
+
+	@media(max-width: {xen:property maxResponsiveWideWidth}) {
+		#ajaxChatContent #chatList,
+		#ajaxChatContent #onlineListContainer,
+		#ajaxChatContent #settingsContainer,
+		#ajaxChatContent #helpContainer {
+			height: 300px;
+		}
+
+		#ajaxChatContent #logoutChannelContainer {
+			display: block;
+			float: none;
+			height: auto;
+			width: auto;
+		}
+		
+		#ajaxChatContent #statusIconContainer {
+			float: right;
+			position: relative;
+			top: 0;
+			right: 0;
+		}
+		
+		#ajaxChatContent #onlineListContainer {
+			display: none;
+		}
+		
+		#ajaxChatContent #inputFieldContainer {
+			display: block;
+			float: left;
+			padding: 5px;
+			margin: 0;
+			width: 80%;
+			height: 50px;
+		}
+		
+		#ajaxChatContent #inputFieldContainer textarea {
+			height: 40px;
+			width: 100%;
+			margin: 0;
+			padding: 0;
+		}
+		
+		#ajaxChatContent #submitButtonContainer {
+			display: inline-block;
+			position: absolute;
+			right: 10px;
+			margin: auto;
+			width: 15%;
+			height: 50px;
+		}
+		
+		#ajaxChatContent #submitButtonContainer input {
+			height: 100%;
+			width: 100%;
+			overflow: hidden;
+		}
+		
+		#ajaxChatContent #submitButtonContainer #messageLengthCounter {
+			display: none;
+		}
+		
+		#ajaxChatContent #emoticonsContainer {
+			clear: both;
+			display: block;
+			padding: 5px;
+		}
+				
+		#ajaxChatContent #bbCodeContainer {
+			height: auto;
+		}
+		
+		#ajaxChatContent #copyright {
+			float: none;
+			text-align: center;
+			width: 100%;
+		}
+	}]]></template>
+    <template title="modm_ajaxchat_wf_online" version_id="8" version_string="alpha 8"><![CDATA[<xen:if is="{$AjaxChat.onlineUsers}">
+			
+			<ol class="listInline">
+				<xen:foreach loop="$AjaxChat.onlineUsers" value="$user" i="$i">
+					<xen:if is="{$i} <= {$AjaxChat.limit}">
+						<li>
+						<xen:if is="{$user.user_id}">
+							<a href="{xen:link members, $user}"
+								class="username{xen:if '!{$user.visible}', ' invisible'}{xen:if {$user.followed}, ' followed'}">{$user.username}</a><xen:if is="{$i} < {$AjaxChat.limit}">,</xen:if>
+						<xen:else />
+							{xen:phrase guest}<xen:if is="{$i} < {$AjaxChat.limit}">,</xen:if>
+						</xen:if>
+						</li>
+					</xen:if>
+				</xen:foreach>
+				<xen:if is="{$AjaxChat.recordsUnseen}">
+					<li class="moreLink">... <a href="{xen:link chat/online}" title="{xen:phrase see_all_visitors}" class="OverlayTrigger">{xen:phrase and_x_more, 'count={xen:number $AjaxChat.recordsUnseen}'}</a></li>
+				</xen:if>
+			</ol>
+		</xen:if>
+		
+		<div class="footnote">
+			<xen:if is="{$AjaxChat.guests}">
+			{xen:phrase online_now_x_members_y_guests_z, 'total={xen:number $AjaxChat.total}', 'members={xen:number $AjaxChat.members}', 'guests={xen:number $AjaxChat.guests}'}
+			<xen:else />
+			{xen:phrase modm_ajaxchat_online_now_x_users, 'total={xen:number $AjaxChat.total}'}
+			</xen:if>
+		</div>]]></template>
+    <template title="modm_ajaxchat_wf_shoutbox" version_id="4" version_string="alpha 4"><![CDATA[<xen:require css="modm_ajaxchat_wf_shoutbox.css" />
+
+<div>
+{xen:raw $AjaxChatShoutbox}
+</div>
+]]></template>
+    <template title="modm_ajaxchat_wf_shoutbox.css" version_id="5" version_string="alpha 5"><![CDATA[.ajaxChatShoutbox {
+	background-color: {xen:property contentBackground};
+	color: #000;
+}
+
+.ajaxChatShoutbox h1 {
+	color: #000;
+}
+
+.ajaxChatShoutbox a {
+	color: {xen:property primaryMedium};
+}
+
+.ajaxChatShoutbox input, #content select, #content textarea {
+	background-color: #FFF;
+	color: #000;
+}
+
+.ajaxChatShoutbox #chatList {
+	border-color: #ADADAD;
+	background-color: #FFF;
+}
+
+.ajaxChatShoutbox .rowEven {
+	padding: 5px 0 5px 0;
+	background-color: {xen:property contentBackground};
+}
+
+.ajaxChatShoutbox .rowOdd {
+	padding: 5px 0 5px 0;
+	background-color: {xen:property primaryLighterStill};
+}
+
+.ajaxChatShoutbox .rowEven img,
+.ajaxChatShoutbox .rowOdd img {
+	vertical-align: middle;
+}
+
+.ajaxChatShoutbox .dateTime {
+	font-style: italic;
+	color: {xen:property mutedTextColor};
+}
+
+.ajaxChatShoutbox .guest {
+	color: gray;
+}
+
+.ajaxChatShoutbox .user {
+	color: #000;
+}
+
+.ajaxChatShoutbox .moderator {
+	color: #0000FF;
+}
+
+.ajaxChatShoutbox .admin {
+	color: #FF0000;
+}
+
+.ajaxChatShoutbox .chatBot {
+	color: #476C8E;
+}
+
+.ajaxChatShoutbox #chatList .chatBotErrorMessage {
+	color: red;
+}
+
+.ajaxChatShoutbox #chatList a {
+	color: #476C8E;
+}
+
+.ajaxChatShoutbox #chatList .deleteSelected {
+	border-color: red;
+}
+
+.ajaxChatShoutbox #ajaxChatInputFieldContainer {
+	padding: 5px;
+}
+
+.ajaxChatShoutbox #ajaxChatInputField {
+	font-size: 1.1em;
+	font-family: Calibri, 'Trebuchet MS', Verdana, Geneva, Arial, Helvetica,
+			sans-serif;
+	color: #000000;
+	background-color: rgb(240, 247, 252);
+	border-width: 1px;
+	border-style: solid;
+	border-top-color: rgb(192, 192, 192);
+	border-right-color: rgb(233, 233, 233);
+	border-bottom-color: rgb(233, 233, 233);
+	border-left-color: rgb(192, 192, 192);
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	outline: 0;
+	height: 16px;
+	width: 100%;
+}
+
+.ajaxChatShoutbox #ajaxChatCopyright {
+	font-size: 0.8em;
+	text-align: center;
+}
+
+.ajaxChatShoutbox #ajaxChatCopyright,
+.ajaxChatShoutbox #ajaxChatCopyright a {
+	font-style: italic;
+	color:  {xen:property mutedTextColor};
+}
+
+.ajaxChatShoutbox #ajaxChatChatList {
+	height: 150px;
+	overflow: auto;
+}
+
+.ajaxChatShoutbox #ajaxChatChatList {
+	border-width: 1px;
+	border-style: solid;
+	border-color: {xen:property primaryLighter};
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	outline: 0;
+}
+
+.ajaxChatShoutbox #ajaxChatChatList .delete {
+	display:block;
+	float:right;
+	width:10px;
+	height:10px;
+	margin-top:2px;
+	padding-left:5px;
+	background:url('chat/img/delete.png') no-repeat right;
+}
+
+.ajaxChatShoutbox #ajaxChatChatList .report {
+	display:block;
+	float:right;
+	width:10px;
+	height:10px;
+	margin-top:2px;
+	margin-left:5px;
+	background:url('chat/img/report.gif') 0 0 no-repeat;
+}
+
+.ajaxChatShoutbox #ajaxChatChatList .report:hover {
+	background-position:0 -10px;;
+}]]></template>
+  </templates>
+  <public_template_modifications/>
+  <bb_code_media_sites/>
+</addon>

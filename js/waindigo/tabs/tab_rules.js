@@ -1,0 +1,2 @@
+!function(a,d,e,f){XenForo.TabRulesForm=function(a){this.__construct(a)};XenForo.TabRulesForm.prototype={__construct:function(b){this.$form=b;b.find("select.TabRuleContentType").change(a.context(this,"change"));this.change()},change:function(b){var c=this.$form;c.find("select.TabRuleContentType").each(function(){var b=a(this);c.find("."+b.data("tabsclass")).each(function(){b.val()!=a(this).data("contenttype")?a(this).hide():a(this).show()})})}};XenForo.register("form.TabRulesForm","XenForo.TabRulesForm")}(jQuery,
+this,document);

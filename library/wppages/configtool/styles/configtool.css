@@ -1,0 +1,450 @@
+body
+{
+	background-color:	rgb(240,240,240);								/*  pageBackground  */
+	font-family: 		'Trebuchet MS', Helvetica, Arial, sans-serif;
+	color: 				rgb(20,20,20);									/*	contentText		*/
+	word-wrap: 			break-word;
+	line-height: 		1.27;
+}
+img
+{
+	border: 0;
+}
+
+/*----------- 		Link Styles		 	-----------*/ 
+a:link, a:active, a:visited 
+{ 
+	text-decoration: none; 
+	color: #86a1b6; 
+}
+a:hover, a:focus 
+{ 	
+	text-decoration: underline; color: #94c2e5; 
+}
+h1
+{
+	font-size: 			160%;
+	font-weight:		normal;
+}
+
+
+div.main
+{
+	width:				960px;
+	margin-right:		auto;
+	margin-left:		auto;
+}
+div.header
+{
+	width:				960px;
+	height:				125px;
+	background-color:	#176093;											/*	primaryMedium	*/
+	font-family: 		Tahoma,Helvetica,Arial,Sans-Serif;	
+	color:				#FFFFFF;
+}
+div.logo
+{
+	height:				125px;
+	width:				30%;
+	padding:			10px;
+
+}
+div.logoimage
+{
+	float:				left;
+}
+div.headermessage
+{
+	float:				left;
+	width:				60%;
+	margin-left:		20px;
+}
+div.logotext
+{
+	float:				left;
+	margin:				20px 0px 0px 30px;	
+}
+div.loginbox
+{
+	float:				right;
+	width:				101px;
+	height:				25px;
+	margin:				-58px 0px 10px 0px;
+	padding:			0px 0px 0px 8px;
+	background-color:	#176093;											/*	primaryMedium	*/
+	background-repeat: no-repeat;
+}
+div.loginbox a
+{
+	color:				#F0F7FC;										/*	primaryLightest	*/
+	font-size:			11px;				
+}
+div.navbar
+{
+	height:				24px;
+	z-index:			20;
+	border-top:			1px solid #65A5D1;								/*	primaryLightish	*/
+	border-right:		1px solid #65A5D1;								/*	primaryLightish	*/
+	border-left:		1px solid #65A5D1;								/*	primaryLightish	*/
+	border-bottom:		1px solid #032A46;								/*	primaryDarker	*/			
+	background-color:	#2B485C;										/*	primaryDark		*/ 	
+}
+div.shell
+{
+	clear:				both;
+	height:				700px;
+	padding-top:		30px;
+	background-color:	rgb(252,252,255);								/*	contentBackground	*/
+}
+div.leftcol
+{
+	float:				left;
+	width:				30%;
+	border:				1px solid #65A5D1;								/*	primaryLightish	*/
+	padding-left:		6px;
+}
+div.rightcol
+{
+	float:				left;
+	width:				65%;
+	margin-left:		30px;
+	border:				1px solid #65A5D1;								/*	primaryLightish	*/
+}
+div.userinput
+{
+	clear:				both;
+	float:				left;
+	width:				100%;
+	height:				250px;
+	overflow:			auto;
+	border-bottom:		1px solid #65A5D1;								/*	primaryLightish	*/
+	padding:			4px;
+}
+div.feedback
+{
+	clear:				both;
+	height:				425px;
+	overflow:			auto;
+	border-top:			1px solid #65A5D1;								/*	primaryLightish	*/
+	padding:			4px;
+	font-size:			85%;
+}
+div.subheader
+{
+	margin:				0px 10px;
+	padding:			0px 10px;
+
+}
+div.footer
+{
+	margin:				10px 10px;
+	line-height:		24px;
+	font-size:			12px;
+}
+div.bottombreadcrumb
+{
+	width:				98%;
+	float:				left;
+	margin-bottom:		8px;
+	padding:			0px	10px;
+	border:				1px solid #A5CAE4;								/*	primaryLighter */
+	font-size:			12px;
+}
+div.step
+{
+	float:				left;
+	width: 				100px;
+}
+div.stepid
+{
+	float:				left;
+	width:				200px;
+	//jj
+}
+div.copyright
+{
+	clear:				both;
+	float:				left;
+	width:				90%;
+
+}
+
+
+/*----------- 		LEFT Menu Styles	 	-----------*/ 
+ol.leftmenu 
+{
+	list-style-type:decimal;
+	color:				#888888;
+}
+ol.leftmenu li.active
+{
+	color:				#032A46;								/*	primaryDarker	*/
+	font-weight:		bold;		
+}
+ol.leftmenu li.inactive
+{
+	color:				#888888;
+	font-weight:		normal;		
+}
+/*----------- 	end Left Menu Styles	 	-----------*/
+
+/*----------- 		Form Table	Styles	 	-----------*/
+table.form_table
+{
+	width: 			100%;
+	
+}
+table.form_table td.td_left
+{
+	width:			40%;
+}
+table.form_table td.td_right
+{
+	width:			60%;
+	vertical-align: top;
+}
+
+
+
+/*----------- 		End Form Table Styles 	-----------*/ 
+
+div.breadcrumb
+{
+	float:				left;
+	padding-top:		10px;
+}
+div.search
+{
+	float:				right;
+}
+div.gallerytitle
+{
+	clear:				both;
+	padding-top:		1px;
+	margin-bottom:		10px;
+}
+div.content
+{
+	height:				530px;
+	margin:				40px 10px 0px 10px;
+	border:				1px solid #A5CAE4;								/*	primaryLighter */
+}
+
+
+
+/*----------- 		Album Styles		 	-----------*/
+div.holder
+{
+	float:				left;
+	width:170px;
+	height: 150px;
+}
+div.albumshell
+{
+	float:				left;
+	width:				150px;
+	height:				200px;
+	margin:				35px 10px 2px 10px;
+	padding:			8px 8px 8px 8px;
+	background-color:	#F0F7FC; 										/*	primaryLightest		*/
+}
+div.albumtitle
+{
+	color:				#176093;										/*	primaryMedium		*/			
+	font-size:			16px;
+}
+div.albumtitle a:link, a:active, a:visited 
+{ 
+	color: #176093;														/*	primaryMedium		*/ 
+}
+div.albumtitle a:hover, a:focus 
+{ 
+	color: #6D3F03;														/*	primaryMedium		*/
+}
+div.albumthumb
+{
+	padding:			10px;
+	border:				1px solid #A5CAE4;								/*	primaryLighter */
+}
+div.albumthumb img
+{
+	display:	table-cell;
+	margin-left: auto;
+	margin-right: auto;
+}
+div.albumdesc
+{
+
+	font-size:			13px;	
+}
+p.albumtext
+{
+	font-size:			10px;
+}
+ul.mainmenu
+{
+	margin-top:			-1px;
+	line-height:		25px;
+	font-size:			11px;
+}
+/*----------- 	End Album Styles		 	-----------*/ 
+/*----------- 		Image Styles		 	-----------*/
+div.image
+{
+	float:				left;
+	width:				150px;
+	margin:				10px 12px 2px 12px;
+	padding:			4px;
+	border:				1px solid #A5CAE4;								/*	primaryLighter 	*/		
+	background-color:	#F0F7FC;										/*	primaryLightest	*/
+}
+div.image:hover
+{
+	border:				1px solid #176093;								/*	#primaryMedium	*/	
+}
+div.imagethumb
+{
+	padding:			10px;
+	border:				none;
+}
+div.imagethumb img
+{
+	display:	table-cell;
+	margin-left: auto;
+	margin-right: auto;
+}
+/*----------- 	End Image Styles		 	-----------*/
+/*----------- 	Full Image Styles		 	-----------*/
+div.navimg
+{
+	clear:				both;
+	height:				30px;
+	margin:				-48px 10px 0px 10px;
+	line-height:		30px;
+	font-size:			20px;
+}
+div.imgprevious
+{
+	float:				right;
+	padding-right:		10px;
+}
+div.imgnext
+{
+	float:				right;
+	padding-right:		10px;
+}
+div.imagecontent
+{
+	height:				620px;
+	margin:				40px 10px 0px 10px;
+	padding-top:		5px;
+	border:				1px solid #A5CAE4;								/*	primaryLighter */
+}
+div.frame
+{
+	width:					595px;
+	margin-left:			auto;
+	margin-right:			auto;
+}
+
+/*----------- 	End Full Image Styles	 	-----------*/
+/*----------- 		Main Menu Styles	 	-----------*/ 
+ul.mainmenu li
+{
+	display:			block;
+	float:				left;
+	padding:			0px 10px;
+	text-align:			center;
+	white-space:		nowrap;
+	word-wrap:			normal;
+}
+ul.mainmenu li a
+{
+	color:				#A5CAE4;								/*	primaryLighter */		
+}
+ul.mainmenu li.active
+{
+	background-color:	#65A5D1;								/*	primaryLightish	*/
+	color:				#032A46;								/*	primaryDarker	*/
+	font-weight:		bold;		
+}
+/*----------- 	Search Forum Styles	-----------*/ 
+ul.searchfields
+{
+	display:			none;
+	height:				120px;
+	width:				160px;
+	overflow:			auto;
+	border:				1px solid #A5CAE4;						/*	primaryLighter */
+	list-style:			none;
+}
+span.resetsearch
+{
+	display:			inline;
+	white-space:		nowrap;
+}
+input.pushbutton 
+{
+	padding: 			5px 10px;
+	cursor: 			pointer;
+}
+/*----------- 	END Search Forum Styles	-----------*/ 
+span.title
+{
+	font-size: 			240%;
+	font-weight:		bold;
+}
+span.motto
+{
+	font-size:			120%;
+	font-weight:		normal;
+}
+
+/*----------- 	Page Navigation	-----------*/
+div.status
+{
+	height:				18px;
+	margin:				-19px 11px 0px 11px;
+	padding-left:		4px;
+	background-color:	#D7EDFC;										/*	primaryLighterStill	*/
+	line-height:		18px;
+	color:				#65A5D1;										/*	primaryLightish	*/
+	font-size:			12px;	
+}
+div.statusprevious
+{
+	float:				left;
+	width:				80px;
+}
+div.statusnext
+{
+	float:				left;
+	width:				80px;
+}
+div.pagelist
+{
+	margin:				0;
+	padding:			0;
+}
+ul.pagelist
+{
+	clear: 				both;
+	padding: 			0;
+	margin: 			0 0 0 0;
+	list-style-type: 	none;
+}
+ul.pagelist li 
+{
+	display: 			inline;
+	padding-right:		8px;
+}
+.disabled_nav 
+{
+	visibility: 		hidden;
+}
+.disabledlink 
+{
+	color: 				rgb(150,150,150 );								/*	mutedTextColor	*/			
+	cursor: 			default;
+}
+/*-----------	End Page Navigation	-----------*/ 

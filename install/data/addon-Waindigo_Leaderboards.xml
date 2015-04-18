@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="Waindigo_Leaderboards" title="Leaderboards by Waindigo" version_string="1.0.1" version_id="1419864806" url="https://waindigo.org/" install_callback_class="Waindigo_Install" install_callback_method="install" uninstall_callback_class="Waindigo_Install" uninstall_callback_method="uninstall">
+  <admin_navigation>
+    <navigation navigation_id="leaderboards" parent_navigation_id="userCustomization" display_order="100" link="leaderboards" admin_permission_id="leaderboard" debug_only="0" hide_no_children="0"/>
+  </admin_navigation>
+  <admin_permissions>
+    <admin_permission admin_permission_id="leaderboard" display_order="3000"/>
+  </admin_permissions>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="waindigo_leaderboard_delete_leaderboards"><![CDATA[<xen:title>{xen:phrase waindigo_confirm_deletion_of_leaderboard_leaderboards}: {$leaderboard.title}</xen:title>
+
+<xen:h1>{xen:phrase waindigo_confirm_deletion_of_leaderboard_leaderboards}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink 'leaderboards/edit', $leaderboard}">{$leaderboard.title}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="delete_confirmation.css" />
+
+<xen:form action="{xen:adminlink 'leaderboards/delete', $leaderboard}" class="deleteConfirmForm formOverlay">
+
+	<p>{xen:phrase waindigo_please_confirm_want_to_delete_leaderboard_leaderboards}:</p>
+	<strong><a href="{xen:adminlink 'leaderboards/edit', $leaderboard}">{$leaderboard.title}</a></strong>
+
+	<xen:submitunit save="{xen:phrase waindigo_delete_leaderboard_leaderboards}" />
+
+	<input type="hidden" name="_xfConfirm" value="1" />
+</xen:form>]]></template>
+    <template title="waindigo_leaderboard_edit_leaderboards"><![CDATA[<xen:title>{xen:if '{$leaderboard.leaderboard_id}', '{xen:phrase waindigo_edit_leaderboard_leaderboards}: {$leaderboard.title}', '{xen:phrase waindigo_create_new_leaderboard_leaderboards}'}</xen:title>
+
+<xen:h1>{xen:if '{$leaderboard.leaderboard_id}', '{xen:phrase waindigo_edit_leaderboard_leaderboards}: <em>{$leaderboard.title}</em>', '{xen:phrase waindigo_create_new_leaderboard_leaderboards}'}</xen:h1>
+
+<xen:if is="{$leaderboard.leaderboard_id}">
+	<xen:navigation>
+		<xen:breadcrumb href="{xen:adminlink 'leaderboards'}#{xen:helper listitemid, $leaderboard.leaderboard_id}">{$leaderboard.title}</xen:breadcrumb>
+	</xen:navigation>
+</xen:if>
+
+<xen:form action="{xen:adminlink 'leaderboards/save', $leaderboard}"
+	class="AutoValidator"
+	data-redirect="on">
+
+	<ul class="tabs Tabs" data-panes="#leaderboardPanes > li">
+		<li class="active"><a>{xen:phrase waindigo_leaderboard_options_leaderboards}</a></li>
+		<li><a>{xen:phrase user_criteria}</a></li>
+		<li><a>{xen:phrase custom_userfield_criteria}</a></li>
+	</ul>
+	
+	<ul id="leaderboardPanes">
+		<li>
+			<xen:textboxunit label="{xen:phrase title}:" name="title" value="{$leaderboard.title}" data-liveTitleTemplate="{xen:if {$leaderboard.leaderboard_id},
+				'{xen:phrase waindigo_edit_leaderboard_leaderboards}: <em>%s</em>',
+				'{xen:phrase waindigo_create_new_leaderboard_leaderboards}: <em>%s</em>'}" />
+				
+			<fieldset>
+				<xen:textboxunit label="{xen:phrase waindigo_order_leaderboards}:" name="order" value="{$leaderboard.order}" explain="{xen:phrase waindigo_order_explain_leaderboards}" />
+				<xen:checkboxunit label="" explain="{xen:phrase waindigo_use_cached_value_explain_leaderboards}">
+					<xen:option label="{xen:phrase waindigo_use_cached_value_leaderboards}" name="use_cached_value" value="1" selected="{$leaderboard.use_cached_value}" />
+				</xen:checkboxunit>
+				<xen:selectunit label="{xen:phrase waindigo_rebuild_frequency_leaderboards}" name="rebuild_frequency" value="{$leaderboard.rebuild_frequency}">
+					<xen:option label="{xen:phrase waindigo_hourly_leaderboards}" value="hourly" />
+					<xen:option label="{xen:phrase waindigo_daily_leaderboards}" value="daily" />
+					<xen:option label="{xen:phrase waindigo_monthly_leaderboards}" value="monthly" />
+				</xen:selectunit>
+			</fieldset>
+		</li>
+		<li>
+			<xen:include template="helper_criteria_user" />
+			<xen:include template="helper_criteria_user_date">
+				<xen:set var="$noDateFields">true</xen:set>
+			</xen:include>
+		</li>
+		<li><xen:include template="helper_criteria_user_field" /></li>
+	</ul>
+	
+	<xen:submitunit>
+		<input type="submit" name="saveexit" value="{xen:phrase save_and_exit}" accesskey="e" class="button primary" id="saveExitButton" />
+		<input type="submit" name="reload" value="{xen:phrase save_changes}" accesskey="s" class="button" id="saveReloadButton" data-ajaxvalue="{xen:phrase save_all_changes}" />
+		<xen:if is="{$leaderboard.leaderboard_id}">
+			<input type="button" value="{xen:phrase waindigo_delete_leaderboard_leaderboards}..." accesskey="d" class="button OverlayTrigger"
+				data-href="{xen:adminlink leaderboards/delete, $leaderboard}" />
+		</xen:if>
+	</xen:submitunit>
+</xen:form>]]></template>
+    <template title="waindigo_leaderboard_list_leaderboards"><![CDATA[<xen:title>{xen:phrase waindigo_leaderboards_leaderboards}</xen:title>
+
+<xen:h1>{xen:phrase waindigo_leaderboards_leaderboards}</xen:h1>
+
+<xen:topctrl>
+	<a href="{xen:adminlink 'leaderboards/add'}" class="button">+ {xen:phrase waindigo_create_new_leaderboard_leaderboards}</a>
+</xen:topctrl>
+
+<xen:require css="filter_list.css" />
+<xen:require js="js/xenforo/filter_list.js" />
+
+<xen:form action="{xen:adminlink 'leaderboards/toggle'}" class="section AutoValidator">
+
+	<xen:if is="{$leaderboards}">
+		<h2 class="subHeading">
+			<xen:include template="filter_list_controls" />
+			{xen:phrase waindigo_leaderboards_leaderboards}
+		</h2>
+
+		<ol class="FilterList">
+			<xen:foreach loop="$leaderboards" key="$leaderboardId" value="$leaderboard">
+				<xen:listitem id="{$leaderboardId}"
+					label="{xen:raw $leaderboard.title}"
+					snippet="{$leaderboard.order}"
+					href="{xen:adminlink 'leaderboards/edit', $leaderboard}"
+					delete="{xen:adminlink 'leaderboards/delete', $leaderboard}"
+					deletehint="{xen:phrase delete}">
+				</xen:listitem>
+			</xen:foreach>
+		</ol>
+
+		<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $leaderboards}</span>', 'total={xen:count $leaderboards}'}</p>
+
+	<xen:else />
+		<div class="noResults">{xen:phrase waindigo_there_are_no_leaderboards_leaderboards}</div>
+	</xen:if>
+
+</xen:form>]]></template>
+    <template title="waindigo_tools_rebuild_leaderboards"><![CDATA[<xen:form action="{xen:adminlink 'tools/trigger-deferred'}">
+	<h2 class="subHeading">{xen:phrase waindigo_rebuild_leaderboards_leaderboards}</h2>
+	<xen:spinboxunit name="options[batch]" value="100" step="50" min="1" label="{xen:phrase items_to_process_per_page}:" />
+
+	<xen:submitunit save="{xen:phrase rebuild_now}" />
+	<input type="hidden" name="cache" value="Waindigo_Leaderboards_Deferred_Leaderboard" />
+</xen:form>]]></template>
+  </admin_templates>
+  <admin_template_modifications>
+    <modification template="tools_rebuild" modification_key="waindigo_toolsRebuild_leaderboards" description="Adds 'Leaderboards' cache rebuilder." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#$#]]></find>
+      <replace><![CDATA[<xen:include template="waindigo_tools_rebuild_leaderboards" />]]></replace>
+    </modification>
+  </admin_template_modifications>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="Waindigo_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="Waindigo_Leaderboards_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="Waindigo_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_Leaderboards_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerPublic_Member" description="XenForo_ControllerPublic_Member (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="Waindigo_Leaderboards_Listener_LoadClass" callback_method="loadClassController" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+  </code_event_listeners>
+  <cron>
+    <entry entry_id="waindigoLeaderboards" cron_class="Waindigo_Leaderboards_CronEntry_Leaderboard" cron_method="rebuildLeaderboards" active="1"><![CDATA[{"day_type":"dom","dom":["-1"],"hours":["-1"],"minutes":["18"]}]]></entry>
+  </cron>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="waindigo_leaderboards" display_order="2000" debug_only="0"/>
+    <option option_id="waindigo_leaderboards_showLastUpdated" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params/>
+      <sub_options/>
+      <relation group_id="waindigo_leaderboards" display_order="1"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="admin_navigation_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Leaderboards]]></phrase>
+    <phrase title="admin_permission_leaderboard" version_id="1418914228" version_string="1.0.0"><![CDATA[Manage leaderboards]]></phrase>
+    <phrase title="cron_entry_waindigoLeaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Rebuild Leaderboards]]></phrase>
+    <phrase title="option_group_waindigo_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Leaderboards by Waindigo]]></phrase>
+    <phrase title="option_group_waindigo_leaderboards_description" version_id="1418914228" version_string="1.0.0"><![CDATA[Options for the Leaderboards by Waindigo add-on.]]></phrase>
+    <phrase title="option_waindigo_leaderboards_showLastUpdated" version_id="1418914228" version_string="1.0.0"><![CDATA[Show Last Updated]]></phrase>
+    <phrase title="option_waindigo_leaderboards_showLastUpdated_explain" version_id="1418914228" version_string="1.0.0"><![CDATA[If checked, the date that the leaderboard was last updated will be shown at the top of the page on the 'Notable Members' page for any custom leaderboard.]]></phrase>
+    <phrase title="waindigo_confirm_deletion_of_leaderboard_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Confirm Deletion of Leaderboard]]></phrase>
+    <phrase title="waindigo_create_new_leaderboard_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Create New Leaderboard]]></phrase>
+    <phrase title="waindigo_daily_leaderboards" version_id="1418925432" version_string="1.0.0"><![CDATA[Daily]]></phrase>
+    <phrase title="waindigo_delete_leaderboard_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Delete Leaderboard]]></phrase>
+    <phrase title="waindigo_edit_leaderboard_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Edit Leaderboard]]></phrase>
+    <phrase title="waindigo_hourly_leaderboards" version_id="1418925432" version_string="1.0.0"><![CDATA[Hourly]]></phrase>
+    <phrase title="waindigo_last_updated_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Last Updated]]></phrase>
+    <phrase title="waindigo_leaderboards_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Leaderboards]]></phrase>
+    <phrase title="waindigo_leaderboard_options_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Leaderboard Options]]></phrase>
+    <phrase title="waindigo_monthly_leaderboards" version_id="1418925432" version_string="1.0.0"><![CDATA[Monthly]]></phrase>
+    <phrase title="waindigo_order_explain_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[This is the name of the column in the xf_user table that will be used to order the leaderboard. Examples include <span style="font-family: 'Courier New';">message_count</span>, <span style="font-family: 'Courier New';">like_count</span> and <span style="font-family: 'Courier New';">trophy_points</span>.]]></phrase>
+    <phrase title="waindigo_order_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Order]]></phrase>
+    <phrase title="waindigo_please_confirm_want_to_delete_leaderboard_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Please confirm that you want to delete the following leaderboard]]></phrase>
+    <phrase title="waindigo_rebuild_frequency_leaderboards" version_id="1418925432" version_string="1.0.0"><![CDATA[Rebuild Frequency]]></phrase>
+    <phrase title="waindigo_rebuild_leaderboards_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Rebuild Leaderboards]]></phrase>
+    <phrase title="waindigo_requested_leaderboard_not_found_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[The requested leaderboard could not be found.]]></phrase>
+    <phrase title="waindigo_there_are_no_leaderboards_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[There are no leaderboards.]]></phrase>
+    <phrase title="waindigo_use_cached_value_explain_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[If checked, the value of the above column at the time the leaderboard is rebuilt will be shown next to the user's entry on the notable members page for this leaderboard.]]></phrase>
+    <phrase title="waindigo_use_cached_value_leaderboards" version_id="1418914228" version_string="1.0.0"><![CDATA[Use cached value]]></phrase>
+  </phrases>
+  <route_prefixes>
+    <route_type type="admin">
+      <prefix original_prefix="leaderboards" class="Waindigo_Leaderboards_Route_PrefixAdmin_Leaderboards" build_link="data_only"/>
+    </route_type>
+  </route_prefixes>
+  <style_properties/>
+  <templates/>
+  <public_template_modifications>
+    <modification template="footer" modification_key="waindigo_copyrightNotice_leaderboards" description="Copyright notice for Leaderboards by Waindigo" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase (?:xenforo|extra)_copyright}/]]></find>
+      <replace><![CDATA[Waindigo_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+    <modification template="member_notable" modification_key="waindigo_memberNotable_leaderboards" description="Adds leaderboard tabs to notable members page." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<ul class="tabs">.*)(</ul>)#Us]]></find>
+      <replace><![CDATA[${1}
+<xen:if is="{$leaderboards}">
+	<xen:foreach loop="$leaderboards" key="$_leaderboardId" value="$_leaderboard">
+		<li class="{xen:if '{$type} == "leaderboard" && {$leaderboardId} == {$_leaderboardId}', active}"><a href="{xen:link members, '', 'type=leaderboard', 'leaderboard_id={$_leaderboardId}'}">{$_leaderboard.title}</a></li>
+	</xen:foreach>
+</xen:if>
+${2}
+<xen:if is="{$xenOptions.waindigo_leaderboards_showLastUpdated} && {$leaderboardId}">
+	<div class="secondaryContent pairsInline">
+		<dl>
+			<dt>{xen:phrase waindigo_last_updated_leaderboards}:</dt>
+			<dd><xen:datetime time="{$leaderboards.{$leaderboardId}.last_rebuild}" /></dd>
+		</dl>
+	</div>
+</xen:if>]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>

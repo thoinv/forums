@@ -1,0 +1,2 @@
+XenForo.BbCodeWysiwygEditor.prototype.insertCode=function(e,c){var a,b;a=$("#redactor_code_type").val();var d=a.split("=");b=$("#redactor_code_code").val();b=b.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/\t/g,"    ").replace(/  /g,"&nbsp; ").replace(/  /g,"&nbsp; ").replace(/\n/g,"</p>\n<p>");a="["+a+"]"+b+"[/"+d[0]+"]";a.match(/\n/)&&(a=("<p>"+a+"</p>").replace(/<p><\/p>/g,"<p>"+($.browser.msie?"&nbsp;":"<br>")+"</p>"));c.restoreSelection();c.execCommand("inserthtml",
+a);c.modalClose()};

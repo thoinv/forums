@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="Waindigo_KeywordReplace" title="Keyword Replace by Waindigo" version_string="1.0.3a" version_id="1381163935" url="http://waindigo.com/" install_callback_class="Waindigo_Install" install_callback_method="install" uninstall_callback_class="Waindigo_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="waindigo_option_template_keyword_replace"><![CDATA[<xen:require js="js/waindigo/keywordreplace/options_keyword_replace.js" />
+
+<xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		<ul>
+			<xen:foreach loop="$choices" key="$counter" value="$choice">
+			<li>
+				<input type="checkbox" name="{$fieldPrefix}[{$preparedOption.option_id}][{$counter}][live]" value="1" {xen:checked {$choice.live}} />
+				<xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][{$counter}][word]" value="{$choice.word}" placeholder="{xen:phrase word_or_phrase}" size="20" />
+				<xen:select name="{$fieldPrefix}[{$preparedOption.option_id}][{$counter}][replace_type]" value="{$choice.replace_type}" inputclass="value autoSize">
+					<xen:option value="url">{xen:phrase waindigo_with_url_keyword_replace}</xen:option>
+					<xen:option value="overlay">{xen:phrase waindigo_with_url_overlay_keyword_replace}</xen:option>
+					<xen:option value="">{xen:phrase waindigo_with_html_keyword_replace}</xen:option>
+				</xen:select>
+				<xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][{$counter}][limit]" value="{$choice.limit}" placeholder="{xen:phrase limit}" size="5" />
+				<xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][{$counter}][replace]" value="{$choice.replace}" placeholder="{xen:phrase replacement}" size="30" />
+			</li>
+			</xen:foreach>
+		
+			<li class="KeywordReplaceOptionListener">
+				<input type="checkbox" name="{$fieldPrefix}[{$preparedOption.option_id}][{$nextCounter}][live]" value="1" checked="checked" />
+				<xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][{$nextCounter}][word]" value="" placeholder="{xen:phrase word_or_phrase}" size="20" />
+				<xen:select name="{$fieldPrefix}[{$preparedOption.option_id}][{$nextCounter}][replace_type]" value="" inputclass="value autoSize">
+					<xen:option value="url">{xen:phrase waindigo_with_url_keyword_replace}</xen:option>
+					<xen:option value="overlay">{xen:phrase waindigo_with_url_overlay_keyword_replace}</xen:option>
+					<xen:option value="">{xen:phrase waindigo_with_html_keyword_replace}</xen:option>
+				</xen:select>
+				<xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][{$nextCounter}][limit]" value="" placeholder="{xen:phrase limit}" size="5" />
+				<xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][{$nextCounter}][replace]" value="" placeholder="{xen:phrase replacement}" size="30" />
+			</li>
+		</ul>
+		
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:controlunit>]]></template>
+  </admin_templates>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="Waindigo_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="Waindigo_KeywordReplace_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="Waindigo_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_KeywordReplace_Listener_LoadClass" callback_method="loadClassBbCode" active="0" hint="XenForo_BbCode_Formatter_Base" description="XenForo_BbCode_Formatter_Base (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class_bb_code" execute_order="10" callback_class="Waindigo_KeywordReplace_Listener_LoadClass" callback_method="loadClassBbCode" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="waindigo_keywordReplace" display_order="2000" debug_only="0"/>
+    <option option_id="waindigo_keywordReplace" edit_format="callback" data_type="array" can_backup="1" validation_class="Waindigo_KeywordReplace_Option_KeywordReplace" validation_method="verifyOption">
+      <default_value>a:0:{}</default_value>
+      <edit_format_params>Waindigo_KeywordReplace_Option_KeywordReplace::renderOption</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="waindigo_keywordReplace" display_order="1"/>
+    </option>
+    <option option_id="waindigo_keywordReplace_excludedUserGroups" edit_format="callback" data_type="array" can_backup="1">
+      <default_value/>
+      <edit_format_params>Waindigo_KeywordReplace_Option_UserGroupChooser::renderCheckbox</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="waindigo_keywordReplace" display_order="1000"/>
+    </option>
+    <option option_id="waindigo_keywordReplace_limitPerPage" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params/>
+      <sub_options/>
+      <relation group_id="waindigo_keywordReplace" display_order="100"/>
+    </option>
+    <option option_id="waindigo_keywordReplace_limitPerWord" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params/>
+      <sub_options/>
+      <relation group_id="waindigo_keywordReplace" display_order="150"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="option_group_waindigo_keywordReplace" version_id="1378471959" version_string="1.0.1"><![CDATA[Keyword Replace by Waindigo]]></phrase>
+    <phrase title="option_group_waindigo_keywordReplace_description" version_id="1378471959" version_string="1.0.1"><![CDATA[Options for the Keyword Replace by Waindigo add-on.]]></phrase>
+    <phrase title="option_waindigo_keywordReplace" version_id="0" version_string="1.0.0"><![CDATA[Keywords to Replace]]></phrase>
+    <phrase title="option_waindigo_keywordReplace_excludedUserGroups" version_id="1375261504" version_string="1.0.1"><![CDATA[Excluded User Groups]]></phrase>
+    <phrase title="option_waindigo_keywordReplace_excludedUserGroups_explain" version_id="1375261504" version_string="1.0.1"><![CDATA[Any user groups selected here will be excluded from all keyword replacements entered above.]]></phrase>
+    <phrase title="option_waindigo_keywordReplace_explain" version_id="0" version_string="1.0.0"><![CDATA[This is a list of keywords or phrases that are to be replaced. If a replacement keyword or phrase is entered, the replacement text will be rewritten to this (for example, replacing "dog" with "cat").]]></phrase>
+    <phrase title="option_waindigo_keywordReplace_limitPerPage" version_id="1380894009" version_string="1.0.2"><![CDATA[Limit per page]]></phrase>
+    <phrase title="option_waindigo_keywordReplace_limitPerPage_explain" version_id="1380894009" version_string="1.0.2"><![CDATA[Total number of keyword replacements to make per page, 0 for unlimited.]]></phrase>
+    <phrase title="option_waindigo_keywordReplace_limitPerWord" version_id="1380894009" version_string="1.0.2"><![CDATA[Limit per word]]></phrase>
+    <phrase title="option_waindigo_keywordReplace_limitPerWord_explain" version_id="1380894009" version_string="1.0.2"><![CDATA[Total number of keyword replacements to make per word, 0 for unlimited. This value is ignored if a limit is specified for an individual keyword.]]></phrase>
+    <phrase title="waindigo_with_html_keyword_replace" version_id="0" version_string="1.0.0"><![CDATA[with HTML]]></phrase>
+    <phrase title="waindigo_with_url_keyword_replace" version_id="0" version_string="1.0.0"><![CDATA[with URL]]></phrase>
+    <phrase title="waindigo_with_url_overlay_keyword_replace" version_id="0" version_string="1.0.0"><![CDATA[with overlay]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates/>
+  <public_template_modifications>
+    <modification template="footer" modification_key="waindigo_copyrightNotice_keywordReplace" description="Copyright notice for Keyword Replace by Waindigo" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase xenforo_copyright}/]]></find>
+      <replace><![CDATA[Waindigo_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+</addon>

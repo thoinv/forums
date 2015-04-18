@@ -1,0 +1,1196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="bdSocialShare" title="[bd] Social Share" version_string="2.0.2" version_id="32" url="http://cs1cafe.com" install_callback_class="bdSocialShare_Installer" install_callback_method="install" uninstall_callback_class="bdSocialShare_Installer" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="bdsocialshare_forum_edit_threadAuto"><![CDATA[<xen:require js="js/bdSocialShare/buttons.js" />
+<xen:require js="js/bdSocialShare/backend.js" />
+
+<xen:controlunit label="">
+	<xen:checkbox>
+		<xen:option name="bdSocialShare_threadAuto_override" value="1" selected="{$_bdSocialShare_threadAuto} !== false" inputclass="Disabler">{xen:phrase bdsocialshare_override_system_config} ({xen:phrase bdsocialshare_auto_for_x, 'action={xen:phrase option_bdSocialShare_threadAuto}'})</xen:option>
+	</xen:checkbox>
+	
+	<div id="ctrl_bdSocialShare_threadAutooverride_1_Disabler" style="margin-left: 20px">
+		<div>
+			<label>
+				<input type="checkbox" name="bdSocialShare_threadAuto[facebook]" value="{$_bdSocialShare_threadAuto.facebook}" class="bdSocialShare_Input"{xen:if '{$_bdSocialShare_threadAuto.facebook}', ' checked="checked"', ' disabled="disabled"'} />
+				<span class="bdSocialShare_TargetContainer" style="display: none">{xen:phrase bdsocialshare_facebook}: <a href="{xen:link account/social-share/facebook-targets, '', 'me=0', 'groups=1'}" class="OverlayTrigger" data-cacheoverlay="no">{xen:phrase bdsocialshare_enable_auto}</a></span>
+				<span class="bdSocialShare_FacebookTargetTester" style="display: none">(<a href="{xen:adminlink tools/social-share/test/facebook}">{xen:phrase test}</a>)</span>
+			</label>
+		</div>
+		
+		<div>
+			<label>
+				<input type="checkbox" name="bdSocialShare_threadAuto[twitter]" value="{$_bdSocialShare_threadAuto.twitter}" class="bdSocialShare_Input"{xen:if '{$_bdSocialShare_threadAuto.twitter}', ' checked="checked"', ' disabled="disabled"'} />
+				<span class="bdSocialShare_TargetContainer" style="display: none">{xen:phrase bdsocialshare_twitter}: <a href="{xen:adminlink tools/social-share/twitter-targets}" class="OverlayTrigger" data-cacheoverlay="no">{xen:phrase bdsocialshare_enable_auto}</a></span>
+				<span class="bdSocialShare_FacebookTargetTester" style="display: none">(<a href="{xen:adminlink tools/social-share/test/twitter}">{xen:phrase test}</a>)</span>
+			</label>
+		</div>
+	</div>
+</xen:controlunit>]]></template>
+    <template title="bdsocialshare_option_auto"><![CDATA[<xen:require js="js/bdSocialShare/buttons.js" />
+<xen:require js="js/bdSocialShare/backend.js" />
+
+<xen:controlunit label="{$preparedOption.title}">
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		<div>
+			<label>
+				<input type="checkbox" name="{$fieldPrefix}[{$preparedOption.option_id}][facebook]" value="{$preparedOption.option_value.facebook}" class="bdSocialShare_Input"{xen:if '{$preparedOption.option_value.facebook}', ' checked="checked"', ' disabled="disabled"'} />
+				<span class="bdSocialShare_TargetContainer" style="display: none">{xen:phrase bdsocialshare_facebook}: <a href="{xen:adminlink tools/social-share/facebook-targets, '', 'me=0', 'groups=1'}" class="OverlayTrigger" data-cacheoverlay="no">{xen:phrase bdsocialshare_enable_auto}</a></span>
+				<span class="bdSocialShare_FacebookTargetTester" style="display: none">(<a href="{xen:adminlink tools/social-share/test/facebook}">{xen:phrase test}</a>)</span>
+			</label>
+		</div>
+
+		<div>
+			<label>
+				<input type="checkbox" name="{$fieldPrefix}[{$preparedOption.option_id}][twitter]" value="{$preparedOption.option_value.twitter}" class="bdSocialShare_Input"{xen:if '{$preparedOption.option_value.twitter}', ' checked="checked"', ' disabled="disabled"'} />
+				<span class="bdSocialShare_TargetContainer" style="display: none">{xen:phrase bdsocialshare_twitter}: <a href="{xen:adminlink tools/social-share/twitter-targets}" class="OverlayTrigger" data-cacheoverlay="no">{xen:phrase bdsocialshare_enable_auto}</a></span>
+				<span class="bdSocialShare_FacebookTargetTester" style="display: none">(<a href="{xen:adminlink tools/social-share/test/twitter}">{xen:phrase test}</a>)</span>
+			</label>
+		</div>
+
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+
+		{xen:raw $_bdSocialShare_extraHtml}
+	</xen:html>
+</xen:controlunit>]]></template>
+    <template title="bdsocialshare_option_missing_add_ons"><![CDATA[<xen:controlunit label="{$preparedOption.title}">
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		
+		<ul>
+			<xen:foreach loop="$formatParams" value="$choice">
+				<li><label><input type="radio" disabled="disabled"> {xen:raw $choice.label}</label></li>
+			</xen:foreach>
+			<xen:foreach loop="$missingAddOns" key="$missingAddOnId" value="$missingAddOnVersionId">
+				<li>
+					<xen:if is="{$addOns.{$missingAddOnId}}">
+						{xen:phrase bdsocialshare_addon_upgrade_required_x_version_y,
+							'addOn={$missingAddOnId}',
+							'versionId={$missingAddOnVersionId}'
+						}
+					<xen:else />
+						{xen:phrase bdsocialshare_addon_install_required_x,
+							'addOn={$missingAddOnId}'
+						}
+					</xen:if>
+				</li>
+			</xen:foreach>
+		</ul>
+		
+		{xen:raw $editLink}
+	</xen:html>
+</xen:controlunit>
+
+<xen:edithint template="option_list_option_radio" />]]></template>
+    <template title="bdsocialshare_option_threadauto_extra_html"><![CDATA[<xen:if hascontent="true">
+	<div class="explain">
+		{xen:phrase bdsocialshare_configured_forums}:
+		<ul>
+			<xen:contentcheck>
+				<xen:foreach loop="$configuredForums" value="$forum">
+					<li>
+						{xen:string repeat, '--', {$forum.depth}}
+							<a href="{xen:adminlink nodes/edit, $forum}" target="_blank" tabindex="-1" style="{xen:if 'empty({$forum._bdSocialShare_threadAuto})', 'text-decoration: line-through;'}">{$forum.title}</a>
+					</li>
+				</xen:foreach>
+			</xen:contentcheck>
+		</ul>
+	</div>
+</xen:if>
+
+<xen:edithint template="bdsocialshare_option_auto" />]]></template>
+    <template title="bdsocialshare_tools_add_more"><![CDATA[<xen:title>{xen:phrase bdsocialshare_add_another_account}</xen:title>
+
+<xen:form action="{xen:adminlink 'tools/social-share/add-more/{$type}'}">
+	<xen:checkboxunit label="">
+		<xen:foreach loop="$accounts" key="$key" value="$account">
+			<xen:option name="accounts[{$key}][add]" selected="{$account.selected}">
+				{xen:if '{$account.label}', '{$account.label}: '}{$account.name}
+
+				<input type="hidden" name="accounts[{$key}][target_id]" value="{$account.target_id}" />
+				<input type="hidden" name="accounts[{$key}][name]" value="{$account.name}" />
+			</xen:option>
+		</xen:foreach>
+	</xen:checkboxunit>
+	
+	<xen:submitunit save="{xen:phrase save}" />
+	
+	<input type="hidden" name="_xfConfirm" value="1" />
+	<input type="hidden" name="token" value="{$token}" />
+</xen:form>]]></template>
+    <template title="bdsocialshare_tools_targets"><![CDATA[<xen:require js="js/bdSocialShare/buttons.js" />
+
+<xen:if is="{$type} == 'facebook'">
+	<xen:set var="$typeText">{xen:phrase bdsocialshare_post_to_facebook}</xen:set>
+<xen:elseif is="{$type} == 'twitter'" />
+	<xen:set var="$typeText">{xen:phrase bdsocialshare_post_to_twitter}</xen:set>
+</xen:if>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink options/list/bdSocialShare}">{$typeText}</xen:breadcrumb>
+</xen:navigation>
+<xen:title>{xen:phrase bdsocialshare_shared_accounts}</xen:title>
+
+<div class="sectionMain">
+	<div class="primaryContent">
+		<p>{xen:phrase bdsocialshare_shared_accounts_explain,
+			'link={xen:link misc/staff-share}'}</p><br />
+
+		<ul>
+			<xen:if is="{$accounts}">
+				<xen:foreach loop="$accounts" value="$account">
+					<li>
+						<label>
+							<input type="radio" name="target" value="{$account.target_id}" class="bdSocialShare_Target_Choice">
+
+							<xen:if is="isset({$account.screen_name})">
+								<xen:comment>This was kept for compatibility reason</xen:comment>
+								{$account.screen_name}
+							<xen:else />
+								{$account.name}
+							</xen:if>
+						</label>
+					</li>
+				</xen:foreach>
+			<xen:else />
+				<li>{xen:phrase bdsocialshare_no_accounts_found}</li>
+			</xen:if>
+			
+			<li><a href="{xen:adminlink 'tools/social-share/add-more/{$type}'}" target="_blank">{xen:phrase bdsocialshare_add_another_account}</a></li>
+		</ul>
+	</div>
+</div>]]></template>
+  </admin_templates>
+  <admin_template_modifications>
+    <modification template="forum_edit" modification_key="bdsocialshare_forum_edit_threadAuto" description="Insert auto sharing (for thread) controls" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:radiounit label="{xen:phrase forum_watch_notification_limit}:"]]></find>
+      <replace><![CDATA[<xen:include template="bdsocialshare_forum_edit_threadAuto" />
+
+$0]]></replace>
+    </modification>
+  </admin_template_modifications>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="file_health_check" execute_order="10" callback_class="bdSocialShare_Listener" callback_method="file_health_check" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="bdSocialShare_Listener" callback_method="init_dependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="bdSocialShare_Listener" callback_method="load_class" active="1" hint="" description=""/>
+    <listener event_id="load_class_controller" execute_order="9999" callback_class="bdSocialShare_Listener" callback_method="load_class_XenForo_ControllerPublic_Register" active="1" hint="XenForo_ControllerPublic_Register" description="Extending XenForo_ControllerPublic_Register (execution order 9999 to run as late as possible)"/>
+    <listener event_id="template_create" execute_order="10" callback_class="bdSocialShare_Listener" callback_method="template_create" active="1" hint="" description=""/>
+    <listener event_id="template_hook" execute_order="10" callback_class="bdSocialShare_Listener" callback_method="template_hook" active="1" hint="" description=""/>
+    <listener event_id="visitor_setup" execute_order="10" callback_class="bdSocialShare_Listener" callback_method="visitor_setup" active="1" hint="" description=""/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="bdSocialShare" display_order="9999" debug_only="0"/>
+    <option option_id="bdSocialShare_customAccessDenied" edit_format="onoff" data_type="unsigned_integer" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="110"/>
+    </option>
+    <option option_id="bdSocialShare_deferred" edit_format="onoff" data_type="unsigned_integer" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="100"/>
+    </option>
+    <option option_id="bdSocialShare_facebookSendLinkData" edit_format="onoff" data_type="unsigned_integer" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="5000"/>
+    </option>
+    <option option_id="bdSocialShare_medalAward" edit_format="callback" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>bdSocialShare_Option::renderOptInOptOutOff</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="10100"/>
+    </option>
+    <option option_id="bdSocialShare_nfljShowcaseItemPublish" edit_format="callback" data_type="string" can_backup="1">
+      <default_value>yes</default_value>
+      <edit_format_params>bdSocialShare_Option::renderOnOff</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="10000"/>
+    </option>
+    <option option_id="bdSocialShare_remember" edit_format="onoff" data_type="unsigned_integer" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="1020"/>
+    </option>
+    <option option_id="bdSocialShare_resourceAdd" edit_format="callback" data_type="string" can_backup="1">
+      <default_value>yes</default_value>
+      <edit_format_params>bdSocialShare_Option::renderOnOff</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="10000"/>
+    </option>
+    <option option_id="bdSocialShare_resourceAddAuto" edit_format="callback" data_type="array" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>bdSocialShare_Option::renderAuto</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="bdSocialShare" display_order="20000"/>
+    </option>
+    <option option_id="bdSocialShare_resourceVersionAdd" edit_format="callback" data_type="string" can_backup="1">
+      <default_value>yes</default_value>
+      <edit_format_params>bdSocialShare_Option::renderOnOff</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="10000"/>
+    </option>
+    <option option_id="bdSocialShare_showNotConnected" edit_format="radio" data_type="unsigned_integer" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params>1={xen:phrase show}
+2={xen:phrase bdsocialshare_gray_out}
+0={xen:phrase hidden}</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="1000"/>
+    </option>
+    <option option_id="bdSocialShare_sonnbXenGalleryPhotoAttach" edit_format="callback" data_type="string" can_backup="1">
+      <default_value>yes</default_value>
+      <edit_format_params>bdSocialShare_Option::renderOnOff</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="10000"/>
+    </option>
+    <option option_id="bdSocialShare_status" edit_format="callback" data_type="string" can_backup="1">
+      <default_value>yes</default_value>
+      <edit_format_params>bdSocialShare_Option::renderOnOff</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="10000"/>
+    </option>
+    <option option_id="bdSocialShare_statusAuto" edit_format="callback" data_type="array" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>bdSocialShare_Option::renderAuto</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="bdSocialShare" display_order="20000"/>
+    </option>
+    <option option_id="bdSocialShare_threadAuto" edit_format="callback" data_type="array" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>bdSocialShare_Option::renderThreadAuto</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="bdSocialShare" display_order="20000"/>
+    </option>
+    <option option_id="bdSocialShare_threadCreate" edit_format="callback" data_type="string" can_backup="1">
+      <default_value>yes</default_value>
+      <edit_format_params>bdSocialShare_Option::renderOnOff</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="10000"/>
+    </option>
+    <option option_id="bdSocialShare_threadReply" edit_format="callback" data_type="string" can_backup="1">
+      <default_value>yes</default_value>
+      <edit_format_params>bdSocialShare_Option::renderOnOff</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="10000"/>
+    </option>
+    <option option_id="bdSocialShare_trophyAward" edit_format="callback" data_type="string" can_backup="1">
+      <default_value>optOut</default_value>
+      <edit_format_params>bdSocialShare_Option::renderOptInOptOutOff</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="10100"/>
+    </option>
+    <option option_id="bdSocialShare_userCanHide" edit_format="onoff" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="1010"/>
+    </option>
+    <option option_id="bdSocialShare_xenGalleryImageAttach" edit_format="callback" data_type="string" can_backup="1">
+      <default_value>yes</default_value>
+      <edit_format_params>bdSocialShare_Option::renderOnOff</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="10000"/>
+    </option>
+    <option option_id="bdSocialShare_xiBlogEntryPublish" edit_format="callback" data_type="string" can_backup="1">
+      <default_value>yes</default_value>
+      <edit_format_params>bdSocialShare_Option::renderOnOff</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="bdSocialShare" display_order="10000"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions>
+      <permission permission_group_id="general" permission_id="bdSocialShare_facebook" permission_type="flag" default_value="unset" interface_group_id="bdSocialShare" display_order="1000"/>
+      <permission permission_group_id="general" permission_id="bdSocialShare_resourceAut" permission_type="flag" default_value="unset" interface_group_id="bdSocialShare" display_order="20000"/>
+      <permission permission_group_id="general" permission_id="bdSocialShare_staffShare" permission_type="flag" default_value="unset" interface_group_id="bdSocialShare" display_order="100"/>
+      <permission permission_group_id="general" permission_id="bdSocialShare_statusAuto" permission_type="flag" default_value="unset" interface_group_id="bdSocialShare" display_order="20000"/>
+      <permission permission_group_id="general" permission_id="bdSocialShare_threadAuto" permission_type="flag" default_value="unset" interface_group_id="bdSocialShare" display_order="20000"/>
+      <permission permission_group_id="general" permission_id="bdSocialShare_twitter" permission_type="flag" default_value="unset" interface_group_id="bdSocialShare" display_order="1000"/>
+    </permissions>
+    <interface_groups>
+      <interface_group interface_group_id="bdSocialShare" display_order="9999"/>
+    </interface_groups>
+  </permissions>
+  <phrases>
+    <phrase title="bdsocialshare_addon_install_required_x" version_id="10" version_string="0.9.7"><![CDATA[Add-on required: {addOn}.]]></phrase>
+    <phrase title="bdsocialshare_addon_upgrade_required_x_version_y" version_id="10" version_string="0.9.7"><![CDATA[Add-on upgrade required for {addOn} (oldest version supported: {versionId}).]]></phrase>
+    <phrase title="bdsocialshare_add_another_account" version_id="16" version_string="1.2.0c"><![CDATA[Add another account]]></phrase>
+    <phrase title="bdsocialshare_add_share_account_to_use_staff_share" version_id="30" version_string="2.0.0"><![CDATA[No accounts could be found. Administrators must <a href="{link}" target="_blank">add a shared account</a> before staff can use Staff Share.]]></phrase>
+    <phrase title="bdsocialshare_allow_posting_for_x" version_id="10" version_string="0.9.7"><![CDATA[Support `{action}`]]></phrase>
+    <phrase title="bdsocialshare_all_shares" version_id="10" version_string="0.9.7"><![CDATA[All Social Shares]]></phrase>
+    <phrase title="bdsocialshare_auto_for_x" version_id="13" version_string="1.1.1"><![CDATA[Auto Sharing for `{action}`]]></phrase>
+    <phrase title="bdsocialshare_being_awarded_medal_then" version_id="21" version_string="1.4.1"><![CDATA[When you get awarded a medal...]]></phrase>
+    <phrase title="bdsocialshare_being_awarded_trophy_then" version_id="18" version_string="1.3"><![CDATA[When you get awarded a trophy...]]></phrase>
+    <phrase title="bdsocialshare_configured_forums" version_id="13" version_string="1.1.1"><![CDATA[Forums configured to override system]]></phrase>
+    <phrase title="bdsocialshare_connect_to_x_to_use_this_feature" version_id="23" version_string="1.4.2b"><![CDATA[Connect to {network} to use this feature.]]></phrase>
+    <phrase title="bdsocialshare_description" version_id="29" version_string="1.4.4e"><![CDATA[Description]]></phrase>
+    <phrase title="bdsocialshare_enable_auto" version_id="13" version_string="1.1.1"><![CDATA[Enable automatic sharing]]></phrase>
+    <phrase title="bdsocialshare_facebook" version_id="1" version_string="0.9-dev"><![CDATA[Facebook]]></phrase>
+    <phrase title="bdsocialshare_facebook_group" version_id="28" version_string="1.4.4d"><![CDATA[Group]]></phrase>
+    <phrase title="bdsocialshare_facebook_links" version_id="12" version_string="1.1"><![CDATA[Facebook Links]]></phrase>
+    <phrase title="bdsocialshare_facebook_page" version_id="28" version_string="1.4.4d"><![CDATA[Page]]></phrase>
+    <phrase title="bdsocialshare_facebook_photos" version_id="12" version_string="1.1"><![CDATA[Facebook Photos]]></phrase>
+    <phrase title="bdsocialshare_facebook_shares" version_id="10" version_string="0.9.7"><![CDATA[Facebook Shares]]></phrase>
+    <phrase title="bdsocialshare_gray_out" version_id="23" version_string="1.4.2b"><![CDATA[Gray out]]></phrase>
+    <phrase title="bdsocialshare_hide_share_buttons" version_id="18" version_string="1.3"><![CDATA[Hide share buttons]]></phrase>
+    <phrase title="bdsocialshare_hide_share_buttons_explain" version_id="18" version_string="1.3"><![CDATA[This will hide all share buttons across the site. You will not be able to choose to share contents.]]></phrase>
+    <phrase title="bdsocialshare_image" version_id="29" version_string="1.4.4e"><![CDATA[Image]]></phrase>
+    <phrase title="bdsocialshare_link" version_id="28" version_string="1.4.4d"><![CDATA[Link]]></phrase>
+    <phrase title="bdsocialshare_manage_shared_accounts" version_id="30" version_string="2.0.0"><![CDATA[Manage Shared Accounts]]></phrase>
+    <phrase title="bdsocialshare_no_accounts_found" version_id="28" version_string="1.4.4d"><![CDATA[No accounts could be found.]]></phrase>
+    <phrase title="bdsocialshare_no_facebook_groups_or_try_again" version_id="13" version_string="1.1.1"><![CDATA[No Facebook Groups found. You can try to authenticate again and reload this page to refresh the data, <a href="{link}" target="_blank">click here</a>.]]></phrase>
+    <phrase title="bdsocialshare_no_facebook_pages_or_try_again" version_id="13" version_string="1.1.1"><![CDATA[No Facebook Pages found under your Facebook account. You can try to authenticate again and reload this page to refresh the data, <a href="{link}" target="_blank">click here</a>.]]></phrase>
+    <phrase title="bdsocialshare_options" version_id="18" version_string="1.3"><![CDATA[Social Network Sharing Options]]></phrase>
+    <phrase title="bdsocialshare_opt_in" version_id="18" version_string="1.3"><![CDATA[Opt-In]]></phrase>
+    <phrase title="bdsocialshare_opt_out" version_id="18" version_string="1.3"><![CDATA[Opt-Out]]></phrase>
+    <phrase title="bdsocialshare_other_shares" version_id="12" version_string="1.1"><![CDATA[Other Shares]]></phrase>
+    <phrase title="bdsocialshare_override_system_config" version_id="13" version_string="1.1.1"><![CDATA[Override System Configuration]]></phrase>
+    <phrase title="bdsocialshare_photo_shares" version_id="10" version_string="0.9.7"><![CDATA[Photo Shares]]></phrase>
+    <phrase title="bdsocialshare_post_shares" version_id="10" version_string="0.9.7"><![CDATA[Thread/Reply Shares]]></phrase>
+    <phrase title="bdsocialshare_post_to_facebook" version_id="1" version_string="0.9-dev"><![CDATA[Post To Facebook]]></phrase>
+    <phrase title="bdsocialshare_post_to_twitter" version_id="16" version_string="1.2.0c"><![CDATA[Post To Twitter]]></phrase>
+    <phrase title="bdsocialshare_problem_publishing_click_here" version_id="12" version_string="1.1"><![CDATA[There has been some problem publishing your share recently. <a href="{link}" target="_blank">Click here</a> to try again or <a href="{dismiss_link}">dismiss</a>.]]></phrase>
+    <phrase title="bdsocialshare_resource_shares" version_id="10" version_string="0.9.7"><![CDATA[Resource Shares]]></phrase>
+    <phrase title="bdsocialshare_send_link_data" version_id="29" version_string="1.4.4e"><![CDATA[Send link data]]></phrase>
+    <phrase title="bdsocialshare_shared_accounts" version_id="30" version_string="2.0.0"><![CDATA[Shared Accounts]]></phrase>
+    <phrase title="bdsocialshare_shared_accounts_explain" version_id="30" version_string="2.0.0"><![CDATA[Add account to shared accounts list and use them in the Auto Share feature. Shared accounts can also be used in Staff Share feature, allowing staff <a href="{link}" target="_blank">to publish</a> to the site's Social Pages on demand. ]]></phrase>
+    <phrase title="bdsocialshare_staff_share" version_id="28" version_string="1.4.4d"><![CDATA[Staff Share]]></phrase>
+    <phrase title="bdsocialshare_staff_share_published_successfully" version_id="28" version_string="1.4.4d"><![CDATA[The Staff Share has been published successfully.]]></phrase>
+    <phrase title="bdsocialshare_staff_share_verb" version_id="28" version_string="1.4.4d"><![CDATA[Staff Share]]></phrase>
+    <phrase title="bdsocialshare_title" version_id="29" version_string="1.4.4e"><![CDATA[Title]]></phrase>
+    <phrase title="bdsocialshare_title_xenresource_resource_auto" version_id="21" version_string="1.4.1"><![CDATA[{username} created "{title}"]]></phrase>
+    <phrase title="bdsocialshare_title_xi_blog_entry" version_id="21" version_string="1.4.1"><![CDATA[{title}]]></phrase>
+    <phrase title="bdsocialshare_twitter" version_id="16" version_string="1.2.0c"><![CDATA[Twitter]]></phrase>
+    <phrase title="bdsocialshare_twitter_must_be_configured" version_id="30" version_string="2.0.0"><![CDATA[Twitter Integration must be configured with a consumer key and secret pair before you can use this feature.]]></phrase>
+    <phrase title="bdsocialshare_twitter_shares" version_id="16" version_string="1.2.0c"><![CDATA[Twitter Tweets]]></phrase>
+    <phrase title="bdsocialshare_url_x_is_not_supported" version_id="28" version_string="1.4.4d"><![CDATA[URL {url} is not supported.]]></phrase>
+    <phrase title="bdsocialshare_user_text" version_id="28" version_string="1.4.4d"><![CDATA[Text]]></phrase>
+    <phrase title="bdsocialshare_user_text_i_am_awarded_medal_x" version_id="19" version_string="1.3.0b"><![CDATA[I have just been awarded the "{medal}" medal at {board_title}!]]></phrase>
+    <phrase title="bdsocialshare_user_text_i_am_awarded_trophy_x" version_id="18" version_string="1.3"><![CDATA[I have just been awarded the "{trophy_phrase}" trophy at {board_title}!]]></phrase>
+    <phrase title="bdsocialshare_user_text_reply_auto" version_id="21" version_string="1.4.1"><![CDATA[{username} posted "{snippet}"]]></phrase>
+    <phrase title="bdsocialshare_user_text_status_auto" version_id="21" version_string="1.4.1"><![CDATA[{username} posted "{snippet}".]]></phrase>
+    <phrase title="bdsocialshare_user_text_thread_auto" version_id="21" version_string="1.4.1"><![CDATA[{username} created "{title}".]]></phrase>
+    <phrase title="bdsocialshare_your_facebook_timeline" version_id="28" version_string="1.4.4d"><![CDATA[Your Timeline]]></phrase>
+    <phrase title="moderator_log_bdsocialshare_all_facebook" version_id="29" version_string="1.4.4e"><![CDATA[Staff Share to Facebook]]></phrase>
+    <phrase title="moderator_log_bdsocialshare_all_twitter" version_id="29" version_string="1.4.4e"><![CDATA[Staff Share to Twitter]]></phrase>
+    <phrase title="option_bdSocialShare_customAccessDenied" version_id="27" version_string="1.4.4c"><![CDATA[Custom Access Denied Rendering]]></phrase>
+    <phrase title="option_bdSocialShare_customAccessDenied_explain" version_id="28" version_string="1.4.4d"><![CDATA[Enable this option to try to render social-network-friendly denied page for contents. List of supported contents: resource, thread.]]></phrase>
+    <phrase title="option_bdSocialShare_deferred" version_id="11" version_string="1.0"><![CDATA[Delayed Share]]></phrase>
+    <phrase title="option_bdSocialShare_deferred_explain" version_id="18" version_string="1.3"><![CDATA[Enable this option to off-load publishing shares to a background request. Doing this will improve user experience because members will not have to wait a few extra seconds when they choose to publish something to social sites. However, this will cause delay before the content get published (typically less than 10 seconds).]]></phrase>
+    <phrase title="option_bdSocialShare_facebookSendLinkData" version_id="28" version_string="1.4.4d"><![CDATA[Facebook: Send Link Data]]></phrase>
+    <phrase title="option_bdSocialShare_facebookSendLinkData_explain" version_id="28" version_string="1.4.4d"><![CDATA[Facebook can read Open Graph metadata in web pages but occasionally the information is incorrect or missing. Enable this option to let the add-on send data directly itself.]]></phrase>
+    <phrase title="option_bdSocialShare_medalAward" version_id="19" version_string="1.3.0b"><![CDATA[Medal Award]]></phrase>
+    <phrase title="option_bdSocialShare_medalAward_explain" version_id="19" version_string="1.3.0b"><![CDATA[If enabled, user will be able to setup auto-share for being awarded a medal.]]></phrase>
+    <phrase title="option_bdSocialShare_nfljShowcaseItemPublish" version_id="11" version_string="1.0"><![CDATA[Item Publish (Showcase)]]></phrase>
+    <phrase title="option_bdSocialShare_nfljShowcaseItemPublish_explain" version_id="11" version_string="1.0"><![CDATA[If enabled, social share buttons will show up when user publishes new items.]]></phrase>
+    <phrase title="option_bdSocialShare_remember" version_id="23" version_string="1.4.2b"><![CDATA[Remember Share Buttons]]></phrase>
+    <phrase title="option_bdSocialShare_remember_explain" version_id="23" version_string="1.4.2b"><![CDATA[Enable this option to remember last share button configuration: They will be automatically checked if user enabled the previous time; They will stay unchecked if user opted out before.]]></phrase>
+    <phrase title="option_bdSocialShare_resourceAdd" version_id="10" version_string="0.9.7"><![CDATA[Resource Create]]></phrase>
+    <phrase title="option_bdSocialShare_resourceAddAuto" version_id="19" version_string="1.3.0b"><![CDATA[Resource Create]]></phrase>
+    <phrase title="option_bdSocialShare_resourceAddAuto_explain" version_id="19" version_string="1.3.0b"><![CDATA[If configured, all resources will be shared automatically upon creation to the specified social network account(s). Independent of user choice to share to his/her own account. Related permission: "Resource gets auto-shared".]]></phrase>
+    <phrase title="option_bdSocialShare_resourceAdd_explain" version_id="10" version_string="0.9.7"><![CDATA[If enabled, social share buttons will show up when user creates a new resource.]]></phrase>
+    <phrase title="option_bdSocialShare_resourceVersionAdd" version_id="10" version_string="0.9.7"><![CDATA[Resource Update]]></phrase>
+    <phrase title="option_bdSocialShare_resourceVersionAdd_explain" version_id="10" version_string="0.9.7"><![CDATA[If enabled, social share buttons will show up when user creates a new resource update (not when editing a resource).]]></phrase>
+    <phrase title="option_bdSocialShare_showNotConnected" version_id="12" version_string="1.1"><![CDATA[Share Button for the Not-Connecteds]]></phrase>
+    <phrase title="option_bdSocialShare_showNotConnected_explain" version_id="23" version_string="1.4.2b"><![CDATA[You can configure the button states if user hasn't connect to a social network. User will be prompted to connect after the failed share.]]></phrase>
+    <phrase title="option_bdSocialShare_sonnbXenGalleryPhotoAttach" version_id="10" version_string="0.9.7"><![CDATA[Photo Upload (sonnb - XenGallery)]]></phrase>
+    <phrase title="option_bdSocialShare_sonnbXenGalleryPhotoAttach_explain" version_id="10" version_string="0.9.7"><![CDATA[If enabled, social share buttons will show up when user uploads new photos.]]></phrase>
+    <phrase title="option_bdSocialShare_status" version_id="10" version_string="0.9.7"><![CDATA[Status]]></phrase>
+    <phrase title="option_bdSocialShare_statusAuto" version_id="13" version_string="1.1.1"><![CDATA[Status]]></phrase>
+    <phrase title="option_bdSocialShare_statusAuto_explain" version_id="13" version_string="1.1.1"><![CDATA[If configured, all user statuses will be shared automatically to the specified social network account(s). Independent of user choice to share to his/her own account. Related permission: "Status gets auto-shared".]]></phrase>
+    <phrase title="option_bdSocialShare_status_explain" version_id="10" version_string="0.9.7"><![CDATA[If enabled, social share buttons will show up when user update a new profie status.]]></phrase>
+    <phrase title="option_bdSocialShare_threadAuto" version_id="13" version_string="1.1.1"><![CDATA[Thread Create]]></phrase>
+    <phrase title="option_bdSocialShare_threadAuto_explain" version_id="13" version_string="1.1.1"><![CDATA[If configured, user threads will be shared automatically to the specified social network account(s). Independent of user choice to share to his/her own account. Each forum's configuration will override system's (to configure, go to Applications > <a href="admin.php?nodes/" target="_blank" tabindex="-1">Display Node Tree</a> > Edit Forum > tab Forum Options). Related permission: "Thread gets auto-shared".]]></phrase>
+    <phrase title="option_bdSocialShare_threadCreate" version_id="10" version_string="0.9.7"><![CDATA[Thread Create]]></phrase>
+    <phrase title="option_bdSocialShare_threadCreate_explain" version_id="10" version_string="0.9.7"><![CDATA[If enabled, social share buttons will show up when user creates a new thread.]]></phrase>
+    <phrase title="option_bdSocialShare_threadReply" version_id="10" version_string="0.9.7"><![CDATA[Thread Reply]]></phrase>
+    <phrase title="option_bdSocialShare_threadReply_explain" version_id="10" version_string="0.9.7"><![CDATA[If enabled, social share buttons will show up when user replies to a thread (both quick reply and full feature interface).]]></phrase>
+    <phrase title="option_bdSocialShare_trophyAward" version_id="18" version_string="1.3"><![CDATA[Trophy Award]]></phrase>
+    <phrase title="option_bdSocialShare_trophyAward_explain" version_id="18" version_string="1.3"><![CDATA[If enabled, user will be able to setup auto-share for being awarded a trophy.]]></phrase>
+    <phrase title="option_bdSocialShare_userCanHide" version_id="18" version_string="1.3"><![CDATA[User Can Hide Share Buttons]]></phrase>
+    <phrase title="option_bdSocialShare_userCanHide_explain" version_id="18" version_string="1.3"><![CDATA[Enable this option to allow user to hide share buttons in Account > Preferences.]]></phrase>
+    <phrase title="option_bdSocialShare_xenGalleryImageAttach" version_id="10" version_string="0.9.7"><![CDATA[Image Upload (Xen Media Gallery)]]></phrase>
+    <phrase title="option_bdSocialShare_xenGalleryImageAttach_explain" version_id="10" version_string="0.9.7"><![CDATA[If enabled, social share buttons will show up when user uploads a new image.]]></phrase>
+    <phrase title="option_bdSocialShare_xiBlogEntryPublish" version_id="11" version_string="1.0"><![CDATA[Entry Publish ([XI] Blog)]]></phrase>
+    <phrase title="option_bdSocialShare_xiBlogEntryPublish_explain" version_id="11" version_string="1.0"><![CDATA[If enabled, social share buttons will show up when user publish a new blog entry.]]></phrase>
+    <phrase title="option_group_bdSocialShare" version_id="10" version_string="0.9.7"><![CDATA[[bd] Social Share]]></phrase>
+    <phrase title="option_group_bdSocialShare_description" version_id="10" version_string="0.9.7"><![CDATA[Manage social sharing options]]></phrase>
+    <phrase title="permission_general_bdSocialShare_facebook" version_id="13" version_string="1.1.1"><![CDATA[Post To Facebook]]></phrase>
+    <phrase title="permission_general_bdSocialShare_resourceAut" version_id="19" version_string="1.3.0b"><![CDATA[Resource gets auto-shared]]></phrase>
+    <phrase title="permission_general_bdSocialShare_staffShare" version_id="28" version_string="1.4.4d"><![CDATA[Use Staff Share]]></phrase>
+    <phrase title="permission_general_bdSocialShare_statusAuto" version_id="13" version_string="1.1.1"><![CDATA[Status gets auto-shared]]></phrase>
+    <phrase title="permission_general_bdSocialShare_threadAuto" version_id="13" version_string="1.1.1"><![CDATA[Thread gets auto-shared]]></phrase>
+    <phrase title="permission_general_bdSocialShare_twitter" version_id="16" version_string="1.2.0c"><![CDATA[Post To Twitter]]></phrase>
+    <phrase title="permission_interface_bdSocialShare" version_id="13" version_string="1.1.1"><![CDATA[[bd] Social Share]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates>
+    <template title="bdsocialshare.css" version_id="30" version_string="2.0.0"><![CDATA[.AttachedPhoto .controls .metaIcon.bdSocialShare_icon,
+.ContentEditor .AttachedContent .controls .metaIcon.bdSocialShare_icon
+{
+	background-image: url("{xen:property imagePath}/bdSocialShare/sprite.png?17");
+}
+.metaIcon.bdSocialShare_facebookIcon
+{
+    background-position: 0 -30px;
+}
+.metaIcon.bdSocialShare_facebookIcon.active
+{
+    background-position: 0 0;
+}
+.metaIcon.bdSocialShare_twitterIcon
+{
+    background-position: 0 -90px;
+}
+.metaIcon.bdSocialShare_twitterIcon.active
+{
+    background-position: 0 -60px;
+}
+
+.bdSocialShare_StaffShareLink.shareControl a
+{
+	margin: 0 5px;
+}]]></template>
+    <template title="bdsocialshare_account_preferences_options" version_id="19" version_string="1.3.0b"><![CDATA[<xen:if hascontent="true">
+	<h3 class="sectionHeader">{xen:phrase bdsocialshare_options}</h3>
+
+	<xen:contentcheck>
+
+		<xen:if hascontent="true">
+			<dl class="ctrlUnit">
+				<dt></dt>
+				<dd>
+					<ul>
+						<xen:contentcheck>
+
+							<xen:if is="{xen:helper bdSocialShare_getOption, userCanHide}">
+								<li>
+									<label for="ctrl_bdsocialshare_options_hide">
+										<input type="checkbox" name="bdsocialshare_options[hide]" value="1" id="ctrl_bdsocialshare_options_hide" {xen:checked "{$visitor._bdSocialShare_options.hide}"} />
+										{xen:phrase bdsocialshare_hide_share_buttons}
+									</label>
+									<p class="hint">{xen:phrase bdsocialshare_hide_share_buttons_explain}</p>
+								</li>
+							</xen:if>
+
+						</xen:contentcheck>
+					</ul>
+				</dd>
+			</dl>
+		</xen:if>
+
+		<xen:include template="bdsocialshare_option_opt_in_opt_out_off">
+			<xen:set var="$_bdSocialShare_optionId">medalAward</xen:set>
+			<xen:set var="$_bdSocialShare_title">{xen:phrase bdsocialshare_being_awarded_medal_then}</xen:set>
+		</xen:include>
+
+		<xen:include template="bdsocialshare_option_opt_in_opt_out_off">
+			<xen:set var="$_bdSocialShare_optionId">trophyAward</xen:set>
+			<xen:set var="$_bdSocialShare_title">{xen:phrase bdsocialshare_being_awarded_trophy_then}</xen:set>
+		</xen:include>
+
+	</xen:contentcheck>
+</xen:if>]]></template>
+    <template title="bdsocialshare_buttons" version_id="23" version_string="1.4.2b"><![CDATA[<xen:comment>This template has been deprecated</xen:comment>
+
+<xen:edithint template="bdsocialshare.css" />
+<xen:edithint template="bdsocialshare_buttons_standard" />
+<xen:edithint template="bdsocialshare_buttons_short" />
+<xen:edithint template="bdsocialshare_buttons_sonnb_xengallery_attach_phot" />]]></template>
+    <template title="bdsocialshare_buttons_short" version_id="28" version_string="1.4.4d"><![CDATA[<xen:if is="{xen:helper bdSocialShare_getOption, userCanHide} AND {$visitor._bdSocialShare_options.hide}">
+	<xen:comment>Share button has been configured to be hidden by user</xen:comment>
+<xen:elseif is="!{xen:helper bdSocialShare_getOption, $_bdSocialShare_optionId}" />
+	<xen:comment>optionId not found?</xen:comment>
+<xen:elseif hascontent="true" />
+	<xen:contentcheck>
+		<xen:if is="{xen:helper bdSocialShare_hasPermissionFacebook, $visitor} AND ({xen:helper bdSocialShare_isConnectedWith, facebook, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected})">
+
+			<xen:require js="js/bdSocialShare/buttons.js" />
+			<xen:container var="$facebookSdk">1</xen:container>
+
+			<xen:if is="{xen:helper bdSocialShare_isConnectedWith, facebook, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected} == 1">
+				<label class="bdSocialShare_Facebook">
+					<input type="checkbox" name="_bdSocialShare_enabled{xen:if '{$_bdSocialShare_key}', '[{$_bdSocialShare_key}]'}[facebook]" value="{xen:if '{$visitor.bdsocialshare_facebook}', '{$visitor.bdsocialshare_facebook}', 'me'}" tabindex="-1"{xen:helper bdSocialShare_checked, {$_bdSocialShare_noDefault}, {$_bdSocialShare_scheduled}, 'facebook'} class="bdSocialShare_Input bdSocialShare_facebookInput"/>
+					{xen:phrase bdsocialshare_facebook}<span class="bdSocialShare_TargetContainer" style="display: none" data-keeptext="yes" data-me="{xen:helper striphtml, {xen:phrase bdsocialshare_your_facebook_timeline}}"><a href="{xen:link account/social-share/facebook-targets}" class="OverlayTrigger" data-cacheoverlay="no" tabindex="-1">?</a></span>
+				</label>
+			<xen:else />
+				<label title="{xen:phrase bdsocialshare_connect_to_x_to_use_this_feature, 'network={xen:phrase bdsocialshare_facebook}'}" class="bdSocialShare_Facebook Tooltip">
+					<input type="checkbox" class="bdSocialShare_Input bdSocialShare_facebookInput" disabled="disabled" />
+					{xen:phrase bdsocialshare_facebook}
+				</label>
+			</xen:if>
+
+		</xen:if>
+
+		<xen:if is="{xen:helper bdSocialShare_hasPermissionTwitter, $visitor} AND ({xen:helper bdSocialShare_isConnectedWith, twitter, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected})">
+
+			<xen:if is="{xen:helper bdSocialShare_isConnectedWith, twitter, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected} == 1">
+				<label class="bdSocialShare_Twitter">
+					<input type="checkbox" name="_bdSocialShare_enabled{xen:if '{$_bdSocialShare_key}', '[{$_bdSocialShare_key}]'}[twitter]" value="{xen:if '{$visitor.bdsocialshare_twitter}', '{$visitor.bdsocialshare_twitter}', '1'}" tabindex="-1"{xen:helper bdSocialShare_checked, {$_bdSocialShare_noDefault}, {$_bdSocialShare_scheduled}, 'twitter'} class="bdSocialShare_Input bdSocialShare_twitterInput"/>
+					{xen:phrase bdsocialshare_twitter}					
+				</label>
+			<xen:else />
+				<label title="{xen:phrase bdsocialshare_connect_to_x_to_use_this_feature, 'network={xen:phrase bdsocialshare_twitter}'}" class="bdSocialShare_Twitter Tooltip">
+					<input type="checkbox" class="bdSocialShare_Input bdSocialShare_twitterInput" disabled="disabled" />
+					{xen:phrase bdsocialshare_twitter}
+				</label>
+			</xen:if>
+
+		</xen:if>
+	</xen:contentcheck>
+
+	<input type="hidden" name="_bdSocialShare_enabled{xen:if '{$_bdSocialShare_key}', '[{$_bdSocialShare_key}]'}[_default]" value="{xen:if '{$_bdSocialShare_noDefault}', '0', '1'}" />
+	<input type="hidden" name="_bdSocialShare_included" value="1" />
+</xen:if>]]></template>
+    <template title="bdsocialshare_buttons_sonnb_xengallery_attach_phot" version_id="26" version_string="1.4.4b"><![CDATA[<xen:if is="{xen:helper bdSocialShare_getOption, userCanHide} AND {$visitor._bdSocialShare_options.hide}">
+	<xen:comment>Share button has been configured to be hidden by user</xen:comment>
+<xen:elseif is="!{xen:helper bdSocialShare_getOption, $_bdSocialShare_optionId}" />
+	<xen:comment>optionId not found?</xen:comment>
+<xen:elseif hascontent="true" />
+	<xen:require css="bdsocialshare.css" />
+	<xen:require js="js/bdSocialShare/buttons.js" />
+
+	<xen:if is="{$photo.photo_data_id}">
+		<xen:set var="$_bdSocialShare_photoDataId">{$photo.photo_data_id}</xen:set>
+	<xen:elseif is="{$content.content_data_id}" />
+		<xen:comment>sonnb - XenGallery v2.0.0</xen:comment>
+		<xen:set var="$_bdSocialShare_photoDataId">{$content.content_data_id}</xen:set>
+	<xen:else />
+		<xen:set var="$_bdSocialShare_photoDataId">{photo_data_id}</xen:set>
+	</xen:if>
+
+	<xen:contentcheck>
+		<xen:if is="{xen:helper bdSocialShare_hasPermissionFacebook, $visitor} AND ({xen:helper bdSocialShare_isConnectedWith, facebook, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected})">
+			<xen:container var="$facebookSdk">1</xen:container>
+			<span class="metaIcon bdSocialShare_icon bdSocialShare_facebookIcon" data-input="input.bdSocialShare_facebookInput"></span>
+		</xen:if>
+
+		<xen:if is="{xen:helper bdSocialShare_hasPermissionTwitter, $visitor} AND ({xen:helper bdSocialShare_isConnectedWith, twitter, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected})">
+			<span class="metaIcon bdSocialShare_icon bdSocialShare_twitterIcon" data-input="input.bdSocialShare_twitterInput"></span>
+		</xen:if>
+	</xen:contentcheck>
+
+	<xen:comment>These hidden input must be put outside of <xen:contentcheck /> to be able to use $_bdSocialShare_photoDataId</xen:comment>
+	<input type="hidden" name="_bdSocialShare_enabled[{$_bdSocialShare_photoDataId}][facebook]" value="" class="bdSocialShare_input bdSocialShare_facebookInput" />
+	<input type="hidden" name="_bdSocialShare_enabled[{$_bdSocialShare_photoDataId}][twitter]" value="" class="bdSocialShare_input bdSocialShare_twitterInput" />
+	<input type="hidden" name="_bdSocialShare_included" value="1" />
+</xen:if>]]></template>
+    <template title="bdsocialshare_buttons_standard" version_id="28" version_string="1.4.4d"><![CDATA[<xen:if is="{xen:helper bdSocialShare_getOption, userCanHide} AND {$visitor._bdSocialShare_options.hide}">
+	<xen:comment>Share button has been configured to be hidden by user</xen:comment>
+<xen:elseif is="!{xen:helper bdSocialShare_getOption, $_bdSocialShare_optionId}" />
+	<xen:comment>optionId not found?</xen:comment>
+<xen:elseif hascontent="true" />
+	<xen:contentcheck>
+		<xen:if is="{xen:helper bdSocialShare_hasPermissionFacebook, $visitor} AND ({xen:helper bdSocialShare_isConnectedWith, facebook, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected})">
+			<xen:require js="js/bdSocialShare/buttons.js" />
+			<xen:container var="$facebookSdk">1</xen:container>
+
+			<div class="bdSocialShare_Facebook">
+				<xen:if is="{xen:helper bdSocialShare_isConnectedWith, facebook, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected} == 1">
+					<label>
+						<input type="checkbox" name="_bdSocialShare_enabled{xen:if '{$_bdSocialShare_key}', '[{$_bdSocialShare_key}]'}[facebook]" value="{xen:if '{$visitor.bdsocialshare_facebook}', '{$visitor.bdsocialshare_facebook}', 'me'}"{xen:helper bdSocialShare_checked, {$_bdSocialShare_noDefault}, {$_bdSocialShare_scheduled}, 'facebook'} class="bdSocialShare_Input bdSocialShare_facebookInput"/>
+						{xen:phrase bdsocialshare_post_to_facebook}
+						<span class="bdSocialShare_TargetContainer" style="display: none" data-me="{xen:helper striphtml, {xen:phrase bdsocialshare_your_facebook_timeline}}">(<a href="{xen:link account/social-share/facebook-targets}" class="OverlayTrigger" data-cacheoverlay="no">?</a>)</span>
+					</label>
+				<xen:else />
+					<label title="{xen:phrase bdsocialshare_connect_to_x_to_use_this_feature, 'network={xen:phrase bdsocialshare_facebook}'}" class="Tooltip">
+						<input type="checkbox" class="bdSocialShare_Input bdSocialShare_facebookInput" disabled="disabled" />
+						{xen:phrase bdsocialshare_post_to_facebook}
+					</label>
+				</xen:if>
+			</div>
+		</xen:if>
+
+		<xen:if is="{xen:helper bdSocialShare_hasPermissionTwitter, $visitor} AND ({xen:helper bdSocialShare_isConnectedWith, twitter, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected})">
+			<div class="bdSocialShare_Twitter">
+				<xen:if is="{xen:helper bdSocialShare_isConnectedWith, twitter, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected} == 1">
+					<label>
+						<input type="checkbox" name="_bdSocialShare_enabled{xen:if '{$_bdSocialShare_key}', '[{$_bdSocialShare_key}]'}[twitter]" value="{xen:if '{$visitor.bdsocialshare_twitter}', '{$visitor.bdsocialshare_twitter}', '1'}" tabindex="-1"{xen:helper bdSocialShare_checked, {$_bdSocialShare_noDefault}, {$_bdSocialShare_scheduled}, 'twitter'} class="bdSocialShare_Input bdSocialShare_twitterInput"/>
+						{xen:phrase bdsocialshare_post_to_twitter}					
+					</label>
+				<xen:else />
+					<label title="{xen:phrase bdsocialshare_connect_to_x_to_use_this_feature, 'network={xen:phrase bdsocialshare_twitter}'}" class="Tooltip">
+						<input type="checkbox" class="bdSocialShare_Input bdSocialShare_twitterInput" disabled="disabled" />
+						{xen:phrase bdsocialshare_post_to_twitter}
+					</label>
+				</xen:if>
+			</div>
+		</xen:if>
+	</xen:contentcheck>
+
+	<input type="hidden" name="_bdSocialShare_enabled{xen:if '{$_bdSocialShare_key}', '[{$_bdSocialShare_key}]'}[_default]" value="{xen:if '{$_bdSocialShare_noDefault}', '0', '1'}" />
+	<input type="hidden" name="_bdSocialShare_included" value="1" />
+</xen:if>]]></template>
+    <template title="bdsocialshare_description_nflj_showcase_item" version_id="30" version_string="2.0.0"><![CDATA[{xen:raw $item.description}]]></template>
+    <template title="bdsocialshare_description_post" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $snippet}]]></template>
+    <template title="bdsocialshare_description_post_auto" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $snippet}]]></template>
+    <template title="bdsocialshare_description_sonnb_xengallery_photo" version_id="31" version_string="2.0.1"><![CDATA[{xen:raw $photo.description}]]></template>
+    <template title="bdsocialshare_description_sonnb_xengallery_video" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $video.description}]]></template>
+    <template title="bdsocialshare_description_xengallery_media" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $media.media_description}]]></template>
+    <template title="bdsocialshare_description_xenresource_resource" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $resource.tag_line}]]></template>
+    <template title="bdsocialshare_description_xenresource_resource_aut" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $resource.tag_line}]]></template>
+    <template title="bdsocialshare_description_xenresource_update" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $snippet}]]></template>
+    <template title="bdsocialshare_description_xi_blog_entry" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $snippet}]]></template>
+    <template title="bdsocialshare_facebook_targets" version_id="28" version_string="1.4.4d"><![CDATA[<xen:require js="js/bdSocialShare/buttons.js" />
+
+<xen:title>{xen:phrase bdsocialshare_post_to_facebook}</xen:title>
+
+<div class="sectionMain">
+	<div class="primaryContent">
+		<ul>
+			<xen:if is="{$options.me}">
+				<li><label>
+					<input type="radio" name="target" value="me" class="bdSocialShare_Target_Choice">
+					{xen:phrase bdsocialshare_your_facebook_timeline}
+				</label></li>
+			</xen:if>
+			
+			<xen:if is="{$pages}">
+				<xen:foreach loop="$pages" value="$page">
+					<li>
+						<label>
+							<input type="radio" name="target" value="{$page.target_id}" class="bdSocialShare_Target_Choice">
+							{$page.name}
+						</label>
+					</li>
+				</xen:foreach>
+			<xen:elseif is="{$options.pages}" />
+				<li>{xen:phrase bdsocialshare_no_facebook_pages_or_try_again, 'link={xen:link register/facebook, '', 'reg=1', 'manage_pages=1'}'}</li>
+			</xen:if>
+
+			<xen:if is="{$groups}">
+				<xen:foreach loop="$groups" value="$group">
+					<li>
+						<label>
+							<input type="radio" name="target" value="{$group.target_id}" class="bdSocialShare_Target_Choice">
+							{$group.name}
+						</label>
+					</li>
+				</xen:foreach>
+			<xen:elseif is="{$options.groups}" />
+				<li>{xen:phrase bdsocialshare_no_facebook_groups_or_try_again, 'link={xen:link register/facebook, '', 'reg=1', 'user_groups=1'}'}</li>
+			</xen:if>
+		</ul>
+	</div>
+</div>]]></template>
+    <template title="bdsocialshare_option_opt_in_opt_out_off" version_id="18" version_string="1.3"><![CDATA[<xen:if is="{xen:helper bdSocialShare_getOption, $_bdSocialShare_optionId}">
+	<xen:if hascontent="true">
+		<dl class="ctrlUnit">
+			<dt>{$_bdSocialShare_title}</dt>
+			<dd>
+				<ul>
+					<xen:contentcheck>
+
+						<xen:if is="{xen:helper bdSocialShare_hasPermissionFacebook, $visitor} AND ({xen:helper bdSocialShare_isConnectedWith, facebook, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected})">
+							<li>
+								<label for="ctrl_bdsocialshare_options_facebook_{$_bdSocialShare_optionId}">
+									<input type="hidden" name="bdsocialshare_options[facebook][{$_bdSocialShare_optionId}]" value="0" />
+									<input type="checkbox" name="bdsocialshare_options[facebook][{$_bdSocialShare_optionId}]" value="1" id="ctrl_bdsocialshare_options_facebook_{$_bdSocialShare_optionId}" {xen:helper bdSocialShare_checkedOptInOptOutOff, $_bdSocialShare_optionId, $visitor._bdSocialShare_options.facebook} />
+									{xen:phrase bdsocialshare_post_to_facebook}
+								</label>
+							</li>
+						</xen:if>
+
+						<xen:if is="{xen:helper bdSocialShare_hasPermissionTwitter, $visitor} AND ({xen:helper bdSocialShare_isConnectedWith, twitter, $visitor} OR {xen:helper bdSocialShare_getOption, showNotConnected})">
+							<li>
+								<label for="ctrl_bdsocialshare_options_twitter_{$_bdSocialShare_optionId}">
+									<input type="hidden" name="bdsocialshare_options[twitter][{$_bdSocialShare_optionId}]" value="0" />
+									<input type="checkbox" name="bdsocialshare_options[twitter][{$_bdSocialShare_optionId}]" value="1" id="ctrl_bdsocialshare_options_twitter_{$_bdSocialShare_optionId}" {xen:helper bdSocialShare_checkedOptInOptOutOff, $_bdSocialShare_optionId, $visitor._bdSocialShare_options.twitter} />
+									{xen:phrase bdsocialshare_post_to_twitter}
+								</label>
+							</li>
+						</xen:if>
+
+					</xen:contentcheck>
+				</ul>
+			</dd>
+		</dl>
+	</xen:if>
+</xen:if>]]></template>
+    <template title="bdsocialshare_recovery_notice" version_id="12" version_string="1.1"><![CDATA[<xen:if is="!empty({$visitor.bdsocialshare_recovery}) AND {$visitor.bdsocialshare_recovery} != 'b:0;'">
+	<xen:if is="!in_array({$controllerName}, array('XenForo_ControllerPublic_Account', 'XenForo_ControllerPublic_Error', 'XenForo_ControllerPublic_Login', 'XenForo_ControllerPublic_Register'))">
+		<div class="sectionMain">
+			{xen:phrase bdsocialshare_problem_publishing_click_here,
+				'link={xen:link full:account/social-share/recovery}',
+				'dismiss_link={xen:link full:account/social-share/dismiss}'
+			}
+		</div>
+	</xen:if>
+</xen:if>]]></template>
+    <template title="bdsocialshare_share_page_options" version_id="30" version_string="2.0.0"><![CDATA[<xen:if is="{$url} AND {$visitor._bdSocialShare_canStaffShare}">
+	<xen:require css="bdsocialshare.css" />
+
+	<div class="bdSocialShare_StaffShareLink shareControl">
+		<a href="{xen:link misc/staff-share, '', 'url={$url}'}" class="button OverlayTrigger" data-cacheoverlay="no">
+			{xen:phrase bdsocialshare_staff_share_verb}
+		</a>
+	</div>
+</xen:if>
+
+<xen:edithint template="share_page" />
+<xen:edithint template="sidebar_share_page" />]]></template>
+    <template title="bdsocialshare_staff_share" version_id="30" version_string="2.0.0"><![CDATA[<xen:title>{xen:phrase bdsocialshare_staff_share}</xen:title>
+
+<div class="sectionMain">
+	<div class="primaryContent">
+	<ul class="tabs Tabs" data-panes="#Panes > li" data-history="on">
+		<xen:if is="{$facebookAccounts} !== false">
+			<li><a href="{$requestPaths.requestUri}#facebook">{xen:phrase bdsocialshare_post_to_facebook}</a></li>
+		</xen:if>
+		<xen:if is="{$twitterAccounts} !== false">
+			<li><a href="{$requestPaths.requestUri}#twitter">{xen:phrase bdsocialshare_post_to_twitter}</a></li>
+		</xen:if>
+
+		<xen:hook name="bdsocialshare_staff_share_tabs_heading" />
+	</ul>
+
+	<ul id="Panes">
+		<xen:if is="{$facebookAccounts} !== false">
+			<li id="facebook">
+				<xen:include template="bdsocialshare_staff_share_form">
+					<xen:set var="$target">facebook</xen:set>
+					<xen:map from="$facebookAccounts" to="$accounts" />
+				</xen:include>
+			</li>
+		</xen:if>
+
+		<xen:if is="{$twitterAccounts} !== false">
+			<li id="twitter">
+				<xen:include template="bdsocialshare_staff_share_form">
+					<xen:set var="$target">twitter</xen:set>
+					<xen:map from="$twitterAccounts" to="$accounts" />
+				</xen:include>
+			</li>
+		</xen:if>
+
+		<xen:hook name="bdsocialshare_staff_share_tabs" />
+	</ul>
+	</div>
+</div>]]></template>
+    <template title="bdsocialshare_staff_share_form" version_id="30" version_string="2.0.0"><![CDATA[<form action="{xen:link misc/staff-share}" class="xenForm AutoValidator" method="POST">
+	<xen:if is="{$target} == 'facebook'">
+		<xen:set var="$submit">{xen:phrase bdsocialshare_post_to_facebook}</xen:set>
+	<xen:elseif is="{$target} == 'twitter'" />
+		<xen:set var="$submit">{xen:phrase bdsocialshare_post_to_twitter}</xen:set>
+	</xen:if>
+
+	<dl class="ctrlUnit">
+		<dt></dt>
+		<dd>
+			<xen:if is="{$accounts}">
+				<select name="target_id" class="textCtrl">
+					<xen:foreach loop="$accounts" value="$account">
+						<option value="{$account.target_id}">
+							<xen:if is="{$account.screen_name}">
+								{$account.screen_name}
+							<xen:else />
+								{$account.name}
+							</xen:if>
+						</option>
+					</xen:foreach>
+				</select>
+
+				<xen:if is="{$hasAdminPermissionOption}">
+					<a href="{xen:adminlink 'tools/social-share/{$target}-targets'}" target="_blank">
+						{xen:phrase bdsocialshare_manage_shared_accounts}
+					</a>
+				</xen:if>
+			<xen:else />
+				<select class="textCtrl Disabled" disabled="disabled"></select>
+
+				{xen:phrase bdsocialshare_add_share_account_to_use_staff_share,
+					'link={xen:adminlink 'tools/social-share/{$target}-targets'}'}
+			</xen:if>
+		</dd>
+	</dl>
+
+	<dl class="ctrlUnit">
+		<dt><label for="userText_ctrl">{xen:phrase bdsocialshare_user_text}:</label></dt>
+		<dd>
+			<textarea id="userText_ctrl" name="userText" class="textCtrl Elastic">{$userText}</textarea>
+		</dd>
+	</dl>
+
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase bdsocialshare_link}:</dt>
+		<dd>
+			<input type="text" value="{$link}" class="textCtrl Disabled" disabled="disabled" />
+		</dd>
+	</dl>
+
+	<xen:if is="{$target} == 'facebook'">
+		<dl class="ctrlUnit">
+			<dt>&nbsp;</dt>
+			<dd>
+				<label>
+					<input id="sendLinkData_ctrl" type="checkbox" value="1" class="Disabler"{xen:if {xen:helper bdSocialShare_getOption, facebookSendLinkData}, ' checked="checked"'} />
+					{xen:phrase bdsocialshare_send_link_data}
+				</label>
+				<p class="explain">{xen:phrase option_bdSocialShare_facebookSendLinkData_explain}</p>
+			</dd>
+		</dl>
+		
+		<fieldset id="sendLinkData_ctrl_Disabler">
+			
+			<dl class="ctrlUnit">
+				<dt><label for="title_ctrl">{xen:phrase bdsocialshare_title}:</label></dt>
+				<dd>
+					<input id="title_ctrl" type="text" name="title" class="textCtrl" value="{$title}" />
+				</dd>
+			</dl>
+
+			<dl class="ctrlUnit">
+				<dt><label for="description_ctrl">{xen:phrase bdsocialshare_description}:</label></dt>
+				<dd>
+					<textarea id="description_ctrl" name="description" class="textCtrl Elastic">{$description}</textarea>
+				</dd>
+			</dl>
+
+			<dl class="ctrlUnit">
+				<dt><label for="image_ctrl">{xen:phrase bdsocialshare_image}:</label></dt>
+				<dd>
+					<input id="image_ctrl" type="text" name="image" class="textCtrl" value="{$image}" />
+				</dd>
+			</dl>
+
+		</fieldset>
+	</xen:if>
+	
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd>
+			<input type="submit" value="{$submit}" class="button primary" />
+		</dd>
+	</dl>
+
+	<input type="hidden" name="url" value="{$url}" />
+	<input type="hidden" name="target" value="{$target}" />
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+	<input type="hidden" name="_xfConfirm" value="1" />
+</form>]]></template>
+    <template title="bdsocialshare_staff_share_url_form" version_id="30" version_string="2.0.0"><![CDATA[<xen:title>{xen:phrase bdsocialshare_staff_share}</xen:title>
+
+<form action="{xen:link misc/staff-share}" class="xenForm formOverlay" method="POST">
+
+	<dl class="ctrlUnit">
+		<dt><label for="url_ctrl">{xen:phrase bdsocialshare_link}:</dt>
+		<dd>
+			<input id="url_ctrl" type="text" name="url" class="textCtrl" />
+		</dd>
+	</dl>
+
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd>
+			<input type="submit" value="{xen:phrase continue}" class="button primary" />
+		</dd>
+	</dl>
+
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+</form>]]></template>
+    <template title="bdsocialshare_title_nflj_showcase_item" version_id="30" version_string="2.0.0"><![CDATA[{xen:raw $item.item_name}]]></template>
+    <template title="bdsocialshare_title_reply" version_id="23" version_string="1.4.2b"><![CDATA[{xen:helper threadPrefix, $thread, escaped}{xen:raw $thread.title}]]></template>
+    <template title="bdsocialshare_title_reply_auto" version_id="23" version_string="1.4.2b"><![CDATA[{xen:helper threadPrefix, $thread, escaped}{xen:raw $thread.title}]]></template>
+    <template title="bdsocialshare_title_sonnb_xengallery_photo" version_id="31" version_string="2.0.1"><![CDATA[{xen:raw $photo.title}]]></template>
+    <template title="bdsocialshare_title_sonnb_xengallery_video" version_id="31" version_string="2.0.1"><![CDATA[{xen:raw $video.title}]]></template>
+    <template title="bdsocialshare_title_thread" version_id="23" version_string="1.4.2b"><![CDATA[{xen:helper threadPrefix, $thread, escaped}{xen:raw $thread.title}]]></template>
+    <template title="bdsocialshare_title_thread_auto" version_id="23" version_string="1.4.2b"><![CDATA[{xen:helper threadPrefix, $thread, escaped}{xen:raw $thread.title}]]></template>
+    <template title="bdsocialshare_title_xengallery_media" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $media.media_title}]]></template>
+    <template title="bdsocialshare_title_xenresource_resource" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $resource.title}]]></template>
+    <template title="bdsocialshare_title_xenresource_resource_auto" version_id="23" version_string="1.4.2b"><![CDATA[{xen:phrase bdsocialshare_title_xenresource_resource_auto,
+	'username={xen:raw $resource.username}',
+	'title={xen:raw $resource.title}'
+}]]></template>
+    <template title="bdsocialshare_title_xenresource_update" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $update.title}]]></template>
+    <template title="bdsocialshare_title_xi_blog_entry" version_id="23" version_string="1.4.2b"><![CDATA[{xen:phrase bdsocialshare_title_xi_blog_entry, 'title={xen:raw $entry.title}'}]]></template>
+    <template title="bdsocialshare_user_text_i_am_awarded_medal_x" version_id="23" version_string="1.4.2b"><![CDATA[{xen:phrase bdsocialshare_user_text_i_am_awarded_medal_x,
+	'medal={xen:raw $medal.name}',
+	'board_title={xen:raw $xenOptions.boardTitle}'
+}]]></template>
+    <template title="bdsocialshare_user_text_i_am_awarded_trophy_x" version_id="23" version_string="1.4.2b"><![CDATA[{xen:phrase bdsocialshare_user_text_i_am_awarded_trophy_x,
+	'trophy_id={xen:raw $trophyId}',
+	'trophy_phrase={xen:raw $trophyPhrase}',
+	'board_title={xen:raw $xenOptions.boardTitle}'
+}]]></template>
+    <template title="bdsocialshare_user_text_reply" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $snippet}]]></template>
+    <template title="bdsocialshare_user_text_reply_auto" version_id="23" version_string="1.4.2b"><![CDATA[{xen:phrase bdsocialshare_user_text_reply_auto,
+	'username={xen:raw $post.username}',
+	'snippet={xen:raw $snippet}'
+}]]></template>
+    <template title="bdsocialshare_user_text_status" version_id="23" version_string="1.4.2b"><![CDATA[{xen:raw $snippet}]]></template>
+    <template title="bdsocialshare_user_text_status_auto" version_id="23" version_string="1.4.2b"><![CDATA[{xen:phrase bdsocialshare_user_text_status_auto,
+	'username={xen:raw $status.username}',
+	'snippet={xen:raw $snippet}'
+}]]></template>
+    <template title="bdsocialshare_user_text_thread" version_id="24" version_string="1.4.2c"><![CDATA[]]></template>
+    <template title="bdsocialshare_user_text_thread_auto" version_id="23" version_string="1.4.2b"><![CDATA[{xen:phrase bdsocialshare_user_text_thread_auto,
+	'username={xen:raw $thread.username}',
+	'title={xen:raw $thread.title}'
+}]]></template>
+  </templates>
+  <public_template_modifications>
+    <modification template="account_personal_details" modification_key="bdsocialshare_account_personal_details" description="Insert social share buttons into status update form in account personal detail page" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen:hook name="account_personal_details_status">.+?)(</xen:hook>)#s]]></find>
+      <replace><![CDATA[$1
+
+<xen:if is="{$canUpdateStatus}">
+	<xen:if hascontent="true">
+		<dl class="ctrlUnit">
+			<dt>&nbsp;</dt>
+			<dd>
+				<xen:contentcheck>
+					<xen:include template="bdsocialshare_buttons_standard">
+						<xen:set var="$_bdSocialShare_optionId">status</xen:set>
+					</xen:include>
+				</xen:contentcheck>
+			</dd>
+		</dl>
+	</xen:if>
+</xen:if>
+
+$2]]></replace>
+    </modification>
+    <modification template="member_view" modification_key="bdsocialshare_member_view" description="Insert social share buttons into status update form in self profile page" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<span id="statusEditorCounter" title="{xen:phrase characters_remaining}"></span>]]></find>
+      <replace><![CDATA[$0
+
+<xen:if is="{$visitor.user_id} == {$user.user_id}">
+	<xen:include template="bdsocialshare_buttons_short">
+		<xen:set var="$_bdSocialShare_optionId">status</xen:set>
+	</xen:include>
+</xen:if>]]></replace>
+    </modification>
+    <modification template="navigation_visitor_tab" modification_key="bdsocialshare_navigation_visitor_tab" description="Insert social share buttons into quick status update form" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<span id="visMenuSEdCount" title="{xen:phrase characters_remaining}"></span>]]></find>
+      <replace><![CDATA[$0
+
+<xen:include template="bdsocialshare_buttons_short">
+	<xen:set var="$_bdSocialShare_optionId">status</xen:set>
+</xen:include>]]></replace>
+    </modification>
+    <modification template="nflj_showcase_item_create" modification_key="bdsocialshare_nflj_showcase_item_create" description="Insert social share buttons into showcase item create form" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<li><label><input type="checkbox" name="draft" value="1" id="ctrl_draft" />]]></find>
+      <replace><![CDATA[<xen:if hascontent="true">
+	<li>
+		<xen:contentcheck>
+			<xen:include template="bdsocialshare_buttons_standard">
+				<xen:set var="$_bdSocialShare_optionId">nfljShowcaseItemPublish</xen:set>
+			</xen:include>
+		</xen:contentcheck>
+	</li>
+</xen:if>
+
+$0]]></replace>
+    </modification>
+    <modification template="nflj_showcase_item_edit" modification_key="bdsocialshare_nflj_showcase_item_edit" description="Insert social share buttons into showcase item edit form (for draft only)" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<input type="submit" value="{xen:phrase save_changes}" accesskey="s" class="button primary" />]]></find>
+      <replace><![CDATA[<xen:if is="{$isDraft}">
+	<xen:if hascontent="true">
+		<div>
+			<xen:contentcheck>
+				<xen:include template="bdsocialshare_buttons_standard">
+					<xen:set var="$_bdSocialShare_optionId">nfljShowcaseItemPublish</xen:set>
+				</xen:include>
+			</xen:contentcheck>
+		</div>
+	</xen:if>
+</xen:if>
+
+$0]]></replace>
+    </modification>
+    <modification template="quick_reply" modification_key="bdsocialshare_quick_reply" description="Insert social share buttons into quick reply form" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<div class="submitUnit">]]></find>
+      <replace><![CDATA[$0
+
+<xen:if is="{$thread}">
+	<xen:include template="bdsocialshare_buttons_short">
+		<xen:set var="$_bdSocialShare_optionId">threadReply</xen:set>
+	</xen:include>
+</xen:if>]]></replace>
+    </modification>
+    <modification template="PAGE_CONTAINER" modification_key="bdsocialshare_recovery_notice" description="Insert recovery notice to the top of the page" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:hook name="page_container_notices">]]></find>
+      <replace><![CDATA[<xen:include template="bdsocialshare_recovery_notice" />
+
+$0]]></replace>
+    </modification>
+    <modification template="resource_add" modification_key="bdsocialshare_resource_add" description="Insert social share buttons into resource create form" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<input type="submit" value="{xen:phrase save}" accesskey="s" class="button primary" />]]></find>
+      <replace><![CDATA[<xen:if is="!{$resource.resource_id}">
+	<xen:if hascontent="true">
+		<div>
+			<xen:contentcheck>
+				<xen:include template="bdsocialshare_buttons_standard">
+					<xen:set var="$_bdSocialShare_optionId">resourceAdd</xen:set>
+				</xen:include>
+			</xen:contentcheck>
+		</div>
+	</xen:if>
+</xen:if>
+
+$0]]></replace>
+    </modification>
+    <modification template="resource_version_add" modification_key="bdsocialshare_resource_version_add" description="Insert social share buttons into resource update form" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<input type="submit" value="{xen:phrase save_update}" accesskey="s" class="button primary" />]]></find>
+      <replace><![CDATA[<xen:if hascontent="true">
+	<div>
+		<xen:contentcheck>
+			<xen:include template="bdsocialshare_buttons_standard">
+				<xen:set var="$_bdSocialShare_optionId">resourceVersionAdd</xen:set>
+			</xen:include>
+		</xen:contentcheck>
+	</div>
+</xen:if>
+
+$0]]></replace>
+    </modification>
+    <modification template="share_page" modification_key="bdsocialshare_share_page" description="Insert staff share control into share block" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:hook name="share_page_options">]]></find>
+      <replace><![CDATA[$0
+
+<xen:include template="bdsocialshare_share_page_options" />]]></replace>
+    </modification>
+    <modification template="sidebar_profile_post_list" modification_key="bdsocialshare_sidebar_profile_post_list" description="Insert social share buttons into profile post sidebar block's form" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<span id="statusEditorCounter" title="{xen:phrase characters_remaining}"></span>]]></find>
+      <replace><![CDATA[$0
+
+<xen:include template="bdsocialshare_buttons_short">
+	<xen:set var="$_bdSocialShare_optionId">status</xen:set>
+</xen:include>]]></replace>
+    </modification>
+    <modification template="sidebar_share_page" modification_key="bdsocialshare_sidebar_share_page" description="Insert staff share control into share block" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:hook name="sidebar_share_page_options">]]></find>
+      <replace><![CDATA[$0
+
+<xen:include template="bdsocialshare_share_page_options" />]]></replace>
+    </modification>
+    <modification template="sonnb_xengallery_attach_photo" modification_key="bdsocialshare_sonnb_xengallery_attach_photo" description="Insert social share buttons into sonnb - XenGallery photo upload block" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<div class="inner">]]></find>
+      <replace><![CDATA[$0
+
+<xen:if is="!{$photo.photo_id}">
+	<xen:include template="bdsocialshare_buttons_sonnb_xengallery_attach_phot">
+		<xen:set var="$_bdSocialShare_optionId">sonnbXenGalleryPhotoAttach</xen:set>
+	</xen:include>
+</xen:if>]]></replace>
+    </modification>
+    <modification template="sonnb_xengallery_upload" modification_key="bdsocialshare_sonnb_xengallery_upload" description="Insert social share buttons into sonnb - XenGallery photo upload block (v2.0.0+)" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<div class="inner">]]></find>
+      <replace><![CDATA[$0
+
+<xen:if is="!{$photo.photo_id}">
+	<xen:include template="bdsocialshare_buttons_sonnb_xengallery_attach_phot">
+		<xen:set var="$_bdSocialShare_optionId">sonnbXenGalleryPhotoAttach</xen:set>
+	</xen:include>
+</xen:if>]]></replace>
+    </modification>
+    <modification template="thread_create" modification_key="bdsocialshare_thread_create" description="Insert social share buttons into thread create form" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<li><xen:include template="helper_thread_watch_input" /></li>]]></find>
+      <replace><![CDATA[$0
+
+<xen:if hascontent="true">
+	<li>
+		<xen:contentcheck>
+			<xen:include template="bdsocialshare_buttons_standard">
+				<xen:set var="$_bdSocialShare_optionId">threadCreate</xen:set>
+			</xen:include>
+		</xen:contentcheck>
+	</li>
+</xen:if>]]></replace>
+    </modification>
+    <modification template="thread_reply" modification_key="bdsocialshare_thread_reply" description="Insert social share buttons into thread reply form" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<li><xen:include template="helper_thread_watch_input" /></li>]]></find>
+      <replace><![CDATA[$0
+
+
+<xen:if hascontent="true">
+	<li>
+		<xen:contentcheck>
+			<xen:include template="bdsocialshare_buttons_standard">
+				<xen:set var="$_bdSocialShare_optionId">threadReply</xen:set>
+			</xen:include>
+		</xen:contentcheck>
+	</li>
+</xen:if>]]></replace>
+    </modification>
+    <modification template="wf_widget_profile_posts" modification_key="bdsocialshare_wf_widget_profile_posts" description="Insert social share buttons into status update form in [bd] Widget Framework's Profile Post widget" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<span id="statusEditorCounter[^"]*" title="{xen:phrase characters_remaining}"></span>#]]></find>
+      <replace><![CDATA[$0
+
+<!-- bdsocialshare_wf_widget_profile_posts -->]]></replace>
+    </modification>
+    <modification template="wf_widget_recent_status" modification_key="bdsocialshare_wf_widget_recent_status" description="Insert social share buttons into status update form in [bd] Widget Framework's Recent Status widget" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<span id="visMenuSEdCount-{$widget.widget_id}" title="{xen:phrase characters_remaining}"></span>]]></find>
+      <replace><![CDATA[$0
+
+<!-- bdsocialshare_wf_widget_recent_status -->]]></replace>
+    </modification>
+    <modification template="xengallery_media_file_editor_attachment" modification_key="bdsocialshare_xengallery_media_file_editor_attach2" description="Insert social share buttons into Xen Media Gallery photo upload block (v2.0+)" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<input type="hidden" name="media_{$attachment.mediaType}" value="true" />]]></find>
+      <replace><![CDATA[<xen:if hascontent="true">
+	<div>
+		<xen:contentcheck>
+			<xen:include template="bdsocialshare_buttons_standard">
+				<xen:set var="$_bdSocialShare_key">{$attachment.attachment_id}</xen:set>
+				<xen:set var="$_bdSocialShare_noDefault">1</xen:set>
+				<xen:set var="$_bdSocialShare_optionId">xenGalleryImageAttach</xen:set>
+			</xen:include>
+		</xen:contentcheck>
+	</div>
+</xen:if>
+
+$0]]></replace>
+    </modification>
+    <modification template="xengallery_media_file_editor_attachment" modification_key="bdsocialshare_xengallery_media_file_editor_attachm" description="Insert social share buttons into Xen Media Gallery photo upload block" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<div class="controls deleteButtonContainer">]]></find>
+      <replace><![CDATA[<xen:if hascontent="true">
+	<div>
+		<xen:contentcheck>
+			<xen:include template="bdsocialshare_buttons_standard">
+				<xen:set var="$_bdSocialShare_key">{$attachment.attachment_id}</xen:set>
+				<xen:set var="$_bdSocialShare_noDefault">1</xen:set>
+				<xen:set var="$_bdSocialShare_optionId">xenGalleryImageAttach</xen:set>
+			</xen:include>
+		</xen:contentcheck>
+	</div>
+</xen:if>
+
+$0]]></replace>
+    </modification>
+    <modification template="xi_blog_entry_publish_options" modification_key="bdsocialshare_xi_blog_entry_publish_options" description="Insert social share buttons into entry create or draft edit form" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[</dd>]]></find>
+      <replace><![CDATA[<xen:if hascontent="true">
+	<ul>
+		<li>
+			<xen:contentcheck>
+				<xen:include template="bdsocialshare_buttons_standard">
+					<xen:set var="$_bdSocialShare_optionId">xiBlogEntryPublish</xen:set>
+					<xen:map from="$draft.bdsocialshare_scheduled" to="$_bdSocialShare_scheduled" />
+				</xen:include>
+			</xen:contentcheck>
+		</li>
+	</ul>
+</xen:if>
+
+$0]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="Waindigo_UserBanners" title="User Banners by Waindigo" version_string="1.0.0" version_id="1399022324" url="https://waindigo.com/" install_callback_class="Waindigo_Install" install_callback_method="install" uninstall_callback_class="Waindigo_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="waindigo_user_group_edit_userbanners"><![CDATA[<xen:textboxunit label="{xen:phrase waindigo_user_banner_description_userbanners}:" explain="{xen:phrase waindigo_user_banner_description_explain_userbanners}" name="banner_description_waindigo" value="{$userGroup.banner_description_waindigo}" maxlength="255" />
+<input type="hidden" name="banner_description_waindigo_shown" value="1" />]]></template>
+  </admin_templates>
+  <admin_template_modifications>
+    <modification template="user_group_edit" modification_key="waindigo_userGroupEdit_userBanners" description="Adds user banner description input field to user group editor." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<xen:textboxunit label="{xen:phrase user_banner_text}:"[^>]*>#Us]]></find>
+      <replace><![CDATA[${0}
+<xen:include template="waindigo_user_group_edit_userbanners" />]]></replace>
+    </modification>
+  </admin_template_modifications>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="Waindigo_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="Waindigo_UserBanners_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="Waindigo_UserBanners_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_UserBanners_Listener_LoadClass" callback_method="loadClassModel" active="0" hint="XenForo_Model_UserGroup" description="XenForo_Model_UserGroup (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_UserBanners_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerAdmin_UserGroup" description="XenForo_ControllerAdmin_UserGroup (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="Waindigo_UserBanners_Listener_LoadClass" callback_method="loadClassDataWriter" active="0" hint="XenForo_DataWriter_UserGroup" description="XenForo_DataWriter_UserGroup (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="Waindigo_UserBanners_Listener_LoadClass" callback_method="loadClassController" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="Waindigo_UserBanners_Listener_LoadClass" callback_method="loadClassDataWriter" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="Waindigo_UserBanners_Listener_LoadClass" callback_method="loadClassModel" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups/>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="waindigo_user_banner_description_explain_userbanners" version_id="1399018326" version_string="1.0.0"><![CDATA[This will be displayed when a user hovers their mouse over this banner.]]></phrase>
+    <phrase title="waindigo_user_banner_description_userbanners" version_id="1399018326" version_string="1.0.0"><![CDATA[User Banner Description]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates/>
+  <public_template_modifications>
+    <modification template="footer" modification_key="waindigo_copyrightNotice_userBanners" description="Copyright notice for User Banners by Waindigo" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase (?:xenforo|extra)_copyright}/]]></find>
+      <replace><![CDATA[Waindigo_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+    <modification template="user_banners.css" modification_key="waindigo_userBannersCss_userBanners" description="Adds additional CSS for description tooltips." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#$#]]></find>
+      <replace><![CDATA[.userBanner strong a
+{
+	display: block;
+	cursor: pointer;
+}]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>

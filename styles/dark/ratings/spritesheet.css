@@ -1,0 +1,14 @@
+.sprite { background-image: url('spritesheet.png'); background-color: transparent; background-repeat: no-repeat; }
+.award_star_gold_2 { width: 16px; height: 16px; background-position: 0px -192px; }
+.box { width: 16px; height: 16px; background-position: 0px -176px; }
+.clock_red { width: 16px; height: 16px; background-position: 0px -160px; }
+.cross { width: 16px; height: 16px; background-position: 0px -144px; }
+.emoticon_grin { width: 16px; height: 16px; background-position: 0px -128px; }
+.heart { width: 16px; height: 16px; background-position: 0px -112px; }
+.information { width: 16px; height: 16px; background-position: 0px -96px; }
+.paintbrush { width: 16px; height: 16px; background-position: 0px -80px; }
+.rainbow { width: 16px; height: 16px; background-position: 0px -64px; }
+.spellcheck { width: 16px; height: 16px; background-position: 0px -48px; }
+.thumb-up { width: 16px; height: 16px; background-position: 0px -32px; }
+.tick { width: 16px; height: 16px; background-position: 0px -16px; }
+.wrench_orange { width: 16px; height: 16px; background-position: 0px 0px; }
